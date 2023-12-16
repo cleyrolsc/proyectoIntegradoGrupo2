@@ -2,29 +2,20 @@ const User = require("./Entities/user.class");
 const {UserStatus, UserType} = require("../Core/Abstractions/Enums");
 const { query } = require("../Database/database");
 
+const EncryptionManager = require("../Core/Utils/encryption-manager.util");
+
 const tableName = "users";
 
 const createUser = (username, employeeId, password, priviligeLevel, type = UserType.Agent) => {
-    // validate entries
+    let encryptedPassword = EncryptionManager.encrypt(password);
 
-    let newUser = new User();
-    newUser.username = username;
-    newUser.employeeId = employeeId;
-    // encrypt password
-    newUser.password = password;
-    newUser.type = type;
-    newUser.priviligeLevel = priviligeLevel;
-    newUser.status = UserStatus.Active;
-    newUser.createdOn = Date.now();
-    newUser.modifiedOn = undefined;
+    var values = `${username}, ${employeeId}, ${encryptedPassword}, ${+type}, ${priviligeLevel}, ${UserStatus.Active}, ${Date.now().toString()}`;
 
-    // Save to Database
+    query(`INSERT INTO users (username, employeeId, password, type, priviligeLevel, status, createdOn) VALUES (${values})`);
 };
 
 const getUserByUsername = (username) => {
-    console.log(username);
-    var users = query(`SELECT * FROM ${tableName} WHERE username = '${username}'`);
-    console.log(users);
+    var users = query(`SELECT * FROM ${tableName} WHERE username = '${username}' LIMIT 1`);
     if (users.length === 0){
         return undefined;
     }

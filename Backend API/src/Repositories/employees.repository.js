@@ -7,20 +7,22 @@ const tableName = "employees";
 const createEmployee = (firstName, lastName, identificationNumber, commissionPerHour, department = Department.Sales) => {
     // Validate data
 
-    let newEmployee = new Employee();
-    newEmployee.firstName = firstName;
-    newEmployee.lastName = lastName;
-    newEmployee.identificationNumber = identificationNumber;
-    newEmployee.commissionPerHour = commissionPerHour;
-    newEmployee.department = department;
-    newEmployee.createdOn = Date.now();
-    newEmployee.modifiedOn = undefined;
+    var values = `${firstName}, ${lastName}, ${identificationNumber}, ${+commissionPerHour}, ${+department}, ${Date.now().toString()}`;
 
-    // Save to Database
+    query(`INSERT INTO employees (firstName, lastName, identificationNumber, commissionPerHour, department, createdOn) VALUES (${values})`);
 };
 
 const getEmployeeById = (id) => {
-    var employees = query(`SELECT * FROM ${tableName} WHERE id = ${+id}`);
+    var employees = query(`SELECT * FROM ${tableName} WHERE id = ${+id} LIMIT 1`);
+    if (employees.length === 0){
+        return undefined;
+    }
+
+    return employees[0];
+};
+
+const getEmployeeByIdentificationNumber = (identificationNumber) => {
+    var employees = query(`SELECT * FROM ${tableName} WHERE identificationNumber = '${identificationNumber}' LIMIT 1`);
     if (employees.length === 0){
         return undefined;
     }
@@ -56,6 +58,7 @@ const deleteEmployee = (id) => {
 module.exports = {
     createEmployee,
     getEmployeeById,
+    getEmployeeByIdentificationNumber,
     getEmployees,
     updateEmployee,
     deleteEmployee
