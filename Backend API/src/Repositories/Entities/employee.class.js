@@ -1,4 +1,4 @@
-import ICreatedModifiedOn from "../../Core/Abstractions/Interfaces/i-created-modified-on.interface";
+const ICreatedModifiedOn = require("../../Core/Abstractions/Interfaces/i-created-modified-on.interface");
 
 class Employee extends ICreatedModifiedOn {
     id; // PK

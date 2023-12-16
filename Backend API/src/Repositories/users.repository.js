@@ -1,5 +1,5 @@
 const User = require("./Entities/user.class");
-import {UserStatus, UserType} from "../Core/Abstractions/Enums/index";
+const {UserStatus, UserType} = require("../Core/Abstractions/Enums");
 
 const createUser = (username, employeeId, password, priviligeLevel, type = UserType.Agent) => {
     // validate entries

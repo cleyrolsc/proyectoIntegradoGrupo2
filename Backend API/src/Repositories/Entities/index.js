@@ -1,6 +1,6 @@
-import Employee from "./employee.class";
-import Privilege from "./privilige.class";  
-import User from "./user.class";
+const Employee = require("./employee.class");
+const Privilege = require("./privilige.class");  
+const User = require("./user.class");
 
 module.exports = {
     Employee,

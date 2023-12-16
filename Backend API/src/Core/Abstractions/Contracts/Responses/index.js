@@ -1,6 +1,6 @@
-import CreateUserResponse from "./create-user.response";
-import PaginatedResponse from "./paginated.response";
-import UserProfileResponse from "./user-profile.response";
+const CreateUserResponse = require("./create-user.response");
+const PaginatedResponse = require("./paginated.response");
+const UserProfileResponse = require("./user-profile.response");
 
 module.exports = {
     CreateUserResponse,

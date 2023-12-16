@@ -1,5 +1,5 @@
-import Employee from "./Entities/employee.class";
-import Department from "../Core/Abstractions/Enums/department.enum";
+const Employee = require("./Entities/employee.class");
+const Department = require("../Core/Abstractions/Enums/department.enum");
 
 const createEmployee = (firstName, lastName, identificationNumber, commissionPerHour, department = Department.Sales) => {
     // Validate data

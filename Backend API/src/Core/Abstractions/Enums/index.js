@@ -1,7 +1,7 @@
-import Department from "./department.enum";
-import PriviligeStatus from "./privilige-status.enum";
-import UserStatus from "./user-status.enum";
-import UserType from "./user-type.enum";
+const Department = require("./department.enum");
+const PriviligeStatus = require("./privilige-status.enum");
+const UserStatus = require("./user-status.enum");
+const UserType = require("./user-type.enum");
 
 module.exports = {
     Department,

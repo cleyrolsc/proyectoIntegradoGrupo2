@@ -1,5 +1,5 @@
-import EmployeeModel from "./employee.model";
-import UserModel from "./user.model";
+const EmployeeModel = require("./employee.model");
+const UserModel = require("./user.model");
 
 module.exports = {
     EmployeeModel,

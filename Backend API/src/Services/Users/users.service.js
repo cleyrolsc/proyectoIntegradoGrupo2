@@ -1,6 +1,6 @@
-import {CreateUserResponse, PaginatedResponse, UserProfileResponse} from "../../Core/Abstractions/Contracts/Responses/index";
-import {EmployeeModel, UserModel} from "./Models/index";
-import NotFoundError from "../../Core/Abstractions/Exceptions/not-found.error";
+const {CreateUserResponse, PaginatedResponse, UserProfileResponse} = require("../../Core/Abstractions/Contracts/Responses");
+const {EmployeeModel, UserModel} = require("./Models");
+const NotFoundError = require("../../Core/Abstractions/Exceptions/not-found.error");
 
 const EmployeesRepository = require('../../Repositories/employees.repository');
 const UsersRepository = require('../../Repositories/users.repository');
@@ -20,7 +20,7 @@ const registerNewUser = (createUserRequest) => {
 const getUserProfile = (username) => {
     let user = UsersRepository.getUserByUsername(username);
     if (user === undefined) {
-        throw NotFoundError();
+        throw new NotFoundError();
     }
 
     let employeeInfo = EmployeesRepository.getEmployeeById(user.employeeId);

@@ -1,4 +1,4 @@
-import CreateUserRequest from "./create-user.request";
+const CreateUserRequest = require("./create-user.request");
 
 module.exports = {
     CreateUserRequest
