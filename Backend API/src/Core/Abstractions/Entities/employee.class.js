@@ -1,4 +1,4 @@
-const ICreatedModifiedOn = require("../Interfaces/i-created-modified-on.interface");
+import ICreatedModifiedOn from "../Interfaces/i-created-modified-on.interface";
 
 class Employee extends ICreatedModifiedOn {
     id; // PK
