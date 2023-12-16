@@ -1,5 +1,7 @@
 const Employee = require("./Entities/employee.class");
 const Department = require("../Core/Abstractions/Enums/department.enum");
+const { FatalError } = require("../Core/Abstractions/Exceptions");
+const { isNotNullUndefinedOrEmpty, isNotNullOrUndefined } = require("../Core/Utils/null-checker.util");
 
 const DatabaseManager = require("../Database/database");
 
@@ -37,19 +39,50 @@ const getEmployees = () => {
     return employees;
 };
 
-const updateEmployee = (employeeId, firstName, lastName, identificationNumber, commissionPerHour, department = Department.Sales) => {
+const updateEmployee = (employeeId, {firstName = undefined, lastName = undefined, identificationNumber = undefined, commissionPerHour = undefined, department  = undefined}) => {
+    let employee = getEmployeeById(employeeId);
+    if (employee === undefined){
+        return undefined;
+    }
 
-    // Fetch employee from DB
-    let newEmployee = new Employee();
+    let params = "";
 
-    newEmployee.firstName = firstName;
-    newEmployee.lastName = lastName;
-    newEmployee.identificationNumber = identificationNumber;
-    newEmployee.commissionPerHour = commissionPerHour;
-    newEmployee.department = department;
-    newEmployee.modifiedOn = Date.now();
+    if (isNotNullUndefinedOrEmpty(firstName)) {
+        params += `firstName = '${firstName}'`;
+    }
 
-    // Save to Database
+    if (isNotNullUndefinedOrEmpty(lastName)) {
+        params += params !== "" ? ", ": params;
+
+        params += `lastName = '${lastName}'`;
+    }
+
+    if (isNotNullUndefinedOrEmpty(identificationNumber)) {
+        params += params !== "" ? ", ": params;
+
+        params += `identificationNumber = '${identificationNumber}'`;
+    }
+
+    if (isNotNullOrUndefined(commissionPerHour)) {
+        params += params !== "" ? ", ": params;
+
+        params += `commissionPerHour = ${commissionPerHour}`;
+    }
+
+    if (isNotNullOrUndefined(department)) {
+        params += params !== "" ? ", ": params;
+
+        params += `department = ${department}`;
+    }
+
+    params += params !== "" ? `, modifiedOn = '${Date.now().toString()}'`: `modifiedOn = '${Date.now().toString()}'`;
+
+    let result = DatabaseManager.run(`UPDATE ${tableName} SET ${params} WHERE id = ${employeeId}`);
+    if(result.changes === 0){
+        throw new FatalError(`Unable to update employee with id '${employeeId}'`);
+    }
+
+    return getEmployeeById(employeeId);
 };
 
 const deleteEmployee = (id) => {
