@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/cleyrolsc/proyectoIntegradoGrupo2#readme",
   "dependencies": {
+    "better-sqlite3": "^9.2.2",
     "express": "^4.18.2"
   },
   "devDependencies": {

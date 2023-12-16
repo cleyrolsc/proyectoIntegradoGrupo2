@@ -1,5 +1,8 @@
 const User = require("./Entities/user.class");
 const {UserStatus, UserType} = require("../Core/Abstractions/Enums");
+const { query } = require("../Database/database");
+
+const tableName = "users";
 
 const createUser = (username, employeeId, password, priviligeLevel, type = UserType.Agent) => {
     // validate entries
@@ -19,13 +22,20 @@ const createUser = (username, employeeId, password, priviligeLevel, type = UserT
 };
 
 const getUserByUsername = (username) => {
+    console.log(username);
+    var users = query(`SELECT * FROM ${tableName} WHERE username = '${username}'`);
+    console.log(users);
+    if (users.length === 0){
+        return undefined;
+    }
 
-    // Fetch from DB
+    return users[0];
 };
 
 const getUsers = () => {
+    var users = query(`SELECT * FROM ${tableName}`);
 
-    // Fetch from DB
+    return users;
 };
 
 const updateUser = (username, type, priviligeLevel, suspendPrivilige, status) => {

@@ -20,15 +20,15 @@ const registerNewUser = (createUserRequest) => {
 const getUserProfile = (username) => {
     let user = UsersRepository.getUserByUsername(username);
     if (user === undefined) {
-        throw new NotFoundError();
+        throw new NotFoundError(`User, ${username}, does not exist`);
     }
 
     let employeeInfo = EmployeesRepository.getEmployeeById(user.employeeId);
     if (employeeInfo === undefined) {
-        throw Error("Fatal error! Employe information for user, " + username + ", and employee id, " + user.employeeId + ", does not exist!");
+        throw Error(`Fatal error! Employe information for user, ${username}, and employee id, ${user.employeeId}, does not exist!`);
     }
 
-    return new UserProfileResponse(username, type, priviligeLevel,newEmployee.id, firstName, lastName, identificationNumber, commissionPerHour, department);
+    return new UserProfileResponse(user.username, user.type, user.priviligeLevel, employeeInfo.id, employeeInfo.firstName, employeeInfo.lastName, employeeInfo.identificationNumber, employeeInfo.commissionPerHour, employeeInfo.department);
 };
 
 const getUsers = () => {

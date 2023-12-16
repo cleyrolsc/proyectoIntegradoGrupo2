@@ -1,5 +1,8 @@
 const Employee = require("./Entities/employee.class");
 const Department = require("../Core/Abstractions/Enums/department.enum");
+const { query } = require("../Database/database");
+
+const tableName = "employees";
 
 const createEmployee = (firstName, lastName, identificationNumber, commissionPerHour, department = Department.Sales) => {
     // Validate data
@@ -17,13 +20,18 @@ const createEmployee = (firstName, lastName, identificationNumber, commissionPer
 };
 
 const getEmployeeById = (id) => {
+    var employees = query(`SELECT * FROM ${tableName} WHERE id = ${+id}`);
+    if (employees.length === 0){
+        return undefined;
+    }
 
-    // Fetch from DB
+    return employees[0];
 };
 
 const getEmployees = () => {
+    var employees = query(`SELECT * FROM ${tableName}`);
 
-    // Fetch from DB
+    return employees;
 };
 
 const updateEmployee = (employeeId, firstName, lastName, identificationNumber, commissionPerHour, department = Department.Sales) => {
