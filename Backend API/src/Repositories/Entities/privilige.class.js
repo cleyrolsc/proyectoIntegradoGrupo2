@@ -1,4 +1,4 @@
-import ICreatedModifiedOn from "../Interfaces/i-created-modified-on.interface";
+import ICreatedModifiedOn from "../../Core/Abstractions/Interfaces/i-created-modified-on.interface";
 
 class Privilige extends ICreatedModifiedOn {
     name; // PK;

@@ -1,4 +1,4 @@
-import Employee from "../Core/Abstractions/Entities/employee.class";
+import Employee from "./Entities/employee.class";
 import Department from "../Core/Abstractions/Enums/department.enum";
 
 const createEmployee = (firstName, lastName, identificationNumber, commissionPerHour, department = Department.Sales) => {
