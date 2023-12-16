@@ -1,19 +1,20 @@
 const Employee = require("./Entities/employee.class");
 const Department = require("../Core/Abstractions/Enums/department.enum");
-const { query } = require("../Database/database");
+
+const DatabaseManager = require("../Database/database");
 
 const tableName = "employees";
 
 const createEmployee = (firstName, lastName, identificationNumber, commissionPerHour, department = Department.Sales) => {
     // Validate data
 
-    var values = `${firstName}, ${lastName}, ${identificationNumber}, ${+commissionPerHour}, ${+department}, ${Date.now().toString()}`;
-
-    query(`INSERT INTO employees (firstName, lastName, identificationNumber, commissionPerHour, department, createdOn) VALUES (${values})`);
+    let values = `'${firstName}', '${lastName}', '${identificationNumber}', ${+commissionPerHour}, ${+department}, '${Date.now().toString()}'`;
+    
+    return DatabaseManager.run(`INSERT INTO ${tableName} (firstName, lastName, identificationNumber, commissionPerHour, department, createdOn) VALUES (${values})`);
 };
 
 const getEmployeeById = (id) => {
-    var employees = query(`SELECT * FROM ${tableName} WHERE id = ${+id} LIMIT 1`);
+    let employees = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE id = ${+id} LIMIT 1`);
     if (employees.length === 0){
         return undefined;
     }
@@ -22,7 +23,7 @@ const getEmployeeById = (id) => {
 };
 
 const getEmployeeByIdentificationNumber = (identificationNumber) => {
-    var employees = query(`SELECT * FROM ${tableName} WHERE identificationNumber = '${identificationNumber}' LIMIT 1`);
+    let employees = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE identificationNumber = '${identificationNumber}' LIMIT 1`);
     if (employees.length === 0){
         return undefined;
     }
@@ -31,7 +32,7 @@ const getEmployeeByIdentificationNumber = (identificationNumber) => {
 };
 
 const getEmployees = () => {
-    var employees = query(`SELECT * FROM ${tableName}`);
+    let employees = DatabaseManager.query(`SELECT * FROM ${tableName}`);
 
     return employees;
 };

@@ -1,21 +1,22 @@
 const User = require("./Entities/user.class");
 const {UserStatus, UserType} = require("../Core/Abstractions/Enums");
-const { query } = require("../Database/database");
 
+const DatabaseManager = require("../Database/database");
 const EncryptionManager = require("../Core/Utils/encryption-manager.util");
 
 const tableName = "users";
 
 const createUser = (username, employeeId, password, priviligeLevel, type = UserType.Agent) => {
+        // Validate data
+        
     let encryptedPassword = EncryptionManager.encrypt(password);
-
-    var values = `${username}, ${employeeId}, ${encryptedPassword}, ${+type}, ${priviligeLevel}, ${UserStatus.Active}, ${Date.now().toString()}`;
-
-    query(`INSERT INTO users (username, employeeId, password, type, priviligeLevel, status, createdOn) VALUES (${values})`);
+    let values = `'${username}', ${+employeeId}, '${encryptedPassword}', ${+type}, '${priviligeLevel}', ${UserStatus.Active}, ${false}, '${Date.now().toString()}'`;
+    
+    return DatabaseManager.run(`INSERT INTO ${tableName} (username, employeeId, password, type, priviligeLevel, status, suspendPrivilige, createdOn) VALUES (${values})`);
 };
 
 const getUserByUsername = (username) => {
-    var users = query(`SELECT * FROM ${tableName} WHERE username = '${username}' LIMIT 1`);
+    let users = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE username = '${username}' LIMIT 1`);
     if (users.length === 0){
         return undefined;
     }
@@ -24,7 +25,7 @@ const getUserByUsername = (username) => {
 };
 
 const getUsers = () => {
-    var users = query(`SELECT * FROM ${tableName}`);
+    let users = DatabaseManager.query(`SELECT * FROM ${tableName}`);
 
     return users;
 };
@@ -32,7 +33,7 @@ const getUsers = () => {
 const updateUser = (username, type, priviligeLevel, suspendPrivilige, status) => {
 
     // Fetch User from DB
-    var user = new User();
+    let user = new User();
 
     user.type = type;
     user.priviligeLevel = priviligeLevel;
@@ -46,7 +47,7 @@ const updateUser = (username, type, priviligeLevel, suspendPrivilige, status) =>
 const updateUserPassword = (username, password) => {
 
     // Fetch User from DB
-    var user = new User();
+    let user = new User();
 
     // encrypt password
     user.password = password;
