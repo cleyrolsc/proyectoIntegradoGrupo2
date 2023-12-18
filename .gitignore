@@ -130,4 +130,4 @@ dist
 .pnp.*
 
 # Database files
-backend-api.sql*
+Backend API/src/Database/backend-api.sqlite3
