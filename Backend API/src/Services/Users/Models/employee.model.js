@@ -6,6 +6,8 @@ class EmployeeModel {
         this.identificationNumber = identificationNumber;
         this.commissionPerHour = commissionPerHour;
         this.department = department;
+        this.registeredOn = registeredOn;
+        this.modifiedOn = modifiedOn;
     }
 };
 

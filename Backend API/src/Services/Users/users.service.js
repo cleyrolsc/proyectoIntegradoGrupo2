@@ -18,8 +18,8 @@ const registerNewUser = (createUserRequest) => {
 
     let newEmployee = EmployeesRepository.getEmployeeById(result.lastInsertRowid);
     
-    let {username, password, priviligeLevel, type} = createUserRequest;
-    result = UsersRepository.createUser(username, newEmployee.id, password, priviligeLevel, type);
+    let { username, employeeId, password, priviligeLevel, type } = createUserRequest;
+    result = UsersRepository.createUser(username, employeeId, password, priviligeLevel, type);
     if (result.changes === 0){
         throw new FatalError("User was not able to be created");
     }
@@ -55,8 +55,8 @@ const getUsers = (currentPage = 0, itemsPerPage = 10, order = 'DESC') => {
     response.totalPages = Math.ceil(users.length / itemsPerPage);
     response.hasNext = response.currentPage < response.totalPages;
     response.content = users.forEach((entity) => {
-        let {username, employeeId, type, priviligeLevel, suspendPrivilige, status, createdOn: registeredOn} = entity;
-        return new UserModel(username, employeeId, type, priviligeLevel, suspendPrivilige, status, registeredOn);
+        let {username, employeeId, type, priviligeLevel, suspendPrivilige, status, createdOn: registeredOn, modifiedOn} = entity;
+        return new UserModel(username, employeeId, type, priviligeLevel, suspendPrivilige, status, new Date(+registeredOn), new Date(+modifiedOn));
     });
 
     return response;
@@ -68,11 +68,12 @@ const updateEmployeeInformationByEmployeeId = (employeeId, updateEmployeeInforma
         throw new NotFoundError(`Employee information with id '${employeeId}' does not exist.`);
     }
 
-    return new EmployeeModel(updatedEmployee.id, updatedEmployee.firstName, updatedEmployee.lastName, updatedEmployee.identificationNumber, updatedEmployee.commissionPerHour, updatedEmployee.department, updatedEmployee.createdOn, updatedEmployee.modifiedOn);
+    let {id, firstName, lastName, identificationNumber, commissionPerHour, department, createdOn: registeredOn, modifiedOn} = updatedEmployee;
+    return new EmployeeModel(id, firstName, lastName, identificationNumber, commissionPerHour, department, new Date(+registeredOn), new Date(+modifiedOn));
 }
 
 const updateUser = (username, updateUserRequest) => {
-    let updatedUser = UsersRepository.updateUser(username, {...updateUserRequest});
+    let updatedUser = UsersRepository.updateUser(username, updateUserRequest);
     if (isNullOrUndefined(updatedUser)) {
         throw new NotFoundError(`User, ${username}, does not exist.`);
     }
@@ -80,7 +81,7 @@ const updateUser = (username, updateUserRequest) => {
     return new UserModel(username, user.employeeId, user.type, user.priviligeLevel, user.suspendPrivilige, user.status, user.createdOn);
 };
 
-const updateUserPassword = (user, oldPassword, newPassword) => {
+const updateUserPassword = (username, oldPassword, newPassword) => {
     let user = UsersRepository.getUserByUsername(username);
     if (isNullOrUndefined(user)) {
         throw new NotFoundError(`User, ${username}, does not exist`);

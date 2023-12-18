@@ -6,4 +6,6 @@ const usersRouter = express.Router();
 
 usersRouter.get('/profile/:username', UsersController.viewProfile);
 
+usersRouter.put('/:username', UsersController.updateEmployeeInformation);
+
 module.exports = usersRouter;
