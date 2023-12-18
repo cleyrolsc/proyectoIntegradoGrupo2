@@ -1,5 +1,5 @@
 class PaginatedResponse{
-    content;
+    content = [];
 
     constructor(){
         this.currentPage = 0;

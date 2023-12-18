@@ -1,65 +1,108 @@
 const {CreateUserResponse, PaginatedResponse, UserProfileResponse} = require("../../Core/Abstractions/Contracts/Responses");
 const {EmployeeModel, UserModel} = require("./Models");
-const NotFoundError = require("../../Core/Abstractions/Exceptions/not-found.error");
+const {FatalError, NotFoundError, InvalidOperationError} = require("../../Core/Abstractions/Exceptions");
+const { isListEmpty, isNullOrUndefined } = require("../../Core/Utils/null-checker.util");
 
 const EmployeesRepository = require('../../Repositories/employees.repository');
 const UsersRepository = require('../../Repositories/users.repository');
+const EncryptionManager = require("../../Core/Utils/encryption-manager.util");
 
 const registerNewUser = (createUserRequest) => {
     // Validate request
 
     let { firstName, lastName, identificationNumber, commissionPerHour, department } = createUserRequest;
-    let newEmployee = EmployeesRepository.createEmployee(firstName, lastName, identificationNumber, commissionPerHour, department);
+    let result = EmployeesRepository.createEmployee(firstName, lastName, identificationNumber, commissionPerHour, department);
+    if (result.changes === 0){
+        throw new FatalError("Employee was not able to be created");
+    }
 
+    let newEmployee = EmployeesRepository.getEmployeeById(result.lastInsertRowid);
+    
     let {username, password, priviligeLevel, type} = createUserRequest;
-    let newUser = UsersRepository.createUser(username, newEmployee.id, password, priviligeLevel, type);
+    result = UsersRepository.createUser(username, newEmployee.id, password, priviligeLevel, type);
+    if (result.changes === 0){
+        throw new FatalError("User was not able to be created");
+    }
 
-    return new CreateUserResponse(username, type, priviligeLevel, newEmployee.id, firstName, lastName, identificationNumber, commissionPerHour, department);
+    let newUser = UsersRepository.getUserByUsername(username);
+
+    return new CreateUserResponse(newUser.username, newUser.type, newUser.priviligeLevel, newEmployee.id, newEmployee.firstName, newEmployee.lastName, newEmployee.identificationNumber, newEmployee.commissionPerHour, newEmployee.department);
 };
 
 const getUserProfile = (username) => {
     let user = UsersRepository.getUserByUsername(username);
-    if (user === undefined) {
+    if (isNullOrUndefined(user)) {
         throw new NotFoundError(`User, ${username}, does not exist`);
     }
 
     let employeeInfo = EmployeesRepository.getEmployeeById(user.employeeId);
-    if (employeeInfo === undefined) {
-        throw Error(`Fatal error! Employe information for user, ${username}, and employee id, ${user.employeeId}, does not exist!`);
+    if (isNullOrUndefined(employeeInfo)) {
+        throw FatalError(`Fatal error! Employee information for user, ${username}, and employee id, ${user.employeeId}, does not exist!`);
     }
 
     return new UserProfileResponse(user.username, user.type, user.priviligeLevel, employeeInfo.id, employeeInfo.firstName, employeeInfo.lastName, employeeInfo.identificationNumber, employeeInfo.commissionPerHour, employeeInfo.department);
 };
 
-const getUsers = () => {
-    let users = UsersRepository.getUsers();
-    if (users.length === 0) {
+const getUsers = (currentPage = 0, itemsPerPage = 10, order = 'DESC') => {
+    let users = UsersRepository.getUsers(currentPage, itemsPerPage, order);
+    if (isListEmpty(users)) {
         return new PaginatedResponse();
     }
 
     let response = new PaginatedResponse();
-    response.itemsPerPage = users.length;
+    response.currentPage = currentPage + 1;
+    response.itemsPerPage = itemsPerPage;
+    response.totalPages = Math.ceil(users.length / itemsPerPage);
+    response.hasNext = response.currentPage < response.totalPages;
     response.content = users.forEach((entity) => {
         let {username, employeeId, type, priviligeLevel, suspendPrivilige, status, createdOn: registeredOn} = entity;
-        new UserModel(username, employeeId, type, priviligeLevel, suspendPrivilige, status, registeredOn)
+        return new UserModel(username, employeeId, type, priviligeLevel, suspendPrivilige, status, registeredOn);
     });
 
     return response;
 };
 
-const updateEmployeeInformationById = (employeeId, firstName, lastName, identificationNumber, commissionPerHour, department) => {
-    let updatedEmployee = EmployeesRepository.updateEmployee(employeeId, firstName, lastName, identificationNumber, commissionPerHour, department);
+const updateEmployeeInformationByEmployeeId = (employeeId, updateEmployeeInformationRequest) => {
+    let updatedEmployee = EmployeesRepository.updateEmployee(employeeId, {...updateEmployeeInformationRequest});
+    if (isNullOrUndefined(updatedEmployee)) {
+        throw new NotFoundError(`Employee information with id '${employeeId}' does not exist.`);
+    }
 
-    return new EmployeeModel(updatedEmployee.id, updatedEmployee.firstName, updatedEmployee.lastName, newEmployee.identificationNumber, updatedEmployee.commissionPerHour, newEmployee.department, updatedEmployee.createdOn, updatedEmployee.modifiedOn);
+    return new EmployeeModel(updatedEmployee.id, updatedEmployee.firstName, updatedEmployee.lastName, updatedEmployee.identificationNumber, updatedEmployee.commissionPerHour, updatedEmployee.department, updatedEmployee.createdOn, updatedEmployee.modifiedOn);
 }
 
-const changeUserType = (username, type) => {
+const updateUser = (username, updateUserRequest) => {
+    let updatedUser = UsersRepository.updateUser(username, {...updateUserRequest});
+    if (isNullOrUndefined(updatedUser)) {
+        throw new NotFoundError(`User, ${username}, does not exist.`);
+    }
 
+    return new UserModel(username, user.employeeId, user.type, user.priviligeLevel, user.suspendPrivilige, user.status, user.createdOn);
+};
+
+const updateUserPassword = (user, oldPassword, newPassword) => {
+    let user = UsersRepository.getUserByUsername(username);
+    if (isNullOrUndefined(user)) {
+        throw new NotFoundError(`User, ${username}, does not exist`);
+    }
+
+    let encryptedPassword = EncryptionManager.encrypt(oldPassword);
+    if (user.password !== encryptedPassword){
+        throw new InvalidOperationError("The old password is incorrect.");
+    }
+
+    if (oldPassword === newPassword) {
+        throw new InvalidOperationError("New password cannot be the same as old password.");
+    }
+
+    UsersRepository.updateUserPassword(username, newPassword);
 };
 
 module.exports = {
     registerNewUser,
     getUserProfile,
     getUsers,
-    updateEmployeeInformationById
+    updateEmployeeInformationByEmployeeId,
+    updateUser,
+    updateUserPassword
 };

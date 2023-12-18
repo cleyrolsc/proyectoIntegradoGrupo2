@@ -25,13 +25,13 @@ const getUserByUsername = (username) => {
     return users[0];
 };
 
-const getUsers = () => {
-    let users = DatabaseManager.query(`SELECT * FROM ${tableName}`);
+const getUsers = (skip = 0, limit = 10, order = 'DESC') => {
+    let users = DatabaseManager.query(`SELECT * FROM ${tableName} ORDERBY username ${order} OFFSET ${+(skip * limit)} LIMIT ${+limit}`);
 
     return users;
 };
 
-const updateUser = (username, type = undefined, priviligeLevel = undefined, suspendPrivilige = undefined, status = undefined) => {
+const updateUser = (username, {type = undefined, priviligeLevel = undefined, suspendPrivilige = undefined, status = undefined}) => {
     let user = getUserByUsername(username);
     if (isNullOrUndefined(user)){
         return undefined;
