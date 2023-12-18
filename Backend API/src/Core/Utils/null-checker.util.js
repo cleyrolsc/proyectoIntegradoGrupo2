@@ -1,12 +1,27 @@
-const isNotNullOrUndefined = (param) => {
+const isListEmpty = (list) => {
+    return list === undefined || list === null || list.length === 0;
+}
+
+const isNotNullNorUndefined = (param) => {
     return param !== undefined && param !== null;
 };
 
-const isNotNullUndefinedOrEmpty = (param) => {
+const isNotNullUndefinedNorEmpty = (param) => {
     return param !== undefined && param !== null && param !== "";
 };
 
+const isNullOrUndefined = (param) => {
+    return param === undefined || param === null;
+}
+
+const isNullUndefinedOrEmpty = (param) => {
+    return param === undefined || param === null || param === "";
+}
+
 module.exports = {
-    isNotNullOrUndefined,
-    isNotNullUndefinedOrEmpty
+    isListEmpty,
+    isNotNullNorUndefined,
+    isNotNullUndefinedNorEmpty,
+    isNullOrUndefined,
+    isNullUndefinedOrEmpty
 };

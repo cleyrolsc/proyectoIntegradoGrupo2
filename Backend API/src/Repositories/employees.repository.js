@@ -1,7 +1,7 @@
 const Employee = require("./Entities/employee.class");
 const Department = require("../Core/Abstractions/Enums/department.enum");
 const { FatalError } = require("../Core/Abstractions/Exceptions");
-const { isNotNullUndefinedOrEmpty, isNotNullOrUndefined } = require("../Core/Utils/null-checker.util");
+const { isNotNullUndefinedNorEmpty, isNotNullNorUndefined, isNullOrUndefined, isListEmpty } = require("../Core/Utils/null-checker.util");
 
 const DatabaseManager = require("../Database/database");
 
@@ -17,7 +17,7 @@ const createEmployee = (firstName, lastName, identificationNumber, commissionPer
 
 const getEmployeeById = (id) => {
     let employees = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE id = ${+id} LIMIT 1`);
-    if (employees.length === 0){
+    if (isListEmpty(employees)){
         return undefined;
     }
 
@@ -26,7 +26,7 @@ const getEmployeeById = (id) => {
 
 const getEmployeeByIdentificationNumber = (identificationNumber) => {
     let employees = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE identificationNumber = '${identificationNumber}' LIMIT 1`);
-    if (employees.length === 0){
+    if (eisListEmpty(employees)){
         return undefined;
     }
 
@@ -41,41 +41,15 @@ const getEmployees = () => {
 
 const updateEmployee = (employeeId, {firstName = undefined, lastName = undefined, identificationNumber = undefined, commissionPerHour = undefined, department  = undefined}) => {
     let employee = getEmployeeById(employeeId);
-    if (employee === undefined){
+    if (isNullOrUndefined(employee)){
         return undefined;
     }
 
-    let params = "";
+    let params = generateUpdateParameters();
 
-    if (isNotNullUndefinedOrEmpty(firstName)) {
-        params += `firstName = '${firstName}'`;
+    if (params === "") {
+        return getEmployeeById(employeeId);
     }
-
-    if (isNotNullUndefinedOrEmpty(lastName)) {
-        params += params !== "" ? ", ": params;
-
-        params += `lastName = '${lastName}'`;
-    }
-
-    if (isNotNullUndefinedOrEmpty(identificationNumber)) {
-        params += params !== "" ? ", ": params;
-
-        params += `identificationNumber = '${identificationNumber}'`;
-    }
-
-    if (isNotNullOrUndefined(commissionPerHour)) {
-        params += params !== "" ? ", ": params;
-
-        params += `commissionPerHour = ${commissionPerHour}`;
-    }
-
-    if (isNotNullOrUndefined(department)) {
-        params += params !== "" ? ", ": params;
-
-        params += `department = ${department}`;
-    }
-
-    params += params !== "" ? `, modifiedOn = '${Date.now().toString()}'`: `modifiedOn = '${Date.now().toString()}'`;
 
     let result = DatabaseManager.run(`UPDATE ${tableName} SET ${params} WHERE id = ${employeeId}`);
     if(result.changes === 0){
@@ -83,6 +57,41 @@ const updateEmployee = (employeeId, {firstName = undefined, lastName = undefined
     }
 
     return getEmployeeById(employeeId);
+
+    function generateUpdateParameters() {
+        let params = "";
+
+        if (isNotNullUndefinedNorEmpty(firstName)) {
+            params += `firstName = '${firstName}'`;
+        }
+
+        if (isNotNullUndefinedNorEmpty(lastName)) {
+            params += params !== "" ? ", " : params;
+
+            params += `lastName = '${lastName}'`;
+        }
+
+        if (isNotNullUndefinedNorEmpty(identificationNumber)) {
+            params += params !== "" ? ", " : params;
+
+            params += `identificationNumber = '${identificationNumber}'`;
+        }
+
+        if (isNotNullNorUndefined(commissionPerHour)) {
+            params += params !== "" ? ", " : params;
+
+            params += `commissionPerHour = ${+commissionPerHour}`;
+        }
+
+        if (isNotNullNorUndefined(department)) {
+            params += params !== "" ? ", " : params;
+
+            params += `department = ${department}`;
+        }
+
+        params += params !== "" ? `, modifiedOn = '${Date.now().toString()}'` : `modifiedOn = '${Date.now().toString()}'`;
+        return params;
+    }
 };
 
 const deleteEmployee = (id) => {
