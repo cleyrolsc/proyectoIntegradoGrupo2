@@ -9,12 +9,11 @@ app.set('port', process.env.PORT || 3000);
 //#region Middleware
 
 app.use(express.json());
-app.use(urlencoded({ extended: true}));
+app.use(urlencoded({ extended: true }));
 
 //#endregion
 
 app.get('/', (req, res) => {
-
     res.send('Hola, Mundo! Esto es el Backend API');
 });
 

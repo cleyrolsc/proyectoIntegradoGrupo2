@@ -12,13 +12,13 @@ const createEmployee = (firstName, lastName, identificationNumber, commissionPer
 
     let today = new Date();
     let values = `'${firstName}', '${lastName}', '${identificationNumber}', ${+commissionPerHour}, ${+department}, '${today.toString()}'`;
-    
+
     return DatabaseManager.run(`INSERT INTO ${tableName} (firstName, lastName, identificationNumber, commissionPerHour, department, createdOn) VALUES (${values})`);
 };
 
 const getEmployeeById = (id) => {
     let employees = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE id = ${+id} LIMIT 1`);
-    if (isListEmpty(employees)){
+    if (isListEmpty(employees)) {
         return undefined;
     }
 
@@ -27,7 +27,7 @@ const getEmployeeById = (id) => {
 
 const getEmployeeByIdentificationNumber = (identificationNumber) => {
     let employees = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE identificationNumber = '${identificationNumber}' LIMIT 1`);
-    if (eisListEmpty(employees)){
+    if (eisListEmpty(employees)) {
         return undefined;
     }
 
@@ -40,9 +40,9 @@ const getEmployees = () => {
     return employees;
 };
 
-const updateEmployee = (employeeId, {firstName = undefined, lastName = undefined, identificationNumber = undefined, commissionPerHour = undefined, department  = undefined}) => {
+const updateEmployee = (employeeId, { firstName = undefined, lastName = undefined, identificationNumber = undefined, commissionPerHour = undefined, department = undefined }) => {
     let employee = getEmployeeById(employeeId);
-    if (isNullOrUndefined(employee)){
+    if (isNullOrUndefined(employee)) {
         return undefined;
     }
 
@@ -53,7 +53,7 @@ const updateEmployee = (employeeId, {firstName = undefined, lastName = undefined
     }
 
     let result = DatabaseManager.run(`UPDATE ${tableName} SET ${params} WHERE id = ${employeeId}`);
-    if(result.changes === 0){
+    if (result.changes === 0) {
         throw new FatalError(`Unable to update employee with id '${employeeId}'`);
     }
 

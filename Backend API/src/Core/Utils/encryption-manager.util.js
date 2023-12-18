@@ -5,10 +5,10 @@ const encrypt = (text) => {
 };
 
 const decrypt = (data) => {
-    return CryptoJS.enc.Base64.parse(data).toString(CryptoJS.enc.Utf8);
+  return CryptoJS.enc.Base64.parse(data).toString(CryptoJS.enc.Utf8);
 };
 
 module.exports = {
-    encrypt,
-    decrypt
+  encrypt,
+  decrypt
 };

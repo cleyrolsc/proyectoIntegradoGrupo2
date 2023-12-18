@@ -1,6 +1,6 @@
-const {CreateUserResponse, PaginatedResponse, UserProfileResponse} = require("../../Core/Abstractions/Contracts/Responses");
-const {EmployeeModel, UserModel} = require("./Models");
-const {FatalError, NotFoundError, InvalidOperationError} = require("../../Core/Abstractions/Exceptions");
+const { CreateUserResponse, PaginatedResponse, UserProfileResponse } = require("../../Core/Abstractions/Contracts/Responses");
+const { EmployeeModel, UserModel } = require("./Models");
+const { FatalError, NotFoundError, InvalidOperationError } = require("../../Core/Abstractions/Exceptions");
 const { isListEmpty, isNullOrUndefined } = require("../../Core/Utils/null-checker.util");
 
 const EmployeesRepository = require('../../Repositories/employees.repository');
@@ -12,15 +12,15 @@ const registerNewUser = (createUserRequest) => {
 
     let { firstName, lastName, identificationNumber, commissionPerHour, department } = createUserRequest;
     let result = EmployeesRepository.createEmployee(firstName, lastName, identificationNumber, commissionPerHour, department);
-    if (result.changes === 0){
+    if (result.changes === 0) {
         throw new FatalError("Employee was not able to be created");
     }
 
     let newEmployee = EmployeesRepository.getEmployeeById(result.lastInsertRowid);
-    
+
     let { username, employeeId, password, priviligeLevel, type } = createUserRequest;
     result = UsersRepository.createUser(username, employeeId, password, priviligeLevel, type);
-    if (result.changes === 0){
+    if (result.changes === 0) {
         throw new FatalError("User was not able to be created");
     }
 
@@ -55,7 +55,7 @@ const getUsers = (currentPage = 0, itemsPerPage = 10, order = 'DESC') => {
     response.totalPages = Math.ceil(users.length / itemsPerPage);
     response.hasNext = response.currentPage < response.totalPages;
     response.content = users.forEach((entity) => {
-        let {username, employeeId, type, priviligeLevel, suspendPrivilige, status, createdOn: registeredOn, modifiedOn} = entity;
+        let { username, employeeId, type, priviligeLevel, suspendPrivilige, status, createdOn: registeredOn, modifiedOn } = entity;
         return new UserModel(username, employeeId, type, priviligeLevel, suspendPrivilige, status, registeredOn, modifiedOn);
     });
 
@@ -63,12 +63,12 @@ const getUsers = (currentPage = 0, itemsPerPage = 10, order = 'DESC') => {
 };
 
 const updateEmployeeInformationByEmployeeId = (employeeId, updateEmployeeInformationRequest) => {
-    let updatedEmployee = EmployeesRepository.updateEmployee(employeeId, {...updateEmployeeInformationRequest});
+    let updatedEmployee = EmployeesRepository.updateEmployee(employeeId, { ...updateEmployeeInformationRequest });
     if (isNullOrUndefined(updatedEmployee)) {
         throw new NotFoundError(`Employee information with id '${employeeId}' does not exist.`);
     }
 
-    let {id, firstName, lastName, identificationNumber, commissionPerHour, department, createdOn: registeredOn, modifiedOn} = updatedEmployee;
+    let { id, firstName, lastName, identificationNumber, commissionPerHour, department, createdOn: registeredOn, modifiedOn } = updatedEmployee;
     return new EmployeeModel(id, firstName, lastName, identificationNumber, commissionPerHour, department, registeredOn, modifiedOn);
 }
 
@@ -88,7 +88,7 @@ const updateUserPassword = (username, oldPassword, newPassword) => {
     }
 
     let encryptedPassword = EncryptionManager.encrypt(oldPassword);
-    if (user.password !== encryptedPassword){
+    if (user.password !== encryptedPassword) {
         throw new InvalidOperationError("The old password is incorrect.");
     }
 

@@ -1,6 +1,6 @@
 class UserProfileResponse {
     constructor(username, type, priviligeLevel, employeeId, firstName,
-        lastName, identificationNumber, commissionPerHour, department){
+        lastName, identificationNumber, commissionPerHour, department) {
         this.username = username;
         this.type = type;
         this.priviligeLevel = priviligeLevel;

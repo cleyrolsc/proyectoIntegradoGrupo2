@@ -1,7 +1,7 @@
-class PaginatedResponse{
+class PaginatedResponse {
     content = [];
 
-    constructor(){
+    constructor() {
         this.currentPage = 0;
         this.itemsPerPage = 0;
         this.totalPages = 0;

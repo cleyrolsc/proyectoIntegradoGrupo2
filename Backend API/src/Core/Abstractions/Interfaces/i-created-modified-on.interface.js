@@ -1,4 +1,4 @@
-class ICreatedModifiedOn{
+class ICreatedModifiedOn {
     createdOn;
     modifiedOn;
 };

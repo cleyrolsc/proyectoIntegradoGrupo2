@@ -1,5 +1,5 @@
 class CreateUserRequest {
-    constructor({username, password, type, priviligeLevel, firstName, lastName, identificationNumber, department, commissionPerHour = 0.0} = {}){
+    constructor({ username, password, type, priviligeLevel, firstName, lastName, identificationNumber, department, commissionPerHour = 0.0 } = {}) {
         this.username = username;
         this.password = password;
         this.type = type; // UserType.Agent
