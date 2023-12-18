@@ -56,7 +56,7 @@ const getUsers = (currentPage = 0, itemsPerPage = 10, order = 'DESC') => {
     response.hasNext = response.currentPage < response.totalPages;
     response.content = users.forEach((entity) => {
         let {username, employeeId, type, priviligeLevel, suspendPrivilige, status, createdOn: registeredOn, modifiedOn} = entity;
-        return new UserModel(username, employeeId, type, priviligeLevel, suspendPrivilige, status, new Date(+registeredOn), new Date(+modifiedOn));
+        return new UserModel(username, employeeId, type, priviligeLevel, suspendPrivilige, status, registeredOn, modifiedOn);
     });
 
     return response;
@@ -69,7 +69,7 @@ const updateEmployeeInformationByEmployeeId = (employeeId, updateEmployeeInforma
     }
 
     let {id, firstName, lastName, identificationNumber, commissionPerHour, department, createdOn: registeredOn, modifiedOn} = updatedEmployee;
-    return new EmployeeModel(id, firstName, lastName, identificationNumber, commissionPerHour, department, new Date(+registeredOn), new Date(+modifiedOn));
+    return new EmployeeModel(id, firstName, lastName, identificationNumber, commissionPerHour, department, registeredOn, modifiedOn);
 }
 
 const updateUser = (username, updateUserRequest) => {

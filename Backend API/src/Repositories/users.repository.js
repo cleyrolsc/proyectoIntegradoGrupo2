@@ -11,7 +11,8 @@ const createUser = (username, employeeId, password, priviligeLevel, type = UserT
         // Validate data
 
     let encryptedPassword = EncryptionManager.encrypt(password);
-    let values = `'${username}', ${+employeeId}, '${encryptedPassword}', ${+type}, '${priviligeLevel}', ${UserStatus.Active}, ${false}, '${Date.now().toString()}'`;
+    let today = new Date();
+    let values = `'${username}', ${+employeeId}, '${encryptedPassword}', ${+type}, '${priviligeLevel}', ${UserStatus.Active}, ${false}, '${today.toString()}'`;
     
     return DatabaseManager.run(`INSERT INTO ${tableName} (username, employeeId, password, type, priviligeLevel, status, suspendPrivilige, createdOn) VALUES (${values})`);
 };
@@ -75,7 +76,8 @@ const updateUser = (username, {type = undefined, priviligeLevel = undefined, sus
             params += `status = ${+status}`;
         }
 
-        params += params !== "" ? `, modifiedOn = '${Date.now().toString()}'` : `modifiedOn = '${Date.now().toString()}'`;
+        let today = new Date();
+        params += params !== "" ? `, modifiedOn = '${today.toString()}'` : `modifiedOn = '${today.toString()}'`;
         return params;
     }
 };
@@ -87,8 +89,8 @@ const updateUserPassword = (username, password) => {
     }
 
     let encryptedPassword = EncryptionManager.encrypt(password);
-
-    let result = DatabaseManager.run(`UPDATE ${tableName} SET password = '${encryptedPassword}', modifiedOn = '${Date.now().toString()}' WHERE username = ${username}`);
+    let today = new Date();
+    let result = DatabaseManager.run(`UPDATE ${tableName} SET password = '${encryptedPassword}', modifiedOn = '${today.toString()}' WHERE username = '${username}'`);
     if(result.changes === 0){
         throw new FatalError(`Unable to update user '${username}'`);
     }

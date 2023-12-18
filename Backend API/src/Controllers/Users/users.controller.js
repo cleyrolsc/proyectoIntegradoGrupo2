@@ -19,7 +19,7 @@ const viewProfile = (request, response) => {
 };
 
 const updateEmployeeInformation = (request, response) => {
-    // validate request.body
+    // validate request.body and params
     let username = request.params.username;
     
     try {
@@ -34,7 +34,27 @@ const updateEmployeeInformation = (request, response) => {
     }
 };
 
+const changePassword = (request, response) => {
+    // validate request.body and params
+    let username = request.params.username;
+    let {oldPassword, newPassword} = request.body;
+
+    if(oldPassword === newPassword) {
+        response.status(400).send("New password cannot be the same as old password.");
+    }
+
+    try {
+        UserServices.updateUserPassword(username, oldPassword, newPassword);
+        
+        response.status(200).send("Password successfully changed!");
+    } catch (error) {
+        console.log(error);
+        response.status(401).send("Old password is incorrect.");
+    }
+};
+
 module.exports = {
     viewProfile,
-    updateEmployeeInformation
+    updateEmployeeInformation,
+    changePassword
 };

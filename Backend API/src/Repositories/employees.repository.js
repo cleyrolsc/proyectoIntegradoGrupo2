@@ -10,7 +10,8 @@ const tableName = "employees";
 const createEmployee = (firstName, lastName, identificationNumber, commissionPerHour, department = Department.Sales) => {
     // Validate data
 
-    let values = `'${firstName}', '${lastName}', '${identificationNumber}', ${+commissionPerHour}, ${+department}, '${Date.now().toString()}'`;
+    let today = new Date();
+    let values = `'${firstName}', '${lastName}', '${identificationNumber}', ${+commissionPerHour}, ${+department}, '${today.toString()}'`;
     
     return DatabaseManager.run(`INSERT INTO ${tableName} (firstName, lastName, identificationNumber, commissionPerHour, department, createdOn) VALUES (${values})`);
 };
@@ -89,7 +90,8 @@ const updateEmployee = (employeeId, {firstName = undefined, lastName = undefined
             params += `department = ${department}`;
         }
 
-        params += params !== "" ? `, modifiedOn = '${Date.now().toString()}'` : `modifiedOn = '${Date.now().toString()}'`;
+        let today = new Date();
+        params += params !== "" ? `, modifiedOn = '${today.toString()}'` : `modifiedOn = '${today.toString()}'`;
         return params;
     }
 };

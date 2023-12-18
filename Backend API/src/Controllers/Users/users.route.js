@@ -8,4 +8,6 @@ usersRouter.get('/profile/:username', UsersController.viewProfile);
 
 usersRouter.put('/:username', UsersController.updateEmployeeInformation);
 
+usersRouter.patch('/:username', UsersController.changePassword)
+
 module.exports = usersRouter;
