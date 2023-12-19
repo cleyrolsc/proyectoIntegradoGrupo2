@@ -1,5 +1,5 @@
 class BadRequestError extends Error {
-    constructor(message = "Fatal error occured!") {
+    constructor(message = "One r more arguments are not valid") {
         super(message);
         this.name = "BadRequestError"
     }
