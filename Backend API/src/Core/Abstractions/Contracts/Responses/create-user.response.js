@@ -1,9 +1,9 @@
 class CreateUserResponse {
-    constructor(username, type, priviligeLevel, employeeId, firstName,
+    constructor(username, type, privilegeLevel, employeeId, firstName,
         lastName, identificationNumber, commissionPerHour, department) {
         this.username = username;
         this.type = type;
-        this.priviligeLevel = priviligeLevel;
+        this.privilegeLevel = privilegeLevel;
         this.employeeId = employeeId;
         this.firstName = firstName;
         this.lastName = lastName;

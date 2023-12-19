@@ -1,10 +1,10 @@
 class UserModel {
-    constructor(username, employeeId, type, priviligeLevel, suspendPrivilige, status, registeredOn, modifiedOn) {
+    constructor(username, employeeId, type, privilegeLevel, suspendPrivilege, status, registeredOn, modifiedOn) {
         this.username = username;
         this.employeeId = employeeId;
         this.type = type;
-        this.priviligeLevel = priviligeLevel;
-        this.suspendPrivilige = suspendPrivilige;
+        this.privilegeLevel = privilegeLevel;
+        this.suspendPrivilege = suspendPrivilege;
         this.status = status;
         this.registeredOn = registeredOn;
         this.modifiedOn = modifiedOn;
