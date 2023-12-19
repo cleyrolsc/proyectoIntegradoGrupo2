@@ -1,4 +1,4 @@
-const globalErrorHandlingFilter = require("./error-handler.filter");
+const globalErrorHandlingFilter = require("./global-error-handling.filter");
 
 module.exports = {
     globalErrorHandlingFilter
