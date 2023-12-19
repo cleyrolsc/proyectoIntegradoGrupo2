@@ -57,7 +57,7 @@ const changePassword = (request, response) => {
     let { oldPassword, newPassword } = request.body;
 
     if (oldPassword === newPassword) {
-        response.status(400).send("New password cannot be the same as old password.");
+        return response.status(400).send("New password cannot be the same as old password.");
     }
 
     try {
@@ -76,7 +76,7 @@ const changePassword = (request, response) => {
         }
 
         if (error instanceof InvalidOperationError) {
-            response.status(401).send(error.message);
+            return response.status(401).send(error.message);
         }
 
         return response.status(500).send(error.message);
