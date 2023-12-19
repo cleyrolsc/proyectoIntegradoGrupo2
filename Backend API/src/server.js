@@ -2,7 +2,7 @@ const express = require("express");
 const { urlencoded } = require("express");
 
 const UsersRouter = require("./Controllers/Users/users.route");
-const { errorHandlerFilter } = require("./Core/Filters");
+const { globalErrorHandlingFilter } = require("./Core/Filters");
 
 const app = express();
 app.set('port', process.env.PORT || 3000);
@@ -22,7 +22,7 @@ app.use('/api/users', UsersRouter);
 
 //#region middleware
 
-app.use(errorHandlerFilter);
+app.use(globalErrorHandlingFilter);
 
 //#endregion
 

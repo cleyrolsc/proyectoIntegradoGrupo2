@@ -1,4 +1,4 @@
-const errorHandlerFilter = (error, request, response, next) => {
+const globalErrorHandlingFilter = (error, request, response, next) => {
     console.log(`${error.constructor.name} -- ${error.message}`);
 
     let status = 500;
@@ -6,6 +6,9 @@ const errorHandlerFilter = (error, request, response, next) => {
     switch (error.constructor.name) {
         case "BadRequestError":
             status = 400;
+            break;
+        case "ConflictError":
+            status = 409;
             break;
         case "FatalError":
             status = 503;
@@ -23,4 +26,4 @@ const errorHandlerFilter = (error, request, response, next) => {
     response.status(status).send(error.message);
 };
 
-module.exports = errorHandlerFilter;
+module.exports = globalErrorHandlingFilter;
