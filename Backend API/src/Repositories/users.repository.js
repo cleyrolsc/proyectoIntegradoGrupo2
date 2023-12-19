@@ -7,14 +7,14 @@ const EncryptionManager = require("../Core/Utils/encryption-manager.util");
 
 const tableName = "users";
 
-const createUser = (username, employeeId, password, priviligeLevel, type = UserType.Agent) => {
+const createUser = (username, employeeId, password, privilegeLevel, type = UserType.Agent) => {
     // Validate data
 
     let encryptedPassword = EncryptionManager.encrypt(password);
     let today = new Date();
-    let values = `'${username}', ${+employeeId}, '${encryptedPassword}', ${+type}, '${priviligeLevel}', ${UserStatus.Active}, ${false}, '${today.toString()}'`;
+    let values = `'${username}', ${+employeeId}, '${encryptedPassword}', ${+type}, '${privilegeLevel}', ${UserStatus.Active}, ${false}, '${today.toString()}'`;
 
-    return DatabaseManager.run(`INSERT INTO ${tableName} (username, employeeId, password, type, priviligeLevel, status, suspendPrivilige, createdOn) VALUES (${values})`);
+    return DatabaseManager.run(`INSERT INTO ${tableName} (username, employeeId, password, type, privilegeLevel, status, suspendPrivilege, createdOn) VALUES (${values})`);
 };
 
 const getUserByUsername = (username) => {
@@ -32,7 +32,7 @@ const getUsers = (skip = 0, limit = 10, order = 'DESC') => {
     return users;
 };
 
-const updateUser = (username, { type = undefined, priviligeLevel = undefined, suspendPrivilige = undefined, status = undefined }) => {
+const updateUser = (username, { type = undefined, privilegeLevel = undefined, suspendPrivilege = undefined, status = undefined }) => {
     let user = getUserByUsername(username);
     if (isNullOrUndefined(user)) {
         return undefined;
@@ -58,16 +58,16 @@ const updateUser = (username, { type = undefined, priviligeLevel = undefined, su
             params += `type = ${+type}`;
         }
 
-        if (isNotNullUndefinedNorEmpty(priviligeLevel)) {
+        if (isNotNullUndefinedNorEmpty(privilegeLevel)) {
             params += params !== "" ? ", " : params;
 
-            params += `priviligeLevel = '${priviligeLevel}'`;
+            params += `privilegeLevel = '${privilegeLevel}'`;
         }
 
-        if (isNotNullNorUndefined(suspendPrivilige)) {
+        if (isNotNullNorUndefined(suspendPrivilege)) {
             params += params !== "" ? ", " : params;
 
-            params += `suspendPrivilige = ${suspendPrivilige}`;
+            params += `suspendPrivilege = ${suspendPrivilege}`;
         }
 
         if (isNotNullNorUndefined(status)) {

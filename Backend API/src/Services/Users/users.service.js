@@ -18,15 +18,15 @@ const registerNewUser = (createUserRequest) => {
 
     let newEmployee = EmployeesRepository.getEmployeeById(result.lastInsertRowid);
 
-    let { username, employeeId, password, priviligeLevel, type } = createUserRequest;
-    result = UsersRepository.createUser(username, employeeId, password, priviligeLevel, type);
+    let { username, employeeId, password, privilegeLevel, type } = createUserRequest;
+    result = UsersRepository.createUser(username, employeeId, password, privilegeLevel, type);
     if (result.changes === 0) {
         throw new FatalError("User was not able to be created");
     }
 
     let newUser = UsersRepository.getUserByUsername(username);
 
-    return new CreateUserResponse(newUser.username, newUser.type, newUser.priviligeLevel, newEmployee.id, newEmployee.firstName, newEmployee.lastName, newEmployee.identificationNumber, newEmployee.commissionPerHour, newEmployee.department);
+    return new CreateUserResponse(newUser.username, newUser.type, newUser.privilegeLevel, newEmployee.id, newEmployee.firstName, newEmployee.lastName, newEmployee.identificationNumber, newEmployee.commissionPerHour, newEmployee.department);
 };
 
 const getUserProfile = (username) => {
@@ -40,7 +40,7 @@ const getUserProfile = (username) => {
         throw FatalError(`Fatal error! Employee information for user, ${username}, and employee id, ${user.employeeId}, does not exist!`);
     }
 
-    return new UserProfileResponse(user.username, user.type, user.priviligeLevel, employeeInfo.id, employeeInfo.firstName, employeeInfo.lastName, employeeInfo.identificationNumber, employeeInfo.commissionPerHour, employeeInfo.department);
+    return new UserProfileResponse(user.username, user.type, user.privilegeLevel, employeeInfo.id, employeeInfo.firstName, employeeInfo.lastName, employeeInfo.identificationNumber, employeeInfo.commissionPerHour, employeeInfo.department);
 };
 
 const getUsers = (currentPage = 0, itemsPerPage = 10, order = 'DESC') => {
@@ -55,8 +55,8 @@ const getUsers = (currentPage = 0, itemsPerPage = 10, order = 'DESC') => {
     response.totalPages = Math.ceil(users.length / itemsPerPage);
     response.hasNext = response.currentPage < response.totalPages;
     response.content = users.forEach((entity) => {
-        let { username, employeeId, type, priviligeLevel, suspendPrivilige, status, createdOn: registeredOn, modifiedOn } = entity;
-        return new UserModel(username, employeeId, type, priviligeLevel, suspendPrivilige, status, registeredOn, modifiedOn);
+        let { username, employeeId, type, privilegeLevel, suspendPrivilege, status, createdOn: registeredOn, modifiedOn } = entity;
+        return new UserModel(username, employeeId, type, privilegeLevel, suspendPrivilege, status, registeredOn, modifiedOn);
     });
 
     return response;
@@ -78,7 +78,7 @@ const updateUser = (username, updateUserRequest) => {
         throw new NotFoundError(`User, ${username}, does not exist.`);
     }
 
-    return new UserModel(username, user.employeeId, user.type, user.priviligeLevel, user.suspendPrivilige, user.status, user.createdOn);
+    return new UserModel(username, user.employeeId, user.type, user.privilegeLevel, user.suspendPrivilege, user.status, user.createdOn);
 };
 
 const updateUserPassword = (username, oldPassword, newPassword) => {

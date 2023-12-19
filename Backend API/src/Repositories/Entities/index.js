@@ -1,5 +1,5 @@
 const Employee = require("./employee.class");
-const Privilege = require("./privilige.class");
+const Privilege = require("./privilege.class");
 const User = require("./user.class");
 
 module.exports = {

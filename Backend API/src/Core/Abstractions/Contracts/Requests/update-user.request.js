@@ -1,8 +1,8 @@
 class UpdateUserRequest {
-    constructor({ type, priviligeLevel, suspendPrivilige, status } = {}) {
+    constructor({ type, privilegeLevel, suspendPrivilege, status } = {}) {
         this.type = type;
-        this.priviligeLevel = priviligeLevel;
-        this.suspendPrivilige = suspendPrivilige;
+        this.privilegeLevel = privilegeLevel;
+        this.suspendPrivilege = suspendPrivilege;
         this.status = status
     }
 };
