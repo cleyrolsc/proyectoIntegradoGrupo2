@@ -1,9 +1,11 @@
+const BadRequestError = require("./bad-request.error");
 const FatalError = require("./fatal.error");
-const InvalidOperationError = require("./invalid-operation.error");
 const NotFoundError = require("./not-found.error");
+const UnauthorizedError = require("./unauthorized.error");
 
 module.exports = {
+    BadRequestError,
     FatalError,
-    InvalidOperationError,
-    NotFoundError
+    NotFoundError,
+    UnauthorizedError
 };
