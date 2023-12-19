@@ -2,6 +2,7 @@ const express = require("express");
 const { urlencoded } = require("express");
 
 const UsersRouter = require("./Controllers/Users/users.route");
+const { globalErrorHandlingFilter } = require("./Core/Filters");
 
 const app = express();
 app.set('port', process.env.PORT || 3000);
@@ -18,6 +19,12 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/users', UsersRouter);
+
+//#region middleware
+
+app.use(globalErrorHandlingFilter);
+
+//#endregion
 
 app.listen(app.get('port'), () => {
     console.log(`Server Started. Port: ${app.get('port')}`);

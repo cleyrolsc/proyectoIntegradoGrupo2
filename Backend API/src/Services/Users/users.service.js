@@ -1,6 +1,6 @@
 const { CreateUserResponse, PaginatedResponse, UserProfileResponse } = require("../../Core/Abstractions/Contracts/Responses");
 const { EmployeeModel, UserModel } = require("./Models");
-const { FatalError, NotFoundError, InvalidOperationError } = require("../../Core/Abstractions/Exceptions");
+const { BadRequestError, FatalError, NotFoundError, UnauthorizedError } = require("../../Core/Abstractions/Exceptions");
 const { isListEmpty, isNullOrUndefined } = require("../../Core/Utils/null-checker.util");
 
 const EmployeesRepository = require('../../Repositories/employees.repository');
@@ -37,7 +37,7 @@ const getUserProfile = (username) => {
 
     let employeeInfo = EmployeesRepository.getEmployeeById(user.employeeId);
     if (isNullOrUndefined(employeeInfo)) {
-        throw FatalError(`Fatal error! Employee information for user, ${username}, and employee id, ${user.employeeId}, does not exist!`);
+        throw new FatalError(`Fatal error! Employee information for user, ${username}, and employee id, ${user.employeeId}, does not exist!`);
     }
 
     return new UserProfileResponse(user.username, user.type, user.privilegeLevel, employeeInfo.id, employeeInfo.firstName, employeeInfo.lastName, employeeInfo.identificationNumber, employeeInfo.commissionPerHour, employeeInfo.department);
@@ -89,11 +89,11 @@ const updateUserPassword = (username, oldPassword, newPassword) => {
 
     let encryptedPassword = EncryptionManager.encrypt(oldPassword);
     if (user.password !== encryptedPassword) {
-        throw new InvalidOperationError("The old password is incorrect.");
+        throw new UnauthorizedError("The old password is incorrect.");
     }
 
     if (oldPassword === newPassword) {
-        throw new InvalidOperationError("New password cannot be the same as old password.");
+        throw new BadRequestError("New password cannot be the same as old password.");
     }
 
     UsersRepository.updateUserPassword(username, newPassword);
