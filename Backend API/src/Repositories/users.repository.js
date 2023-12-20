@@ -11,7 +11,7 @@ const createUser = (username, employeeId, password, privilegeLevel, type = UserT
 
     let encryptedPassword = EncryptionManager.encrypt(password);
     let today = new Date();
-    let values = `'${username}', ${+employeeId}, '${encryptedPassword}', ${+type}, '${privilegeLevel}', ${UserStatus.Active}, ${false}, '${today.toString()}'`;
+    let values = `'${username}', ${+employeeId}, '${encryptedPassword}', ${+type}, '${privilegeLevel}', ${+UserStatus.Active}, ${false}, '${today.toString()}'`;
 
     return DatabaseManager.run(`INSERT INTO ${tableName} (username, employeeId, password, type, privilegeLevel, status, suspendPrivilege, createdOn) VALUES (${values})`);
 };
@@ -26,13 +26,13 @@ const getUserByUsername = (username) => {
 };
 
 const getUsers = (skip = 0, limit = 10, orderBy = 'DESC') => {
-    let users = DatabaseManager.query(`SELECT * FROM ${tableName} ORDERBY username ${orderBy} OFFSET ${+(skip * limit)} LIMIT ${+limit}`);
+    let users = DatabaseManager.query(`SELECT * FROM ${tableName} ORDER BY username ${orderBy} OFFSET ${+(skip * limit)} LIMIT ${+limit}`);
 
     return users;
 };
 
 const getUsersByPrivilegeLevel = (privilegeLevel) => {
-    let users = DatabaseManager.query(`SELECT * FROM ${tableName} ORDERBY username ${orderBy} WHERE priivilegeLevel = '${privilegeLevel}'`);
+    let users = DatabaseManager.query(`SELECT * FROM ${tableName} ORDER BY username ${orderBy} WHERE priivilegeLevel = '${privilegeLevel}'`);
 
     return users;
 };

@@ -1,7 +1,7 @@
 const { CreateUserResponse, PaginatedResponse, UserProfileResponse } = require("../../Core/Abstractions/Contracts/Responses");
 const { EmployeeModel, UserModel } = require("./Models");
-const { BadRequestError, FatalError, NotFoundError, UnauthorizedError } = require("../../Core/Abstractions/Exceptions");
-const { isListEmpty, isNullOrUndefined } = require("../../Core/Utils/null-checker.util");
+const { BadRequestError, ConflictError, FatalError, NotFoundError, UnauthorizedError } = require("../../Core/Abstractions/Exceptions");
+const { isListEmpty, isNotNullNorUndefined, isNullOrUndefined } = require("../../Core/Utils/null-checker.util");
 
 const EmployeesRepository = require('../../Repositories/employees.repository');
 const UsersRepository = require('../../Repositories/users.repository');
@@ -9,6 +9,9 @@ const EncryptionManager = require("../../Core/Utils/encryption-manager.util");
 
 const registerNewUser = (createUserRequest) => {
     // Validate request
+    isUsernameAvailable();
+
+    doesEmployeeAlreadyHaveAUserAccount();
 
     let { firstName, lastName, identificationNumber, commissionPerHour, department } = createUserRequest;
     let result = EmployeesRepository.createEmployee(firstName, lastName, identificationNumber, commissionPerHour, department);
@@ -18,8 +21,8 @@ const registerNewUser = (createUserRequest) => {
 
     let newEmployee = EmployeesRepository.getEmployeeById(result.lastInsertRowid);
 
-    let { username, employeeId, password, privilegeLevel, type } = createUserRequest;
-    result = UsersRepository.createUser(username, employeeId, password, privilegeLevel, type);
+    let { username, password, privilegeLevel, type } = createUserRequest;
+    result = UsersRepository.createUser(username, newEmployee.id, password, privilegeLevel, type);
     if (result.changes === 0) {
         throw new FatalError("User was not able to be created");
     }
@@ -27,6 +30,20 @@ const registerNewUser = (createUserRequest) => {
     let newUser = UsersRepository.getUserByUsername(username);
 
     return new CreateUserResponse(newUser.username, newUser.type, newUser.privilegeLevel, newEmployee.id, newEmployee.firstName, newEmployee.lastName, newEmployee.identificationNumber, newEmployee.commissionPerHour, newEmployee.department);
+
+    function isUsernameAvailable() {
+        let existingUser = UsersRepository.getUserByUsername(createUserRequest.username);
+        if (isNotNullNorUndefined(existingUser)) {
+            throw new ConflictError(`Username, '${createUserRequest.username}', is already in use.`);
+        }
+    }
+
+    function doesEmployeeAlreadyHaveAUserAccount() {
+        let existingEmployee = EmployeesRepository.getEmployeeByIdentificationNumber(createUserRequest.identificationNumber);
+        if (isNotNullNorUndefined(existingEmployee)) {
+            throw new ConflictError(`Employee with identification '${createUserRequest.identificationNumber}' already has an assigned username.`);
+        }
+    }
 };
 
 const getUserProfile = (username) => {

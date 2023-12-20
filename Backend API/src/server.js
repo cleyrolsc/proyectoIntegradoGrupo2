@@ -1,7 +1,7 @@
 const express = require("express");
 const { urlencoded } = require("express");
 
-const UsersRouter = require("./Controllers/Users/users.route");
+const { adminRouter, usersRouter } = require("./Controllers");
 const { globalErrorHandlingFilter } = require("./Core/Filters");
 
 const app = express();
@@ -18,7 +18,8 @@ app.get('/', (req, res) => {
     res.send('Hola, Mundo! Esto es el Backend API');
 });
 
-app.use('/api/users', UsersRouter);
+app.use('/api/admin', adminRouter);
+app.use('/api/users', usersRouter);
 
 //#region middleware
 
