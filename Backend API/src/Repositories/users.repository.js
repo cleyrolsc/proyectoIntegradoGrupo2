@@ -31,6 +31,12 @@ const getUsers = (skip = 0, limit = 10, orderBy = 'DESC') => {
     return users;
 };
 
+const getUsersByPrivilegeLevel = (privilegeLevel) => {
+    let users = DatabaseManager.query(`SELECT * FROM ${tableName} ORDERBY username ${orderBy} WHERE priivilegeLevel = '${privilegeLevel}'`);
+
+    return users;
+};
+
 const updateUser = (username, { type = undefined, privilegeLevel = undefined, suspendPrivilege = undefined, status = undefined }) => {
     let user = getUserByUsername(username);
     if (isNullOrUndefined(user)) {
@@ -105,6 +111,7 @@ module.exports = {
     createUser,
     getUserByUsername,
     getUsers,
+    getUsersByPrivilegeLevel,
     updateUser,
     updateUserPassword,
     deleteUser
