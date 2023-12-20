@@ -1,7 +1,7 @@
 const EmployeesRepository = require("./employees.repository");
-const UsersRepositories = require("./users.repository");
+const UsersRepository = require("./users.repository");
 
 module.exports = {
     EmployeesRepository,
-    UsersRepositories
+    UsersRepository
 };
