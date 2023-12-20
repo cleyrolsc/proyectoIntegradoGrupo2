@@ -3,7 +3,7 @@ const UserType = {
     Agent: 1,
     Accounting: 2,
     // ...
-    admin: 99,
+    Admin: 99,
     Super: 100
 };
 
