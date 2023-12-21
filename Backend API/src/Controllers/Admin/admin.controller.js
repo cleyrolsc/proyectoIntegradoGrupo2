@@ -32,7 +32,7 @@ function getAdminPrivileges() {
         adminPrivileges.push(privilege.name);
     });
 
-    return adminPrivileges;
+    response.status(200).json(adminPrivileges);
 }
 
 const registerNonAdminUser = (request, response) => {
