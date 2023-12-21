@@ -138,6 +138,7 @@ Para realizar una llamada, solo se necesita alguna aplicación cliente como [Pos
 1. En su terminal de IDE ejecutar `node src/server.js`. Enseguida, el terminal le indicara en cual puerto el Backend API está atento a las llamadas. Por defecto el puerto es `3000`
 
 ![Ejecutar la Aplicación](https://github.com/cleyrolsc/proyectoIntegradoGrupo2/blob/backend-dev/Images/Ejecutar%20Node.png?raw=true)
+
 2. Luego, en su aplicación de cliente, crear una llamada a `http://localhost:3000/{url}` y someter el pedido. 
 
 ![Llamada](https://github.com/cleyrolsc/proyectoIntegradoGrupo2/blob/backend-dev/Images/Llamada.png?raw=true)
