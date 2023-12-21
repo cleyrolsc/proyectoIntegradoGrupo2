@@ -32,6 +32,8 @@ Este proyecto está compuesto de dos aplicaciones de arquitectura cliente-servid
 ## Arquitectura 
 Este proyecto está dividido en un par aplicaciones basado en la comunicación por peticiones (request) y transferencia de datos por JSON (response). En el lado del servidor, tenemos un REST API que se dedica a procesar las peticiones recibidas y devolver los datos necesarios. 
 
+![Backend API](https://github.com/cleyrolsc/proyectoIntegradoGrupo2/blob/backend-dev/Images/Backend_Architecture.jpg?raw=true)
+
 Por otro lado, la aplicación del cliente ...
 
 ### Backend API
@@ -56,15 +58,17 @@ o
 
 `npm install express crypto-js better-sqlite3 --save`
 
-**NOTA**: Si tiene problema instalar better-sqlite3, favor abrir su Terminal de Comandos (Windows Powershell) en modo administrativo y ejecutar `npm i -g windows-build-tools`. Al finalizar, reinicie su computadora. 
+**NOTA**: Si tiene problema instalar `better-sqlite3`, favor abrir su Terminal de Comandos (Windows Powershell) en modo administrativo y ejecutar `npm i -g windows-build-tools`. Al finalizar, reinicie su computadora. 
 
-3. Antes de ejecutar la API, revisar si la descarga del repositorio incluyo la base de datos sqlite3, en el directorio: **src/Database/backend-api.sqlite3**. Si no encuentre este archivo, puede descargarlo [aquí](https://trello.com/c/10p5nZtQ/16-dise%C3%B1ar-diageama-de-base-de-datos) y colocarlo en el directorio **src/Database/** del Backend API.
+3. Antes de ejecutar el API, revisar si la descarga del repositorio incluyo la base de datos sqlite3, en el directorio: **src/Database/backend-api.sqlite3**. Si no encuentre este archivo, puede descargarlo [aquí](https://trello.com/c/10p5nZtQ/16-dise%C3%B1ar-diageama-de-base-de-datos) y colocarlo en el directorio **src/Database/** del Backend API.
+
+![Base de datos](https://github.com/cleyrolsc/proyectoIntegradoGrupo2/blob/backend-dev/Images/Base%20de%20datos.png?raw=true)
+![Base de datos](https://github.com/cleyrolsc/proyectoIntegradoGrupo2/blob/backend-dev/Images/Descarga.png?raw=true)
 
 4. Finalmente, ejecutar `node src/server.js` para correr la aplicación. para probar el servidor, ver sección [Realizar una Llamada](#realizar-una-llamada).
 
 #### Crear un Repositorio
 Para organizar el código de manera eficiente, se optó por el _[Patrón de Diseño de Repositorio](https://medium.com/@pererikbergman/repository-design-pattern-e28c0f3e4a30)_ que facilita manejar el procesamiento y transferencia de datos entre los clientes y el sistema de persistencia. Por ende, para crear un nuevo repositorio se necesita realizar lo siguiente. 
-
 1. Crear un nuevo archivo en el directorio **src/Repositories/**, usando el estándar _{entidad}.repository.js_.
 2. Importar el manejador de conexión con la base de datos.
     * `const DatabaseManager = require("../Database/database");`
@@ -131,8 +135,13 @@ La última capa para completar la arquitectura del API es el controlador que per
 
 #### Realizar una Llamada
 Para realizar una llamada, solo se necesita alguna aplicación cliente como [Postman API](https://www.postman.com/) o [Thunder Client for VS Code](https://www.thunderclient.com/), y seguir los pasos:
-1. En su terminal de IDE ejecutar `node src/server.js`. Enseguida, el terminal le indicara en cual puerto el Backend API está atento a las llamadas. Por defecto el puerto es 3000
-2. Luego, en su aplicación de cliente, crear una llamada a `http://localhost:3000/` y someter el pedido. 
+1. En su terminal de IDE ejecutar `node src/server.js`. Enseguida, el terminal le indicara en cual puerto el Backend API está atento a las llamadas. Por defecto el puerto es `3000`
+
+![Ejecutar la Aplicación](https://github.com/cleyrolsc/proyectoIntegradoGrupo2/blob/backend-dev/Images/Ejecutar%20Node.png?raw=true)
+
+2. Luego, en su aplicación de cliente, crear una llamada a `http://localhost:3000/{url}` y someter el pedido. 
+
+![Llamada](https://github.com/cleyrolsc/proyectoIntegradoGrupo2/blob/backend-dev/Images/Llamada.png?raw=true)
 
 ### FrontEnd APP
 TBD ...
