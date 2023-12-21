@@ -18,10 +18,10 @@
         * [Realizar una Llamada](#realizar-una-llamada)
     * [Frontend APP](#frontend-app)
 
-## Descripción del Proyecto
+## Descripción del Proyecto [^](#tabla-de-contenidos)
 Este proyecto está compuesto de dos aplicaciones de arquitectura cliente-servidore para la gestión de horarios de agentes (sean de ventas, call center, servicio al cliente, etc.) a fin de contabilizar y renumerar sus horas laborales.
 
-### Funcionalidades Principales 
+### Funcionalidades Principales [^](#tabla-de-contenidos)
 1. Registrar usuarios para empleados 
     * No administrativos: agentes de marketing, ventas, etc.
     * Administrativo: gerentes, contable, recursos humanos, etc.
@@ -29,21 +29,21 @@ Este proyecto está compuesto de dos aplicaciones de arquitectura cliente-servid
 4. Registro de horarios de trabajo por parte de los agentes
 3. Visualización y descarga de reportes sobre horarios de los agentes
 
-## Arquitectura 
+## Arquitectura [^](#tabla-de-contenidos)
 Este proyecto está dividido en un par aplicaciones basado en la comunicación por peticiones (request) y transferencia de datos por JSON (response). En el lado del servidor, tenemos un REST API que se dedica a procesar las peticiones recibidas y devolver los datos necesarios. 
 
 ![Backend API](https://github.com/cleyrolsc/proyectoIntegradoGrupo2/blob/backend-dev/Images/Backend_Architecture.jpg?raw=true)
 
 Por otro lado, la aplicación del cliente ...
 
-### Backend API
+### Backend API [^](#tabla-de-contenidos)
 #### Requisitos
 1. IDE capaz de correr aplicaciones de Javascript
 2. Nodejs instalado en su IDE
 3. Npm para la instalación de paquetes y librerías
 4. [DB Browser SQlite](https://sqlitebrowser.org/dl/) para ver el contenido de la base de datos
 
-#### Instalación y Ejecución
+#### Instalación y Ejecución [^](#tabla-de-contenidos)
 Para instalar el API localmente, favor clonar el repositorio con su aplicación de control de versión GIT. 
 
 `get clone https://github.com/cleyrolsc/proyectoIntegradoGrupo2.git`
@@ -67,7 +67,7 @@ o
 
 4. Finalmente, ejecutar `node src/server.js` para correr la aplicación. para probar el servidor, ver sección [Realizar una Llamada](#realizar-una-llamada).
 
-#### Crear un Repositorio
+#### Crear un Repositorio [^](#tabla-de-contenidos)
 Para organizar el código de manera eficiente, se optó por el _[Patrón de Diseño de Repositorio](https://medium.com/@pererikbergman/repository-design-pattern-e28c0f3e4a30)_ que facilita manejar el procesamiento y transferencia de datos entre los clientes y el sistema de persistencia. Por ende, para crear un nuevo repositorio se necesita realizar lo siguiente. 
 1. Crear un nuevo archivo en el directorio **src/Repositories/**, usando el estándar _{entidad}.repository.js_.
 2. Importar el manejador de conexión con la base de datos.
@@ -92,7 +92,7 @@ Para organizar el código de manera eficiente, se optó por el _[Patrón de Dise
     * Si el cambio fue exitoso, dentro de `result` existe un booleano que indicara un `1` para verdadero: `result.changes === 1`
 8. Para terminar, exportar todas sus funciones con `module.exports = { func1, func2, ...}`
 
-#### Crear un Servicio
+#### Crear un Servicio [^](#tabla-de-contenidos)
 Después de tener su capa de datos con su repositorio, la siguiente etapa es la crear un servicio que hace uso dicho repositorio. Este servicio representa la capa de negocio donde se define las restricciones y lógica para la manipulación y transferencia de datos entrando y saliendo. los siguientes pasos detallan como crear un servicio.
 1. Crear un nuevo archivo en el directorio **src/Services/**, usando el estándar _{entidad}.service.js_.
 2. Importar su nuevo repositorio y cualquier otro repositorio necesario para realizar un proceso.
@@ -106,7 +106,7 @@ Después de tener su capa de datos con su repositorio, la siguiente etapa es la 
     * `deleteEntidad`
 4. Por último, exportar todas sus funciones con `module.exports = { func1, func2, ...}`
 
-#### Crear un Controlador y Router
+#### Crear un Controlador y Router [^](#tabla-de-contenidos)
 La última capa para completar la arquitectura del API es el controlador que permite a los clientes realizar llamadas (requests) al servidor y transferir datos a la base de datos. Para crear un nuevo controlado solo se necesita seguir los pasos:
 1. Crear un nuevo archivo en el directorio **src/Controllers/**, usando el estándar _{nombre}.controller.js_.
     * No es necesario llamar un controlador con el nombre de una entidad como los servicios y repositorios, ya que un controlador compilar varios servicios para agrupar puntos de acceso (endpoints) bajo el mismo prefijo de URL; ej. `/api/admin` para todos los URLs que usará los administradores y en globa varios servicios como UsersService, PrivilegesService, entre otro, se llamará _admin.controller.js_.
@@ -133,7 +133,7 @@ La última capa para completar la arquitectura del API es el controlador que per
     * `const { adminRouter, usersRouter } = require("./Controllers");`
     * `app.use('/api/admin', adminRouter);`
 
-#### Realizar una Llamada
+#### Realizar una Llamada [^](#tabla-de-contenidos)
 Para realizar una llamada, solo se necesita alguna aplicación cliente como [Postman API](https://www.postman.com/) o [Thunder Client for VS Code](https://www.thunderclient.com/), y seguir los pasos:
 1. En su terminal de IDE ejecutar `node src/server.js`. Enseguida, el terminal le indicara en cual puerto el Backend API está atento a las llamadas. Por defecto el puerto es `3000`
 
@@ -143,6 +143,6 @@ Para realizar una llamada, solo se necesita alguna aplicación cliente como [Pos
 
 ![Llamada](https://github.com/cleyrolsc/proyectoIntegradoGrupo2/blob/backend-dev/Images/Llamada.png?raw=true)
 
-### FrontEnd APP
+### FrontEnd APP [^](#tabla-de-contenidos)
 TBD ...
 
