@@ -1,4 +1,4 @@
-const { isListEmpty, isNotNullNorUndefined } = require("../Core/Utils/null-checker.util");
+const { isListEmpty, isNotNullNorUndefined, isNotNullUndefinedNorEmpty } = require("../Core/Utils/null-checker.util");
 const { PrivilegeStatus } = require("../Core/Abstractions/Enums");
 
 const DatabaseManager = require("../Database/database");
@@ -9,13 +9,13 @@ const createPrivilege = (name, level) => {
     // Validate data
 
     let today = new Date();
-    let values = `'${name}', '${+level}', '${+PrivilegeStatus.Active}', '${today.toString()}'`;
+    let values = `'${name}', ${+level}, ${+PrivilegeStatus.Active}, '${today.toString()}'`;
 
     return DatabaseManager.run(`INSERT INTO ${tableName} (name, level, status, createdOn) VALUES (${values})`);
 };
 
 const getPrivilegeByName = (name) => {
-    let privileges = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE name = ${name} LIMIT 1`);
+    let privileges = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE name = '${name}' LIMIT 1`);
     if (isListEmpty(privileges)) {
         return undefined;
     }
@@ -24,7 +24,7 @@ const getPrivilegeByName = (name) => {
 };
 
 const getPrivileges = (filterByName = undefined, skip = 0, limit = 10, orderBy = "DESC") => {
-    let whereClause = isNotNullNorUndefined(filterByName) ? `WHERE name LIKE '%${filterByName}%'` : "";
+    let whereClause = isNotNullUndefinedNorEmpty(filterByName) ? `WHERE name LIKE '%${filterByName}%'` : "";
 
     let privileges = DatabaseManager.query(`SELECT * FROM ${tableName} ${whereClause} ORDER BY name ${orderBy} OFFSET ${+(skip * limit)} LIMIT ${+limit}`);
 
