@@ -62,6 +62,9 @@ o
 
 3. Antes de ejecutar el API, revisar si la descarga del repositorio incluyo la base de datos sqlite3, en el directorio: **src/Database/backend-api.sqlite3**. Si no encuentre este archivo, puede descargarlo [aquí](https://trello.com/c/10p5nZtQ/16-dise%C3%B1ar-diageama-de-base-de-datos) y colocarlo en el directorio **src/Database/** del Backend API.
 
+![Base de datos](https://github.com/cleyrolsc/proyectoIntegradoGrupo2/blob/backend-dev/Images/Base%20de%20datos.png?raw=true)
+![Base de datos](https://github.com/cleyrolsc/proyectoIntegradoGrupo2/blob/backend-dev/Images/Descarga.png?raw=true)
+
 4. Finalmente, ejecutar `node src/server.js` para correr la aplicación. para probar el servidor, ver sección [Realizar una Llamada](#realizar-una-llamada).
 
 #### Crear un Repositorio
