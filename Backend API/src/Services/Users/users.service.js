@@ -18,8 +18,8 @@ const registerNewUser = (createUserRequest) => {
 
     let newEmployee = EmployeesRepository.getEmployeeById(result.lastInsertRowid);
 
-    let { username, employeeId, password, privilegeLevel, type } = createUserRequest;
-    result = UsersRepository.createUser(username, employeeId, password, privilegeLevel, type);
+    let { username, password, privilegeLevel, type } = createUserRequest;
+    result = UsersRepository.createUser(username, newEmployee.id, password, privilegeLevel, type);
     if (result.changes === 0) {
         throw new FatalError("User was not able to be created");
     }

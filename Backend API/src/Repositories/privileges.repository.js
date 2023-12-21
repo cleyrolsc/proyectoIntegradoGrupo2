@@ -26,7 +26,7 @@ const getPrivilegeByName = (name) => {
 const getPrivileges = (filterByName = undefined, skip = 0, limit = 10, orderBy = "DESC") => {
     let whereClause = isNotNullNorUndefined(filterByName) ? `WHERE name LIKE '%${filterByName}%'`: "";
 
-    let privileges = DatabaseManager.query(`SELECT * FROM ${tableName} ${whereClause} ORDERBY name ${orderBy} OFFSET ${+(skip * limit)} LIMIT ${+limit}`);
+    let privileges = DatabaseManager.query(`SELECT * FROM ${tableName} ${whereClause} ORDER BY name ${orderBy} OFFSET ${+(skip * limit)} LIMIT ${+limit}`);
 
     return privileges;
 };
