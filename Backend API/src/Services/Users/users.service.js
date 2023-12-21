@@ -43,14 +43,14 @@ const getUserProfile = (username) => {
     return new UserProfileResponse(user.username, user.type, user.privilegeLevel, employeeInfo.id, employeeInfo.firstName, employeeInfo.lastName, employeeInfo.identificationNumber, employeeInfo.commissionPerHour, employeeInfo.department);
 };
 
-const getUsers = (currentPage = 0, itemsPerPage = 10, order = 'DESC') => {
-    let users = UsersRepository.getUsers(currentPage, itemsPerPage, order);
+const getUsers = (currentPage = 1, itemsPerPage = 10, order = 'DESC') => {
+    let users = UsersRepository.getUsers(currentPage - 1, itemsPerPage, order);
     if (isListEmpty(users)) {
         return new PaginatedResponse();
     }
 
     let response = new PaginatedResponse();
-    response.currentPage = currentPage + 1;
+    response.currentPage = currentPage;
     response.itemsPerPage = itemsPerPage;
     response.totalPages = Math.ceil(users.length / itemsPerPage);
     response.hasNext = response.currentPage < response.totalPages;

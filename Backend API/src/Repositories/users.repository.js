@@ -1,4 +1,3 @@
-const User = require("./Entities/user.class");
 const { UserStatus, UserType } = require("../Core/Abstractions/Enums");
 const { isNotNullNorUndefined, isNullOrUndefined, isListEmpty } = require("../Core/Utils/null-checker.util");
 
@@ -28,6 +27,12 @@ const getUserByUsername = (username) => {
 
 const getUsers = (skip = 0, limit = 10, order = 'DESC') => {
     let users = DatabaseManager.query(`SELECT * FROM ${tableName} ORDER BY username ${order} OFFSET ${+(skip * limit)} LIMIT ${+limit}`);
+
+    return users;
+};
+
+const getUsersByPrivilegeLevel = (privilegeLevel) => {
+    let users = DatabaseManager.query(`SELECT * FROM ${tableName} ORDER BY username ASC WHERE privilegeLevel = '${privilegeLevel}'`);
 
     return users;
 };
@@ -106,6 +111,7 @@ module.exports = {
     createUser,
     getUserByUsername,
     getUsers,
+    getUsersByPrivilegeLevel,
     updateUser,
     updateUserPassword,
     deleteUser
