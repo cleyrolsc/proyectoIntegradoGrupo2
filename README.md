@@ -31,6 +31,7 @@ Este proyecto está compuesto de dos aplicaciones de arquitectura cliente-servid
 
 ## Arquitectura 
 Este proyecto está dividido en un par aplicaciones basado en la comunicación por peticiones (request) y transferencia de datos por JSON (response). En el lado del servidor, tenemos un REST API que se dedica a procesar las peticiones recibidas y devolver los datos necesarios. 
+![Backend API]("./Images/Backend_Architecture.jpg")
 
 Por otro lado, la aplicación del cliente ...
 
