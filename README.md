@@ -32,7 +32,7 @@ Este proyecto está compuesto de dos aplicaciones de arquitectura cliente-servid
 ## Arquitectura 
 Este proyecto está dividido en un par aplicaciones basado en la comunicación por peticiones (request) y transferencia de datos por JSON (response). En el lado del servidor, tenemos un REST API que se dedica a procesar las peticiones recibidas y devolver los datos necesarios. 
 
-![Backend API]("https://github.com/cleyrolsc/proyectoIntegradoGrupo2/blob/backend-dev/Images/Backend_Architecture.jpg?raw=true")
+![Backend API](https://github.com/cleyrolsc/proyectoIntegradoGrupo2/blob/backend-dev/Images/Backend_Architecture.jpg?raw=true)
 
 Por otro lado, la aplicación del cliente ...
 
@@ -58,9 +58,9 @@ o
 
 `npm install express crypto-js better-sqlite3 --save`
 
-**NOTA**: Si tiene problema instalar better-sqlite3, favor abrir su Terminal de Comandos (Windows Powershell) en modo administrativo y ejecutar `npm i -g windows-build-tools`. Al finalizar, reinicie su computadora. 
+**NOTA**: Si tiene problema instalar `better-sqlite3`, favor abrir su Terminal de Comandos (Windows Powershell) en modo administrativo y ejecutar `npm i -g windows-build-tools`. Al finalizar, reinicie su computadora. 
 
-3. Antes de ejecutar la API, revisar si la descarga del repositorio incluyo la base de datos sqlite3, en el directorio: **src/Database/backend-api.sqlite3**. Si no encuentre este archivo, puede descargarlo [aquí](https://trello.com/c/10p5nZtQ/16-dise%C3%B1ar-diageama-de-base-de-datos) y colocarlo en el directorio **src/Database/** del Backend API.
+3. Antes de ejecutar el API, revisar si la descarga del repositorio incluyo la base de datos sqlite3, en el directorio: **src/Database/backend-api.sqlite3**. Si no encuentre este archivo, puede descargarlo [aquí](https://trello.com/c/10p5nZtQ/16-dise%C3%B1ar-diageama-de-base-de-datos) y colocarlo en el directorio **src/Database/** del Backend API.
 
 4. Finalmente, ejecutar `node src/server.js` para correr la aplicación. para probar el servidor, ver sección [Realizar una Llamada](#realizar-una-llamada).
 
