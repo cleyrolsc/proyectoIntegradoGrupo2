@@ -69,7 +69,6 @@ o
 
 #### Crear un Repositorio
 Para organizar el código de manera eficiente, se optó por el _[Patrón de Diseño de Repositorio](https://medium.com/@pererikbergman/repository-design-pattern-e28c0f3e4a30)_ que facilita manejar el procesamiento y transferencia de datos entre los clientes y el sistema de persistencia. Por ende, para crear un nuevo repositorio se necesita realizar lo siguiente. 
-
 1. Crear un nuevo archivo en el directorio **src/Repositories/**, usando el estándar _{entidad}.repository.js_.
 2. Importar el manejador de conexión con la base de datos.
     * `const DatabaseManager = require("../Database/database");`
