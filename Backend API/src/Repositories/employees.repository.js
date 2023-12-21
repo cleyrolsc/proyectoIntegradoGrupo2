@@ -27,7 +27,7 @@ const getEmployeeById = (id) => {
 
 const getEmployeeByIdentificationNumber = (identificationNumber) => {
     let employees = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE identificationNumber = '${identificationNumber}' LIMIT 1`);
-    if (eisListEmpty(employees)) {
+    if (isListEmpty(employees)) {
         return undefined;
     }
 
