@@ -131,3 +131,4 @@ dist
 
 # Database files
 *.sqlite3
+*.sqlite3-journal
