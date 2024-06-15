@@ -5,8 +5,10 @@ class Employee extends ICreatedModifiedOn {
     firstName;
     lastName;
     identificationNumber;
-    commissionPerHour = 0.0;
-    department; // Department.Sales (enum)
+    payPerHour = 0.0;
+    departmentId; //FK Departments
+    supervisorId; // FK Employees 
+    positionId; // FK Positions
 };
 
 module.exports = Employee;
