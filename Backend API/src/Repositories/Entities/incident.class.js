@@ -2,7 +2,7 @@ class Incident{
     id;
     comment;
     employeeId; // FK Employees
-    reportDate = new Date();
+    reportDate;
 };
 
 module.exports = Incident;
