@@ -5,28 +5,27 @@ const DatabaseManager = require("../Database/database");
 
 const tableName = "events";
 
-
 const createEvent = (description) => {
     if(isNullUndefinedOrEmpty(description)){
         throw new BadRequestError('Description cannot be empty');
     }
 
-    return DatabaseManager.run(`INSERT INTO ${tableName} (description) VALUES (${description})`);
-};
-
-const getEvents = () => {
-    let departments = DatabaseManager.query(`SELECT * FROM ${tableName}`);
-
-    return departments;
+    return DatabaseManager.run(`INSERT INTO ${tableName} (description) VALUES ('${description}')`);
 };
 
 const getEventById = (id) => {
-    let departments = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE id = ${+id} LIMIT 1`);
-    if (isListEmpty(departments)) {
+    let events = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE id = ${+id} LIMIT 1`);
+    if (isListEmpty(events)) {
         return undefined;
     }
 
-    return departments[0];
+    return events[0];
+};
+
+const getEvents = () => {
+    let events = DatabaseManager.query(`SELECT * FROM ${tableName}`);
+
+    return events;
 };
 
 const updateEvent = (id, newDescription) => {
@@ -43,7 +42,7 @@ const updateEvent = (id, newDescription) => {
         return event;
     }
 
-    let result = DatabaseManager.run(`UPDATE ${tableName} SET description = ${newDescription} WHERE id = ${id}`);
+    let result = DatabaseManager.run(`UPDATE ${tableName} SET description = '${newDescription}' WHERE id = ${id}`);
     if (result.changes === 0) {
         throw new FatalError(`Unable to update event with id '${id}'`);
     }
@@ -51,14 +50,14 @@ const updateEvent = (id, newDescription) => {
     return getEventById(id);
 };
 
-const deleteEvent = () => {
+const deleteEvent = (id) => {
     throw new NotImplementedError();
 }
 
 module.exports = {
     createEvent,
-    getEvents,
     getEventById,
+    getEvents,
     updateEvent,
     deleteEvent,
 }

@@ -1,5 +1,5 @@
 class ICreatedModifiedOn {
-    createdOn;
+    createdOn = new Date();
     modifiedOn;
 };
 

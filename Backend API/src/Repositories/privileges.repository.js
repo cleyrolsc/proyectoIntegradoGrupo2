@@ -1,5 +1,6 @@
 const { isListEmpty, isNotNullNorUndefined, isNotNullUndefinedNorEmpty } = require("../Core/Utils/null-checker.util");
 const { PrivilegeStatus } = require("../Core/Abstractions/Enums");
+const { FatalError, NotImplementedError } = require("../Core/Abstractions/Exceptions");
 
 const DatabaseManager = require("../Database/database");
 
@@ -71,7 +72,7 @@ const updatePrivilege = (name, { level = undefined, status = undefined }) => {
 };
 
 const deletePrivilege = (name) => {
-    throw new Error("Not Implemented");
+    throw new NotImplementedError();
 }
 
 module.exports = {

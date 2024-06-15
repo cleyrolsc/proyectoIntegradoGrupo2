@@ -10,13 +10,7 @@ const createDepartment = (description) => {
         throw new BadRequestError('Description cannot be empty');
     }
 
-    return DatabaseManager.run(`INSERT INTO ${tableName} (description) VALUES (${description})`);
-};
-
-const getDepartments = () => {
-    let departments = DatabaseManager.query(`SELECT * FROM ${tableName}`);
-
-    return departments;
+    return DatabaseManager.run(`INSERT INTO ${tableName} (description) VALUES ('${description}')`);
 };
 
 const getDepartmentById = (id) => {
@@ -26,6 +20,12 @@ const getDepartmentById = (id) => {
     }
 
     return departments[0];
+};
+
+const getDepartments = () => {
+    let departments = DatabaseManager.query(`SELECT * FROM ${tableName}`);
+
+    return departments;
 };
 
 const updateDepartment = (id, newDescription) => {
@@ -42,7 +42,7 @@ const updateDepartment = (id, newDescription) => {
         return department;
     }
 
-    let result = DatabaseManager.run(`UPDATE ${tableName} SET description = ${newDescription} WHERE id = ${id}`);
+    let result = DatabaseManager.run(`UPDATE ${tableName} SET description = '${newDescription}' WHERE id = ${id}`);
     if (result.changes === 0) {
         throw new FatalError(`Unable to update department with id '${id}'`);
     }
@@ -50,14 +50,14 @@ const updateDepartment = (id, newDescription) => {
     return getDepartmentById(id);
 };
 
-const deleteDepartment = () => {
+const deleteDepartment = (id) => {
     throw new NotImplementedError();
 }
 
 module.exports = {
     createDepartment,
-    getDepartments,
     getDepartmentById,
+    getDepartments,
     updateDepartment,
     deleteDepartment,
 }

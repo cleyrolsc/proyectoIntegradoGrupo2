@@ -1,5 +1,6 @@
 const { UserStatus, UserType } = require("../Core/Abstractions/Enums");
 const { isNotNullNorUndefined, isNullOrUndefined, isListEmpty } = require("../Core/Utils/null-checker.util");
+const { FatalError, NotImplementedError } = require("../Core/Abstractions/Exceptions");
 
 const DatabaseManager = require("../Database/database");
 const EncryptionManager = require("../Core/Utils/encryption-manager.util");
@@ -104,7 +105,7 @@ const updateUserPassword = (username, password) => {
 };
 
 const deleteUser = (username) => {
-    throw new Error("Not Implemented");
+    throw new NotImplementedError();
 }
 
 module.exports = {
