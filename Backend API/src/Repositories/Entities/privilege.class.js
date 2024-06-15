@@ -2,7 +2,7 @@ const ICreatedModifiedOn = require("../../Core/Abstractions/Interfaces/i-created
 
 class Privilege extends ICreatedModifiedOn {
     name; // PK;
-    Level; // 1 ... 100
+    level; // 1 ... 100
     status; // PrivilegeStatus.Inactive (enum)
 };
 
