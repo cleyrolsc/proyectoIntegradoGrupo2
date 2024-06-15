@@ -1,6 +1,5 @@
-const Employee = require("./Entities/employee.class");
 const Department = require("../Core/Abstractions/Enums/department.enum");
-const { FatalError } = require("../Core/Abstractions/Exceptions");
+const { FatalError, NotImplementedError } = require("../Core/Abstractions/Exceptions");
 const { isNotNullUndefinedNorEmpty, isNotNullNorUndefined, isNullOrUndefined, isListEmpty } = require("../Core/Utils/null-checker.util");
 
 const DatabaseManager = require("../Database/database");
@@ -97,7 +96,7 @@ const updateEmployee = (employeeId, { firstName = undefined, lastName = undefine
 };
 
 const deleteEmployee = (id) => {
-    throw new Error("Not Implemented");
+    throw new NotImplementedError();
 };
 
 module.exports = {
