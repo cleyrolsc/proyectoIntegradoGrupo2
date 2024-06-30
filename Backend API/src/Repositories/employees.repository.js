@@ -1,19 +1,27 @@
-const Employee = require("./Entities/employee.class");
-const Department = require("../Core/Abstractions/Enums/department.enum");
-const { FatalError } = require("../Core/Abstractions/Exceptions");
+const { FatalError, NotImplementedError, BadRequestError } = require("../Core/Abstractions/Exceptions");
 const { isNotNullUndefinedNorEmpty, isNotNullNorUndefined, isNullOrUndefined, isListEmpty } = require("../Core/Utils/null-checker.util");
 
 const DatabaseManager = require("../Database/database");
 
 const tableName = "employees";
 
-const createEmployee = (firstName, lastName, identificationNumber, commissionPerHour, department = Department.Sales) => {
+const createEmployee = (firstName, lastName, identificationNumber, payPerHour, departmentId, supervisorId, positionId) => {
     // Validate data
+    if (isNullOrUndefined(departmentId)){
+        throw new BadRequestError('Department id cannot be null');
+    }
 
-    let today = new Date();
-    let values = `'${firstName}', '${lastName}', '${identificationNumber}', ${+commissionPerHour}, ${+department}, '${today.toString()}'`;
+    if (isNullOrUndefined(supervisorId)){
+        throw new BadRequestError('Supervisor id cannot be null');
+    }
 
-    return DatabaseManager.run(`INSERT INTO ${tableName} (firstName, lastName, identificationNumber, commissionPerHour, department, createdOn) VALUES (${values})`);
+    if (isNullOrUndefined(positionId)){
+        throw new BadRequestError('Position id cannot be null');
+    }
+
+    let values = `'${firstName}', '${lastName}', '${identificationNumber}', ${+payPerHour}, ${+departmentId}, ${+supervisorId}, ${+positionId}`;
+
+    return DatabaseManager.run(`INSERT INTO ${tableName} (firstName, lastName, identificationNumber, payPerHour, departmentId, supervisorId, positionId) VALUES (${values})`);
 };
 
 const getEmployeeById = (id) => {
@@ -40,7 +48,37 @@ const getEmployees = () => {
     return employees;
 };
 
-const updateEmployee = (employeeId, { firstName = undefined, lastName = undefined, identificationNumber = undefined, commissionPerHour = undefined, department = undefined }) => {
+const getEmployeesByDepartment = (departmentId) => {
+    if (isNullOrUndefined(departmentId)){
+        throw new BadRequestError('Department id cannot be null');
+    }
+
+    let employees = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE departmentId = ${+departmentId}`);
+
+    return employees;
+};
+
+const getEmployeesBySupervisor = (supervisorId) => {
+    if (isNullOrUndefined(supervisorId)){
+        throw new BadRequestError('Supervisor id cannot be null');
+    }
+
+    let employees = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE supervisorId = ${+supervisorId}`);
+
+    return employees;
+};
+
+const getEmployeesByPosition = (positionId) => {
+    if (isNullOrUndefined(positionId)){
+        throw new BadRequestError('Position id cannot be null');
+    }
+
+    let employees = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE positionId = ${+positionId}`);
+
+    return employees;
+};
+
+const updateEmployee = (employeeId, { firstName = undefined, lastName = undefined, identificationNumber = undefined, payPerHour = undefined, departmentId = undefined, supervisorId = undefined, positionId = undefined }) => {
     let employee = getEmployeeById(employeeId);
     if (isNullOrUndefined(employee)) {
         return undefined;
@@ -78,26 +116,39 @@ const updateEmployee = (employeeId, { firstName = undefined, lastName = undefine
             params += `identificationNumber = '${identificationNumber}'`;
         }
 
-        if (isNotNullNorUndefined(commissionPerHour)) {
+        if (isNotNullNorUndefined(payPerHour)) {
             params += params !== "" ? ", " : params;
 
-            params += `commissionPerHour = ${+commissionPerHour}`;
+            params += `payPerHour = ${+payPerHour}`;
         }
 
-        if (isNotNullNorUndefined(department)) {
+        if (isNotNullNorUndefined(departmentId)) {
             params += params !== "" ? ", " : params;
 
-            params += `department = ${department}`;
+            params += `departmentId = ${departmentId}`;
+        }
+
+        if (isNotNullNorUndefined(supervisorId)) {
+            params += params !== "" ? ", " : params;
+
+            params += `supervisorId = ${supervisorId}`;
+        }
+
+        if (isNotNullNorUndefined(positionId)) {
+            params += params !== "" ? ", " : params;
+
+            params += `positionId = ${positionId}`;
         }
 
         let today = new Date();
         params += params !== "" ? `, modifiedOn = '${today.toString()}'` : `modifiedOn = '${today.toString()}'`;
+        
         return params;
     }
 };
 
 const deleteEmployee = (id) => {
-    throw new Error("Not Implemented");
+    throw new NotImplementedError();
 };
 
 module.exports = {
@@ -105,6 +156,9 @@ module.exports = {
     getEmployeeById,
     getEmployeeByIdentificationNumber,
     getEmployees,
+    getEmployeesByDepartment,
+    getEmployeesBySupervisor,
+    getEmployeesByPosition,
     updateEmployee,
     deleteEmployee
 };

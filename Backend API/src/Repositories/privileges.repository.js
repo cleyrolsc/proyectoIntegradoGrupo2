@@ -1,5 +1,6 @@
 const { isListEmpty, isNotNullNorUndefined, isNotNullUndefinedNorEmpty } = require("../Core/Utils/null-checker.util");
 const { PrivilegeStatus } = require("../Core/Abstractions/Enums");
+const { FatalError, NotImplementedError } = require("../Core/Abstractions/Exceptions");
 
 const DatabaseManager = require("../Database/database");
 
@@ -26,18 +27,10 @@ const getPrivilegeByName = (name) => {
 const getPrivileges = (filterByName = undefined, skip = 0, limit = 10, orderBy = "DESC") => {
     let whereClause = isNotNullUndefinedNorEmpty(filterByName) ? `WHERE name LIKE '%${filterByName}%'` : "";
 
-    let privileges = DatabaseManager.query(`SELECT * FROM ${tableName} ${whereClause} ORDER  BY name ${orderBy} OFFSET ${+(skip * limit)} LIMIT ${+limit}`);
+    let privileges = DatabaseManager.query(`SELECT * FROM ${tableName} ${whereClause} ORDERBY name ${orderBy} OFFSET ${+(skip * limit)} LIMIT ${+limit}`);
 
     return privileges;
 };
-
-const getPrivilegesByLevel = (minLevel = 0, maxLevel = 100) => {
-    let whereClause = `WHERE level BETWEEN ${+minLevel} AND ${+maxLevel}`;
-
-    let privileges = DatabaseManager.query(`SELECT * FROM ${tableName} ${whereClause} ORDER BY name ASC`);
-
-    return privileges;
-}
 
 const updatePrivilege = (name, { level = undefined, status = undefined }) => {
     let privilege = getPrivilegeByName(name);
@@ -51,7 +44,7 @@ const updatePrivilege = (name, { level = undefined, status = undefined }) => {
         return getPrivilegeByName(name);
     }
 
-    let result = DatabaseManager.run(`UPDATE ${tableName} SET ${params} WHERE name = '${name}'`);
+    let result = DatabaseManager.run(`UPDATE ${tableName} SET ${params} WHERE name = ${name}`);
     if (result.changes === 0) {
         throw new FatalError(`Unable to update privilege '${name}'`);
     }
@@ -74,20 +67,18 @@ const updatePrivilege = (name, { level = undefined, status = undefined }) => {
         let today = new Date();
         params += params !== "" ? `, modifiedOn = '${today.toString()}'` : `modifiedOn = '${today.toString()}'`;
 
-
         return params;
     }
 };
 
 const deletePrivilege = (name) => {
-    throw new Error("Not Implemented");
+    throw new NotImplementedError();
 }
 
 module.exports = {
     createPrivilege,
     getPrivilegeByName,
     getPrivileges,
-    getPrivilegesByLevel,
     updatePrivilege,
     deletePrivilege
 };

@@ -1,32 +1,43 @@
 const express = require("express");
 const { urlencoded } = require("express");
+const cors = require('cors');
 
 const { adminRouter, usersRouter } = require("./Controllers");
 const { globalErrorHandlingFilter } = require("./Core/Filters");
 
-const app = express();
-app.set('port', process.env.PORT || 3000);
+class Server {
+    constructor() {
+        this.app = express();
+        this.port = process.env.PORT || 3000;
 
-//#region Middleware
+        this.adminEndpoint = '/api/admin';
+        this.usersEndpoint = '/api/users';
 
-app.use(express.json());
-app.use(urlencoded({ extended: true }));
+        this.middlewares();
+        this.routes();
+        this.filters();
+    }
 
-//#endregion
+    middlewares(){
+        this.app.use(cors());
+        app.use(express.json());
+        app.use(urlencoded({ extended: true }));
+    }
 
-app.get('/', (req, res) => {
-    res.send('Hola, Mundo! Esto es el Backend API');
-});
+    routes(){
+        this. app.use(this.adminEndpoint, adminRouter);
+        this.app.use(this.usersEndpoint, usersRouter);
+    }
 
-app.use('/api/admin', adminRouter);
-app.use('/api/users', usersRouter);
+    filters(){
+        this.app.use(globalErrorHandlingFilter);
+    }
 
-//#region middleware
+    listen(){
+        this.app.listen(this.port, () => {
+            console.log(`Server Started. Port: ${this.port}`);
+        });
+    }
+}
 
-app.use(globalErrorHandlingFilter);
-
-//#endregion
-
-app.listen(app.get('port'), () => {
-    console.log(`Server Started. Port: ${app.get('port')}`);
-});
+module.exports = Server;
