@@ -151,7 +151,7 @@ La última capa para completar la arquitectura del API es el controlador que per
 
 #### Realizar una Llamada
 Para realizar una llamada, solo se necesita alguna aplicación cliente como [Postman API](https://www.postman.com/) o [Thunder Client for VS Code](https://www.thunderclient.com/), y seguir los pasos:
-1. En su terminal de IDE ejecutar `node src/server.js`. Enseguida, el terminal le indicara en cual puerto el Backend API está atento a las llamadas. Por defecto el puerto es `3000`
+1. En su terminal de IDE ejecutar `node src/app.js`. Enseguida, el terminal le indicara en cual puerto el Backend API está atento a las llamadas. Por defecto el puerto es `3000`
 
 ![Ejecutar la Aplicación](https://github.com/cleyrolsc/proyectoIntegradoGrupo2/blob/backend-dev/Images/Ejecutar%20Node.png?raw=true)
 
