@@ -9,7 +9,6 @@ User.init({
     username: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
         primaryKey: true
     },
     employeeId: {
@@ -49,7 +48,7 @@ User.init({
 }, {
     dbContext,
     modelName: 'User',
-    tableName: 'Users'
+    tableName: 'users'
 });
 
 module.exports = User;
