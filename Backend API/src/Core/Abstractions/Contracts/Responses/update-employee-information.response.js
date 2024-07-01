@@ -1,12 +1,5 @@
-class UserProfileResponse {
-    constructor(userInfo, employeeInfo, supervisorInfo, departmentInfo, positionInfo) {
-        this.userInfo = {
-            username: userInfo.username,
-            type: userInfo.type,
-            privilegeLevel: userInfo.privilegeLevel,
-            status: userInfo.status
-        };
-
+class UpdateEmployeeInformationResponse{
+    constructor(employeeInfo, supervisorInfo, departmentInfo, positionInfo){
         this.employeeInfo = {
             employeeId: employeeInfo.employeeId,
             firstName: employeeInfo.firstName,
@@ -28,4 +21,4 @@ class UserProfileResponse {
     }
 };
 
-module.exports = UserProfileResponse;
+module.exports = UpdateEmployeeInformationResponse;

@@ -1,12 +1,12 @@
 const { FatalError, NotImplementedError, BadRequestError } = require("../Core/Abstractions/Exceptions");
-const { isNotNullUndefinedNorEmpty, isNotNullNorUndefined, isNullOrUndefined, isListEmpty } = require("../Core/Utils/null-checker.util");
+const { isNotNullUndefinedNorEmpty, isNotNullNorUndefined, isNullOrUndefined, isListEmpty, isNullUndefinedOrEmpty } = require("../Core/Utils/null-checker.util");
 
 const DatabaseManager = require("../Database/database");
+const { Employee } = require('./Entities/index');
 
 const tableName = "employees";
 
-const createEmployee = (firstName, lastName, identificationNumber, payPerHour, departmentId, supervisorId, positionId) => {
-    // Validate data
+const createEmployeeAsync = ({firstName, lastName, identificationNumber, payPerHour, departmentId, supervisorId, positionId}) => {
     if (isNullOrUndefined(departmentId)){
         throw new BadRequestError('Department id cannot be null');
     }
@@ -19,9 +19,15 @@ const createEmployee = (firstName, lastName, identificationNumber, payPerHour, d
         throw new BadRequestError('Position id cannot be null');
     }
 
-    let values = `'${firstName}', '${lastName}', '${identificationNumber}', ${+payPerHour}, ${+departmentId}, ${+supervisorId}, ${+positionId}`;
-
-    return DatabaseManager.run(`INSERT INTO ${tableName} (firstName, lastName, identificationNumber, payPerHour, departmentId, supervisorId, positionId) VALUES (${values})`);
+    return Employee.create({
+        firstName,
+        lastName,
+        identificationNumber,
+        payPerHour,
+        departmentId,
+        supervisorId,
+        positionId
+    });
 };
 
 const getEmployeeById = (id) => {
@@ -33,6 +39,15 @@ const getEmployeeById = (id) => {
     return employees[0];
 };
 
+const getEmployeeByIdAsync = async (id) => {
+    let employee = await Employee.findByPk(id);
+    if(isNullOrUndefined(employee)){
+        return undefined;
+    }
+
+    return employee;
+};
+
 const getEmployeeByIdentificationNumber = (identificationNumber) => {
     let employees = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE identificationNumber = '${identificationNumber}' LIMIT 1`);
     if (isListEmpty(employees)) {
@@ -42,11 +57,30 @@ const getEmployeeByIdentificationNumber = (identificationNumber) => {
     return employees[0];
 };
 
+const getEmployeeByIdentificationNumberAsync = async (identificationNumber) => {
+    let employee = await Employee.findOne({
+        where: {
+            identificationNumber
+        }
+    });
+    if(isNullOrUndefined(employee)){
+        return undefined;
+    }
+
+    return employee;
+};
+
 const getEmployees = () => {
     let employees = DatabaseManager.query(`SELECT * FROM ${tableName}`);
 
     return employees;
 };
+
+const getEmployeesAsync = (skip = 0, limit = 10, orderBy = 'DESC') => Employee.findAll({
+        order: [['lastName', orderBy]],
+        offset: skip,
+        limit
+    });
 
 const getEmployeesByDepartment = (departmentId) => {
     if (isNullOrUndefined(departmentId)){
@@ -58,6 +92,15 @@ const getEmployeesByDepartment = (departmentId) => {
     return employees;
 };
 
+const getEmployeesByDepartmentIdAsync = (departmentId, skip = 0, limit = 10, orderBy = 'DESC') => Employee.findAll({
+        where: {
+            departmentId
+        },
+        order: [['lastName', orderBy]],
+        offset: skip,
+        limit
+    });
+
 const getEmployeesBySupervisor = (supervisorId) => {
     if (isNullOrUndefined(supervisorId)){
         throw new BadRequestError('Supervisor id cannot be null');
@@ -67,6 +110,15 @@ const getEmployeesBySupervisor = (supervisorId) => {
 
     return employees;
 };
+
+const getEmployeesBySupervisorIdAsync = (supervisorId, skip = 0, limit = 10, orderBy = 'DESC') => Employee.findAll({
+        where: {
+            supervisorId
+        },
+        order: [['lastName', orderBy]],
+        offset: skip,
+        limit
+    });
 
 const getEmployeesByPosition = (positionId) => {
     if (isNullOrUndefined(positionId)){
@@ -78,87 +130,63 @@ const getEmployeesByPosition = (positionId) => {
     return employees;
 };
 
-const updateEmployee = (employeeId, { firstName = undefined, lastName = undefined, identificationNumber = undefined, payPerHour = undefined, departmentId = undefined, supervisorId = undefined, positionId = undefined }) => {
-    let employee = getEmployeeById(employeeId);
+const getEmployeesByPositionIdAsync = (positionId, skip = 0, limit = 10, orderBy = 'DESC') => Employee.findAll({
+        where: {
+            positionId
+        },
+        order: [['lastName', orderBy]],
+        offset: skip,
+        limit
+    });
+
+const updateEmployeeAsync = async (employeeId, { firstName = undefined, lastName = undefined, identificationNumber = undefined, payPerHour = undefined, departmentId = undefined, supervisorId = undefined, positionId = undefined }) =>{
+    let employee = getEmployeeByIdAsync(employeeId);
     if (isNullOrUndefined(employee)) {
         return undefined;
     }
 
-    let params = generateUpdateParameters();
-
-    if (params === "") {
-        return getEmployeeById(employeeId);
+    if (areAllParametersEmpty()){
+        return employee;
     }
 
-    let result = DatabaseManager.run(`UPDATE ${tableName} SET ${params} WHERE id = ${employeeId}`);
-    if (result.changes === 0) {
-        throw new FatalError(`Unable to update employee with id '${employeeId}'`);
+    employee.firstName ??= firstName;
+    employee.lastName ??= lastName;
+    employee.identificationNumber ??= identificationNumber;
+    employee.payPerHour ??= payPerHour;
+    employee.departmentId ??= departmentId;
+    employee.supervisorId ??= supervisorId;
+    employee.positionId ??= positionId;
+
+    await employee.save();
+
+    return employee;
+
+    function areAllParametersEmpty(){
+        return isNullUndefinedOrEmpty(firstName) && isNullUndefinedOrEmpty(lastName) &&
+        isNullUndefinedOrEmpty(identificationNumber) && isNullOrUndefined(payPerHour) &&
+        isNullOrUndefined(departmentId) && isNullOrUndefined(supervisorId) &&
+        isNullOrUndefined(positionId);
     }
+}
 
-    return getEmployeeById(employeeId);
-
-    function generateUpdateParameters() {
-        let params = "";
-
-        if (isNotNullUndefinedNorEmpty(firstName)) {
-            params += `firstName = '${firstName}'`;
-        }
-
-        if (isNotNullUndefinedNorEmpty(lastName)) {
-            params += params !== "" ? ", " : params;
-
-            params += `lastName = '${lastName}'`;
-        }
-
-        if (isNotNullUndefinedNorEmpty(identificationNumber)) {
-            params += params !== "" ? ", " : params;
-
-            params += `identificationNumber = '${identificationNumber}'`;
-        }
-
-        if (isNotNullNorUndefined(payPerHour)) {
-            params += params !== "" ? ", " : params;
-
-            params += `payPerHour = ${+payPerHour}`;
-        }
-
-        if (isNotNullNorUndefined(departmentId)) {
-            params += params !== "" ? ", " : params;
-
-            params += `departmentId = ${departmentId}`;
-        }
-
-        if (isNotNullNorUndefined(supervisorId)) {
-            params += params !== "" ? ", " : params;
-
-            params += `supervisorId = ${supervisorId}`;
-        }
-
-        if (isNotNullNorUndefined(positionId)) {
-            params += params !== "" ? ", " : params;
-
-            params += `positionId = ${positionId}`;
-        }
-
-        let today = new Date();
-        params += params !== "" ? `, modifiedOn = '${today.toString()}'` : `modifiedOn = '${today.toString()}'`;
-        
-        return params;
-    }
-};
-
-const deleteEmployee = (id) => {
+const deleteEmployeeAsync = (id) => {
     throw new NotImplementedError();
 };
 
 module.exports = {
-    createEmployee,
+    createEmployeeAsync,
     getEmployeeById,
+    getEmployeeByIdAsync,
     getEmployeeByIdentificationNumber,
+    getEmployeeByIdentificationNumberAsync,
     getEmployees,
+    getEmployeesAsync,
     getEmployeesByDepartment,
+    getEmployeesByDepartmentIdAsync,
     getEmployeesBySupervisor,
+    getEmployeesBySupervisorIdAsync,
     getEmployeesByPosition,
-    updateEmployee,
-    deleteEmployee
+    getEmployeesByPositionIdAsync,
+    updateEmployeeAsync,
+    deleteEmployeeAsync
 };
