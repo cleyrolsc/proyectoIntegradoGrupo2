@@ -6,7 +6,7 @@ class Department extends Model{};
 
 Department.init({
     id: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },

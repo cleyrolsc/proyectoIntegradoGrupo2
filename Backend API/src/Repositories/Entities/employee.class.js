@@ -8,7 +8,7 @@ class Employee extends Model {};
 
 Employee.init({
     id: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
@@ -28,6 +28,8 @@ Employee.init({
         type: DataTypes.DOUBLE,
         defaultValue: 0.0,
     },
+
+    // Foreign Keys
     departmentId: {
         type: DataTypes.INTEGER,
         allowNull: false,

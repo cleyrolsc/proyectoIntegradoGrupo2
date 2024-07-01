@@ -6,7 +6,7 @@ class Position extends Model{};
 
 Position.init({
     id: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
