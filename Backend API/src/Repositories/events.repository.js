@@ -1,39 +1,39 @@
-const { FatalError, BadRequestError, NotImplementedError } = require("../Core/Abstractions/Exceptions");
-const { isNullUndefinedOrEmpty, isNullOrUndefined, isListEmpty } = require("../Core/Utils/null-checker.util");
+const { BadRequestError, NotImplementedError } = require("../Core/Abstractions/Exceptions");
+const { isNullUndefinedOrEmpty, isNullOrUndefined } = require("../Core/Utils/null-checker.util");
 
-const DatabaseManager = require("../Database/database");
+const Event = require('./Entities/event.class');
 
-const tableName = "events";
-
-const createEvent = (description) => {
+const createEventAsync = (description) => {
     if(isNullUndefinedOrEmpty(description)){
         throw new BadRequestError('Description cannot be empty');
     }
 
-    return DatabaseManager.run(`INSERT INTO ${tableName} (description) VALUES ('${description}')`);
+    return Event.create({
+        description
+    });
 };
 
-const getEventById = (id) => {
-    let events = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE id = ${+id} LIMIT 1`);
-    if (isListEmpty(events)) {
+const getEventByIdAsync = async (id) => {
+    let event = await Event.findByPk(id);
+    if (isNullOrUndefined(event)) {
         return undefined;
     }
 
-    return events[0];
+    return event;
 };
 
-const getEvents = () => {
-    let events = DatabaseManager.query(`SELECT * FROM ${tableName}`);
+const getEventsAsync = (skip = 0, limit = 10, orderBy = 'DESC') => Event.findAll({
+    order: [['description', orderBy]],
+    offset: skip,
+    limit
+});
 
-    return events;
-};
-
-const updateEvent = (id, newDescription) => {
+const updateEventAsync = async (id, newDescription) => {
     if(isNullUndefinedOrEmpty(newDescription)){
         throw new BadRequestError('Description cannot be empty');
     }
 
-    let event = getEventById(id);
+    let event = await getEventByIdAsync(id);
     if (isNullOrUndefined(event)) {
         return undefined;
     }
@@ -42,22 +42,21 @@ const updateEvent = (id, newDescription) => {
         return event;
     }
 
-    let result = DatabaseManager.run(`UPDATE ${tableName} SET description = '${newDescription}' WHERE id = ${id}`);
-    if (result.changes === 0) {
-        throw new FatalError(`Unable to update event with id '${id}'`);
-    }
+    await event.update({
+        description: newDescription
+    });
 
-    return getEventById(id);
+    return event;
 };
 
-const deleteEvent = (id) => {
+const deleteEventAsync = (id) => {
     throw new NotImplementedError();
 }
 
 module.exports = {
-    createEvent,
-    getEventById,
-    getEvents,
-    updateEvent,
-    deleteEvent,
+    createEventAsync,
+    getEventByIdAsync,
+    getEventsAsync,
+    updateEventAsync,
+    deleteEventAsync,
 }
