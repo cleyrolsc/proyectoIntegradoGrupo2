@@ -1,8 +1,8 @@
 const express = require("express");
 const { urlencoded } = require("express");
-const cors = require('cors');
 
 const { adminRouter, usersRouter } = require("./Controllers");
+//const testConnection = require('./Database/db-config');
 const { globalErrorHandlingFilter } = require("./Core/Filters");
 
 class Server {
@@ -14,14 +14,14 @@ class Server {
         this.usersEndpoint = '/api/users';
 
         this.middlewares();
+        //testConnection();
         this.routes();
         this.filters();
     }
 
     middlewares(){
-        this.app.use(cors());
-        app.use(express.json());
-        app.use(urlencoded({ extended: true }));
+        this.app.use(express.json());
+        this.app.use(urlencoded({ extended: true }));
     }
 
     routes(){
