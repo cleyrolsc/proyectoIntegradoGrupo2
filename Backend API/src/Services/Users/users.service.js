@@ -139,6 +139,20 @@ const updateUserPasswordAsync = async (username, oldPassword, newPassword) => {
     await UsersRepository.updateUserPasswordAsync(username, newPassword);
 };
 
+const updateUserPrivilegeLevelAsync = async (privilegeName, username) => {
+    let privilege = await PrivilegesRepository.getPrivilegeByNameAsync(privilegeName);
+    if (isNullOrUndefined(privilege)) {
+        throw new NotFoundError(`Privilege '${privilegeName}' does not exist.`);
+    }
+
+    let user = await UsersRepository.getUserByUsernameAsync(username);
+    if (isNullOrUndefined(user)) {
+        throw new NotFoundError(`User '${username}' does not exist.`);
+    }
+
+    await UsersRepository.updateUserAsync(user.username, { privilegeLevel: privilege.name });
+};
+
 module.exports = {
     registerNewUserAsync,
     getUserProfileAsync,
@@ -146,5 +160,6 @@ module.exports = {
     getUsersByPrivilegeAsync,
     updateEmployeeInformationAsync,
     updateUserAsync,
-    updateUserPasswordAsync
+    updateUserPasswordAsync,
+    updateUserPrivilegeLevelAsync
 };
