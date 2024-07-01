@@ -54,7 +54,7 @@ User.init({
     dbContext,
     modelName: 'User',
     tableName: 'users',
-    timestamps: true,
+    timestamps: true
 });
 
 module.exports = User;

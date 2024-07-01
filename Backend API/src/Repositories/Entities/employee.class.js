@@ -61,7 +61,7 @@ Employee.init({
     dbContext,
     modelName: 'Employee',
     tableName: 'employees',
-    timestamps: true,
+    timestamps: true
 });
 
 module.exports = Employee;
