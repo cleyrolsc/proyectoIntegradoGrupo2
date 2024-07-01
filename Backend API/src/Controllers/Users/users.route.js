@@ -4,9 +4,9 @@ const UsersController = require('./users.controller');
 
 const usersRouter = express.Router();
 
-usersRouter.get('/:username/profile', UsersController.viewProfile);
+usersRouter.get('/:username/profile', UsersController.viewProfileAsync);
 
-usersRouter.put('/:username', UsersController.updateEmployeeInformation);
+usersRouter.put('/:username', UsersController.updateEmployeeInformationAsync);
 
 usersRouter.patch('/:username/change-password', UsersController.changePassword)
 

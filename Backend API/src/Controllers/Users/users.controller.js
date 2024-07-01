@@ -1,42 +1,50 @@
 const { UpdateEmployeeInformationRequest } = require("../../Core/Abstractions/Contracts/Requests");
+const { isNullOrUndefined } = require("../../Core/Utils/null-checker.util");
+const { BadRequestError } = require("../../Core/Abstractions/Exceptions");
 
 const UserServices = require("../../Services/Users/users.service");
 
-const viewProfile = (request, response) => {
-    // validate request.param.username
+const viewProfileAsync = async (request, response) => {
     let username = request.params.username;
-    let profile = UserServices.getUserProfile(username);
+    if(isNullOrUndefined(username)) {
+        throw new BadRequestError('Username is undefined');
+    }
 
+    let profile = await UserServices.getUserProfileAsync(username);
     response.status(200).json(profile);
 };
 
-const updateEmployeeInformation = (request, response) => {
-    // validate request.body and params
+const updateEmployeeInformationAsync = async (request, response) => {
     let username = request.params.username;
-    let profile = UserServices.getUserProfile(username);
+    if(isNullOrUndefined(username)) {
+        throw new BadRequestError('Username is undefined');
+    }
 
-    let updateEmployeeInformationRequest = new UpdateEmployeeInformationRequest(request.body);
-    let user = UserServices.updateEmployeeInformationByEmployeeId(profile.employeeId, updateEmployeeInformationRequest);
+    let { employeeInfo } = await UserServices.getUserProfileAsync(username);
+    let updatedInfo = await UserServices.updateEmployeeInformationAsync(employeeInfo.employeeId, new UpdateEmployeeInformationRequest(request.body));
 
-    response.status(200).json(user);
+    response.status(200).json(updatedInfo);
 };
 
-const changePassword = (request, response) => {
-    // validate request.body and params
+const changePasswordAsync = async (request, response) => {
     let username = request.params.username;
+    if(isNullOrUndefined(username)) {
+        throw new BadRequestError('Username is undefined');
+    }
+
     let { oldPassword, newPassword } = request.body;
 
     if (oldPassword === newPassword) {
         return response.status(400).send("New password cannot be the same as old password.");
     }
 
-    UserServices.updateUserPassword(username, oldPassword, newPassword);
+    await UserServices.updateUserPasswordAsync(username, oldPassword, newPassword);
 
     response.status(200).send("Password successfully changed!");
 };
 
 module.exports = {
-    viewProfile,
-    updateEmployeeInformation,
-    changePassword
+    viewProfileAsync,
+    updateEmployeeInformationAsync,
+    changePasswordAsync
 };

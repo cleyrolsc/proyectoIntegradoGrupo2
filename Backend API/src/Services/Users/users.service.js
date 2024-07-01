@@ -1,50 +1,73 @@
-const { CreateUserResponse, PaginatedResponse, UserProfileResponse } = require("../../Core/Abstractions/Contracts/Responses");
-const { EmployeeModel, UserModel } = require("./Models");
+const { CreateUserResponse, PaginatedResponse, UserProfileResponse, UpdateEmployeeInformationResponse, UpdateUserResponse } = require("../../Core/Abstractions/Contracts/Responses");
+const { UserModel } = require("./Models");
 const { BadRequestError, FatalError, NotFoundError, UnauthorizedError } = require("../../Core/Abstractions/Exceptions");
 const { isListEmpty, isNullOrUndefined } = require("../../Core/Utils/null-checker.util");
 
-const EmployeesRepository = require('../../Repositories/employees.repository');
-const UsersRepository = require('../../Repositories/users.repository');
+const { EmployeesRepository, UsersRepository, DepartmentRepository, PositionsRepository, PrivilegesRepository } = require('../../Repositories/index');
 const EncryptionManager = require("../../Core/Utils/encryption-manager.util");
 
-const registerNewUser = (createUserRequest) => {
-    // Validate request
+const registerNewUserAsync = async (createUserRequest) =>{
+    var newEmployee = await createEmployeeAsync();
+    let newUser = await createUserAsync();
 
-    let { firstName, lastName, identificationNumber, commissionPerHour, department } = createUserRequest;
-    let result = EmployeesRepository.createEmployee(firstName, lastName, identificationNumber, commissionPerHour, department);
-    if (result.changes === 0) {
-        throw new FatalError("Employee was not able to be created");
+    return new CreateUserResponse(newUser.username, newUser.type, newUser.privilegeLevel, newEmployee.id, newEmployee.firstName, newEmployee.lastName, newEmployee.identificationNumber, newEmployee.payPerHour, newEmployee.departmentId, newEmployee.supervisorId, newEmployee.positionId);
+
+    async function createEmployeeAsync() {
+        let { firstName, lastName, identificationNumber, commissionPerHour, department, supervisor, position } = createUserRequest;
+        var newEmployee = await EmployeesRepository.createEmployeeAsync({
+            firstName,
+            lastName,
+            identificationNumber,
+            payPerHour: commissionPerHour,
+            departmentId: department,
+            supervisorId: supervisor,
+            positionId: position
+        });
+
+        if (isNullOrUndefined(newEmployee)) {
+            throw new FatalError("Employee was not created");
+        }
+
+        return newEmployee;
     }
 
-    let newEmployee = EmployeesRepository.getEmployeeById(result.lastInsertRowid);
+    async function createUserAsync() {
+        let { username, password, privilegeLevel, type } = createUserRequest;
+        let newUser = await UsersRepository.createUserAsync({
+            username,
+            employeeId: newEmployee.id,
+            password,
+            privilegeLevel,
+            type
+        });
 
-    let { username, password, privilegeLevel, type } = createUserRequest;
-    result = UsersRepository.createUser(username, newEmployee.id, password, privilegeLevel, type);
-    if (result.changes === 0) {
-        throw new FatalError("User was not able to be created");
+        if (isNullOrUndefined(newUser)) {
+            throw new FatalError("User was not created");
+        }
+        return newUser;
     }
-
-    let newUser = UsersRepository.getUserByUsername(username);
-
-    return new CreateUserResponse(newUser.username, newUser.type, newUser.privilegeLevel, newEmployee.id, newEmployee.firstName, newEmployee.lastName, newEmployee.identificationNumber, newEmployee.commissionPerHour, newEmployee.department);
 };
 
-const getUserProfile = (username) => {
-    let user = UsersRepository.getUserByUsername(username);
+const getUserProfileAsync = async (username) => {
+    let user = UsersRepository.getUserByUsernameAsync(username);
     if (isNullOrUndefined(user)) {
         throw new NotFoundError(`User, ${username}, does not exist`);
     }
 
-    let employeeInfo = EmployeesRepository.getEmployeeById(user.employeeId);
-    if (isNullOrUndefined(employeeInfo)) {
+    let employee = EmployeesRepository.getEmployeeById(user.employeeId);
+    if (isNullOrUndefined(employee)) {
         throw new FatalError(`Fatal error! Employee information for user, ${username}, and employee id, ${user.employeeId}, does not exist!`);
     }
 
-    return new UserProfileResponse(user.username, user.type, user.privilegeLevel, employeeInfo.id, employeeInfo.firstName, employeeInfo.lastName, employeeInfo.identificationNumber, employeeInfo.commissionPerHour, employeeInfo.department);
-};
+    let supervisor = EmployeesRepository.getEmployeeByIdAsync(employee.supervisorId);
+    let department = DepartmentRepository.getDepartmentByIdAsync(employee.departmentId);
+    let position = PositionsRepository.getPositionByIdAsync(employee.positionId);
 
-const getUsers = (currentPage = 1, itemsPerPage = 10, order = 'DESC') => {
-    let users = UsersRepository.getUsers(currentPage - 1, itemsPerPage, order);
+    return new UserProfileResponse(user, employee, supervisor, department, position);
+}
+
+const getUsersAsync = async (currentPage = 1, itemsPerPage = 10, order = 'DESC') => {
+    let users = await UsersRepository.getUsersAsync(currentPage - 1, itemsPerPage, order);
     if (isListEmpty(users)) {
         return new PaginatedResponse();
     }
@@ -55,34 +78,51 @@ const getUsers = (currentPage = 1, itemsPerPage = 10, order = 'DESC') => {
     response.totalPages = Math.ceil(users.length / itemsPerPage);
     response.hasNext = response.currentPage < response.totalPages;
     response.content = users.forEach((entity) => {
-        let { username, employeeId, type, privilegeLevel, suspendPrivilege, status, createdOn: registeredOn, modifiedOn } = entity;
+        let { username, employeeId, type, privilegeLevel, suspendPrivilege, status, createdAt: registeredOn, updatedAt: modifiedOn } = entity;
         return new UserModel(username, employeeId, type, privilegeLevel, suspendPrivilege, status, registeredOn, modifiedOn);
     });
 
     return response;
 };
 
-const updateEmployeeInformationByEmployeeId = (employeeId, updateEmployeeInformationRequest) => {
-    let updatedEmployee = EmployeesRepository.updateEmployee(employeeId, { ...updateEmployeeInformationRequest });
-    if (isNullOrUndefined(updatedEmployee)) {
-        throw new NotFoundError(`Employee information with id '${employeeId}' does not exist.`);
+const getUsersByPrivilegeAsync = async (privilegeName) => {
+    let privilege = await PrivilegesRepository.getPrivilegeByNameAsync(privilegeName);
+    if (isNullOrUndefined(privilege)) {
+        throw new NotFoundError(`Privilege '${privilegeName}' does not exist.`);
     }
 
-    let { id, firstName, lastName, identificationNumber, commissionPerHour, department, createdOn: registeredOn, modifiedOn } = updatedEmployee;
-    return new EmployeeModel(id, firstName, lastName, identificationNumber, commissionPerHour, department, registeredOn, modifiedOn);
-}
+    let users = UsersRepository.getUsersByPrivilegeLevelAsync(privilege.name);
+    return users.forEach((entity) => {
+        let { username, employeeId, type, privilegeLevel, suspendPrivilege, status, createdOn: registeredOn, modifiedOn } = entity;
+        return new UserModel(username, employeeId, type, privilegeLevel, suspendPrivilege, status, registeredOn, modifiedOn);
+    });
 
-const updateUser = (username, updateUserRequest) => {
-    let updatedUser = UsersRepository.updateUser(username, updateUserRequest);
+};
+
+const updateEmployeeInformationAsync = async (employeeId, updateEmployeeInformationRequest) => {
+    let updatedEmployee = await EmployeesRepository.updateEmployeeAsync(employeeId, updateEmployeeInformationRequest);
+    if (isNullOrUndefined(updatedEmployee)) {
+        throw new NotFoundError(`Employee with id '${employeeId}' does not exist.`);
+    }
+
+    let supervisor = EmployeesRepository.getEmployeeByIdAsync(updatedEmployee.supervisorId);
+    let department = DepartmentRepository.getDepartmentByIdAsync(updatedEmployee.departmentId);
+    let position = PositionsRepository.getPositionByIdAsync(updatedEmployee.positionId);
+
+    return new UpdateEmployeeInformationResponse(updatedEmployee, supervisor, department, position);
+};
+
+const updateUserAsync = async (username, updateUserRequest) => {
+    let updatedUser = await UsersRepository.updateUserAsync(username, updateUserRequest);
     if (isNullOrUndefined(updatedUser)) {
         throw new NotFoundError(`User, ${username}, does not exist.`);
     }
 
-    return new UserModel(username, user.employeeId, user.type, user.privilegeLevel, user.suspendPrivilege, user.status, user.createdOn);
+    return new UpdateUserResponse(updatedUser);
 };
 
-const updateUserPassword = (username, oldPassword, newPassword) => {
-    let user = UsersRepository.getUserByUsername(username);
+const updateUserPasswordAsync = async (username, oldPassword, newPassword) => {
+    let user = await UsersRepository.getUserByUsernameAsync(username);
     if (isNullOrUndefined(user)) {
         throw new NotFoundError(`User, ${username}, does not exist`);
     }
@@ -96,14 +136,15 @@ const updateUserPassword = (username, oldPassword, newPassword) => {
         throw new BadRequestError("New password cannot be the same as old password.");
     }
 
-    UsersRepository.updateUserPassword(username, newPassword);
+    await UsersRepository.updateUserPasswordAsync(username, newPassword);
 };
 
 module.exports = {
-    registerNewUser,
-    getUserProfile,
-    getUsers,
-    updateEmployeeInformationByEmployeeId,
-    updateUser,
-    updateUserPassword
+    registerNewUserAsync,
+    getUserProfileAsync,
+    getUsersAsync,
+    getUsersByPrivilegeAsync,
+    updateEmployeeInformationAsync,
+    updateUserAsync,
+    updateUserPasswordAsync
 };
