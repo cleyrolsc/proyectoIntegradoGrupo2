@@ -1,84 +1,62 @@
-const { isListEmpty, isNotNullNorUndefined, isNotNullUndefinedNorEmpty } = require("../Core/Utils/null-checker.util");
-const { PrivilegeStatus } = require("../Core/Abstractions/Enums");
-const { FatalError, NotImplementedError } = require("../Core/Abstractions/Exceptions");
+const { isNullOrUndefined, isNullUndefinedOrEmpty } = require("../Core/Utils/null-checker.util");
+const { NotImplementedError, BadRequestError } = require("../Core/Abstractions/Exceptions");
 
-const DatabaseManager = require("../Database/database");
+const { Privilege } = require('./Entities/index');
 
-const tableName = "privileges";
+const createPrivilegeAsync = (name, level) => Privilege.create({
+        name,
+        level
+    });
 
-const createPrivilege = (name, level) => {
-    // Validate data
+const getPrivilegeByNameAsync = async (name) => {
+    if(isNullUndefinedOrEmpty(name)) {
+        throw new BadRequestError('Privilege name cannot be undefined');
+    }
 
-    let today = new Date();
-    let values = `'${name}', ${+level}, ${+PrivilegeStatus.Active}, '${today.toString()}'`;
-
-    return DatabaseManager.run(`INSERT INTO ${tableName} (name, level, status, createdOn) VALUES (${values})`);
-};
-
-const getPrivilegeByName = (name) => {
-    let privileges = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE name = '${name}' LIMIT 1`);
-    if (isListEmpty(privileges)) {
+    let privilege = await Privilege.findByPk(name);
+    if(isNullOrUndefined(privilege)) {
         return undefined;
     }
 
-    return privileges[0];
+    return privilege;
 };
 
-const getPrivileges = (filterByName = undefined, skip = 0, limit = 10, orderBy = "DESC") => {
-    let whereClause = isNotNullUndefinedNorEmpty(filterByName) ? `WHERE name LIKE '%${filterByName}%'` : "";
+const getPrivilegesAsync = (skip = 0, limit = 10, orderBy = "DESC") => Privilege.findAll({
+    order: [['name', orderBy]],
+    offset: skip,
+    limit
+});
 
-    let privileges = DatabaseManager.query(`SELECT * FROM ${tableName} ${whereClause} ORDERBY name ${orderBy} OFFSET ${+(skip * limit)} LIMIT ${+limit}`);
-
-    return privileges;
-};
-
-const updatePrivilege = (name, { level = undefined, status = undefined }) => {
-    let privilege = getPrivilegeByName(name);
+const updatePrivilegeAsync = async (name, { level = undefined, status = undefined }) => {
+    let privilege = await getPrivilegeByNameAsync(name);
     if (isNullOrUndefined(privilege)) {
         return undefined;
     }
 
-    let params = generateUpdateParameters();
-
-    if (params === "") {
-        return getPrivilegeByName(name);
+    if (areAllParametersEmpty()){
+        return privilege;
     }
 
-    let result = DatabaseManager.run(`UPDATE ${tableName} SET ${params} WHERE name = ${name}`);
-    if (result.changes === 0) {
-        throw new FatalError(`Unable to update privilege '${name}'`);
-    }
+    privilege.level ??= level;
+    privilege.status ??= status;
 
-    return getPrivilegeByName(name);
+    await privilege.save();
 
-    function generateUpdateParameters() {
-        let params = "";
+    return privilege;
 
-        if (isNotNullNorUndefined(level)) {
-            params += `level = ${+level}`;
-        }
-
-        if (isNotNullNorUndefined(status)) {
-            params += params !== "" ? ", " : params;
-
-            params += `status = ${+status}`;
-        }
-
-        let today = new Date();
-        params += params !== "" ? `, modifiedOn = '${today.toString()}'` : `modifiedOn = '${today.toString()}'`;
-
-        return params;
+    function areAllParametersEmpty(){
+        return isNullOrUndefined(level) && isNullOrUndefined(status);
     }
 };
 
-const deletePrivilege = (name) => {
+const deletePrivilegeAsync = (name) => {
     throw new NotImplementedError();
 }
 
 module.exports = {
-    createPrivilege,
-    getPrivilegeByName,
-    getPrivileges,
-    updatePrivilege,
-    deletePrivilege
+    createPrivilegeAsync,
+    getPrivilegeByNameAsync,
+    getPrivilegesAsync,
+    updatePrivilegeAsync,
+    deletePrivilegeAsync
 };
