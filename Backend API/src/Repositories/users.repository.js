@@ -38,12 +38,6 @@ const getUsersByPrivilegeLevel = (privilegeLevel) => {
     return users;
 };
 
-const getUsersByPrivilegeLevel = (privilegeLevel) => {
-    let users = DatabaseManager.query(`SELECT * FROM ${tableName} ORDER BY username ASC WHERE privilegeLevel = '${privilegeLevel}'`);
-
-    return users;
-};
-
 const updateUser = (username, { type = undefined, privilegeLevel = undefined, suspendPrivilege = undefined, status = undefined }) => {
     let user = getUserByUsername(username);
     if (isNullOrUndefined(user)) {
