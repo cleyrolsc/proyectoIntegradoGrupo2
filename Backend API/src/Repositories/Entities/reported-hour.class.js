@@ -17,14 +17,22 @@ ReportedHour.init({
         type: DataTypes.INTEGER,
         allowNull: false
     },
+
+    // Foreign Keys
     employeeId: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        references: {
+            model: Employee,
+            key: 'id',
+            deferrable: Deferrable.INITIALLY_IMMEDIATE
+        }
     }
 }, {
     dbContext,
     modelName: 'ReportedHour',
-    tableName: 'reportedHours'
+    tableName: 'reportedHours',
+    timestamps: false,
 });
 
 module.exports = ReportedHour;
