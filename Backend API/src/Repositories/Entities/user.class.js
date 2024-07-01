@@ -5,8 +5,8 @@ class User extends ICreatedModifiedOn {
     employeeId; //FK Employee
     password;
     type; // UserType.Agent (enum)
-    privilegeLevel; // FK Privilege
-    suspendPrivilege = false;
+    privilegeId; // FK Privilege
+    privilegeSuspended = false;
     status; // UserStatus.Active (enum)
 }
 

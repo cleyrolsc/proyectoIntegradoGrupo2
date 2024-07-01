@@ -1,5 +1,6 @@
 const { UserStatus, UserType } = require("../Core/Abstractions/Enums");
 const { isNotNullNorUndefined, isNullOrUndefined, isListEmpty } = require("../Core/Utils/null-checker.util");
+const { FatalError, NotImplementedError } = require("../Core/Abstractions/Exceptions");
 
 const DatabaseManager = require("../Database/database");
 const EncryptionManager = require("../Core/Utils/encryption-manager.util");
@@ -25,8 +26,14 @@ const getUserByUsername = (username) => {
     return users[0];
 };
 
-const getUsers = (skip = 0, limit = 10, order = 'DESC') => {
-    let users = DatabaseManager.query(`SELECT * FROM ${tableName} ORDER BY username ${order} OFFSET ${+(skip * limit)} LIMIT ${+limit}`);
+const getUsers = (skip = 0, limit = 10, orderBy = 'DESC') => {
+    let users = DatabaseManager.query(`SELECT * FROM ${tableName} ORDER BY username ${orderBy} OFFSET ${+(skip * limit)} LIMIT ${+limit}`);
+
+    return users;
+};
+
+const getUsersByPrivilegeLevel = (privilegeLevel) => {
+    let users = DatabaseManager.query(`SELECT * FROM ${tableName} ORDERBY username ${orderBy} WHERE priivilegeLevel = '${privilegeLevel}'`);
 
     return users;
 };
@@ -104,7 +111,7 @@ const updateUserPassword = (username, password) => {
 };
 
 const deleteUser = (username) => {
-    throw new Error("Not Implemented");
+    throw new NotImplementedError();
 }
 
 module.exports = {

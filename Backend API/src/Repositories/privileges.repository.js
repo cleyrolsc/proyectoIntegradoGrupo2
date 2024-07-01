@@ -1,5 +1,6 @@
 const { isListEmpty, isNotNullNorUndefined, isNotNullUndefinedNorEmpty } = require("../Core/Utils/null-checker.util");
 const { PrivilegeStatus } = require("../Core/Abstractions/Enums");
+const { FatalError, NotImplementedError } = require("../Core/Abstractions/Exceptions");
 
 const DatabaseManager = require("../Database/database");
 
@@ -26,7 +27,7 @@ const getPrivilegeByName = (name) => {
 const getPrivileges = (filterByName = undefined, skip = 0, limit = 10, orderBy = "DESC") => {
     let whereClause = isNotNullUndefinedNorEmpty(filterByName) ? `WHERE name LIKE '%${filterByName}%'` : "";
 
-    let privileges = DatabaseManager.query(`SELECT * FROM ${tableName} ${whereClause} ORDER BY name ${orderBy} OFFSET ${+(skip * limit)} LIMIT ${+limit}`);
+    let privileges = DatabaseManager.query(`SELECT * FROM ${tableName} ${whereClause} ORDERBY name ${orderBy} OFFSET ${+(skip * limit)} LIMIT ${+limit}`);
 
     return privileges;
 };
@@ -71,7 +72,7 @@ const updatePrivilege = (name, { level = undefined, status = undefined }) => {
 };
 
 const deletePrivilege = (name) => {
-    throw new Error("Not Implemented");
+    throw new NotImplementedError();
 }
 
 module.exports = {

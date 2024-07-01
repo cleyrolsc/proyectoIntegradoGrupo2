@@ -130,4 +130,6 @@ dist
 .pnp.*
 
 # Database files
+*.db
 *.sqlite3
+*.sqlite3-journal
