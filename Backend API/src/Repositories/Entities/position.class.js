@@ -19,7 +19,7 @@ Position.init({
     dbContext,
     modelName: 'Position',
     tableName: 'positions',
-    timestamps: false,
+    timestamps: false
 });
 
 module.exports = Position;

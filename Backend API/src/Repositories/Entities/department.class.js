@@ -19,7 +19,7 @@ Department.init({
     dbContext,
     modelName: 'Department',
     tableName: 'departments',
-    timestamps: false,
+    timestamps: false
 });
 
 module.exports = Department;

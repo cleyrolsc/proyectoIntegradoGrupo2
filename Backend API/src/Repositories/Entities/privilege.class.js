@@ -23,7 +23,7 @@ Privilege.init({
     dbContext,
     modelName: 'Privilege',
     tableName: 'privileges',
-    timestamps: true,
+    timestamps: true
 });
 
 module.exports = Privilege;

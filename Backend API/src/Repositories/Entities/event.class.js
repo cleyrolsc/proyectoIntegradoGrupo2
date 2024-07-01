@@ -19,7 +19,7 @@ Event.init({
     dbContext,
     modelName: 'Event',
     tableName: 'events',
-    timestamps: false,
+    timestamps: false
 });
 
 module.exports = Event;
