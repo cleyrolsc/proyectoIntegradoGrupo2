@@ -2,7 +2,6 @@ const { BadRequestError, NotImplementedError } = require("../Core/Abstractions/E
 const { isNullUndefinedOrEmpty, isNullOrUndefined } = require("../Core/Utils/null-checker.util");
 
 const Incident = require('./Entities/incident.class');
-
 const createIncidentAsync = (employeeId, comment) => {
     if(isNullUndefinedOrEmpty(comment)){
         throw new BadRequestError('Comment cannot be empty');
