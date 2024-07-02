@@ -3,7 +3,7 @@ const { isNotNullNorUndefined, isNullOrUndefined, isNullUndefinedOrEmpty } = req
 const { NotImplementedError } = require("../Core/Abstractions/Exceptions");
 
 const EncryptionManager = require("../Core/Utils/encryption-manager.util");
-const { User } = require('./Entities/index');
+const User = require('./Entities/user.class');
 
 const createUserAsync = ({username, employeeId, password, privilegeLevel, type = UserType.Agent}) => {
     let encryptedPassword = EncryptionManager.encrypt(password);
