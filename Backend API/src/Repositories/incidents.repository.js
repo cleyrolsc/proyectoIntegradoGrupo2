@@ -1,11 +1,7 @@
-const { FatalError, BadRequestError, NotImplementedError } = require("../Core/Abstractions/Exceptions");
-const { isNullUndefinedOrEmpty, isNullOrUndefined, isListEmpty } = require("../Core/Utils/null-checker.util");
+const { BadRequestError, NotImplementedError } = require("../Core/Abstractions/Exceptions");
+const { isNullUndefinedOrEmpty, isNullOrUndefined } = require("../Core/Utils/null-checker.util");
 
 const Incident = require('./Entities/incident.class');
-
-const DatabaseManager = require("../Database/database");
-
-const tableName = "incidents";
 
 const createIncidentAsync = (employeeId, comment) => {
     if(isNullUndefinedOrEmpty(comment)){
