@@ -4,20 +4,6 @@ const { isNullOrUndefined, isListEmpty } = require("../../Core/Utils/null-checke
 const PrivilegeModel = require("./Models/privilege.model");
 
 const PrivilegesRepository = require("../../Repositories/privileges.repository");
-const UsersRepository = require("../../Repositories/users.repository");
-
-const registerNewPrivilege = (name, level) => {
-/*
-    if (level < 0 || level > 98) {
-        throw new BadRequestError("New privilege level must be between 0 and 98.");
-    }
-
-    let result = PrivilegesRepository.createPrivilege(name, level);
-    if (result.changes === 0) {
-        throw new FatalError("Privilege was not able to be created");
-    }
-    */
-};
 
 const registerNewPrivilegeAsync = async (name, level) => {
     if (level < 0 || level > 98) {
@@ -30,17 +16,6 @@ const registerNewPrivilegeAsync = async (name, level) => {
     }
 };
 
-const getPrivilege = (name) => {
-    /*
-    let privilege = PrivilegesRepository.getPrivilegeByName(name);
-    if (isNullOrUndefined(privilege)) {
-        throw new NotFoundError(`Privilege '${name}' does not exist.`);
-    }
-
-    return new PrivilegeModel(privilege.name, privilege.level, privilege.status, privilege.createdOn, privilege.modifiedOn)
-*/
-};
-
 const getPrivilegeAsync = async (name) => {
     let privilege = await PrivilegesRepository.getPrivilegeByNameAsync(name);
     if (isNullOrUndefined(privilege)) {
@@ -48,27 +23,6 @@ const getPrivilegeAsync = async (name) => {
     }
 
     return new PrivilegeModel(privilege.name, privilege.level, privilege.status, privilege.createdOn, privilege.modifiedOn)
-};
-
-const getPrivileges = (filterByName, currentPage = 1, itemsPerPage = 10, order = "DESC") => {
-    /*
-    let privileges = PrivilegesRepository.getPrivileges(filterByName, currentPage - 1, itemsPerPage, order);
-    if (isListEmpty(privileges)) {
-        return new PaginatedResponse();
-    }
-
-    let response = new PaginatedResponse();
-    response.currentPage = currentPage;
-    response.itemsPerPage = itemsPerPage;
-    response.totalPages = Math.ceil(users.length / itemsPerPage);
-    response.hasNext = response.currentPage < response.totalPages;
-    response.content = privileges.forEach((entity) => {
-        let { name, level, status, createdOn: registeredOn, modifiedOn } = entity;
-        return new PrivilegeModel(name, level, status, registeredOn, modifiedOn);
-    });
-
-    return response;
-    */
 };
 
 const getPrivilegesAsync = async (currentPage = 1, itemsPerPage = 10, order = "DESC") => {
@@ -90,14 +44,6 @@ const getPrivilegesAsync = async (currentPage = 1, itemsPerPage = 10, order = "D
     return response;
 };
 
-const updatePrivilege = (name, updatePrivilegeRequest) => {
-    /*
-    let { level, status, createdAt: registeredOn, updatedAt: modifiedOn } = PrivilegesRepository.updatePrivilege(name, updatePrivilegeRequest);
-
-    return new PrivilegeModel(name, level, status, registeredOn, modifiedOn);
-    */
-};
-
 const updatePrivilegeAsync = async (name, updatePrivilegeRequest) => {
 
     let privilege = await PrivilegesRepository.updatePrivilegeAsync(name, updatePrivilegeRequest);
@@ -112,12 +58,8 @@ const updatePrivilegeAsync = async (name, updatePrivilegeRequest) => {
 };
 
 module.exports = {
-    registerNewPrivilege,
     registerNewPrivilegeAsync,
-    getPrivilege,
     getPrivilegeAsync,
-    getPrivileges,
     getPrivilegesAsync,
-    updatePrivilege,
     updatePrivilegeAsync
 };

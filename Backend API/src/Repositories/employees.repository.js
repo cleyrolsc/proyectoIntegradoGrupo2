@@ -1,10 +1,7 @@
-const { FatalError, NotImplementedError, BadRequestError } = require("../Core/Abstractions/Exceptions");
-const { isNotNullUndefinedNorEmpty, isNotNullNorUndefined, isNullOrUndefined, isListEmpty, isNullUndefinedOrEmpty } = require("../Core/Utils/null-checker.util");
+const { NotImplementedError, BadRequestError } = require("../Core/Abstractions/Exceptions");
+const { isNullOrUndefined, isNullUndefinedOrEmpty } = require("../Core/Utils/null-checker.util");
 
-const DatabaseManager = require("../Database/database");
-const { Employee } = require('./Entities/index');
-
-const tableName = "employees";
+const Employee = require('./Entities/employee.class');
 
 const createEmployeeAsync = ({firstName, lastName, identificationNumber, payPerHour, departmentId, supervisorId, positionId}) => {
     if (isNullOrUndefined(departmentId)){
@@ -30,15 +27,6 @@ const createEmployeeAsync = ({firstName, lastName, identificationNumber, payPerH
     });
 };
 
-const getEmployeeById = (id) => {
-    let employees = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE id = ${+id} LIMIT 1`);
-    if (isListEmpty(employees)) {
-        return undefined;
-    }
-
-    return employees[0];
-};
-
 const getEmployeeByIdAsync = async (id) => {
     let employee = await Employee.findByPk(id);
     if(isNullOrUndefined(employee)){
@@ -46,15 +34,6 @@ const getEmployeeByIdAsync = async (id) => {
     }
 
     return employee;
-};
-
-const getEmployeeByIdentificationNumber = (identificationNumber) => {
-    let employees = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE identificationNumber = '${identificationNumber}' LIMIT 1`);
-    if (isListEmpty(employees)) {
-        return undefined;
-    }
-
-    return employees[0];
 };
 
 const getEmployeeByIdentificationNumberAsync = async (identificationNumber) => {
@@ -70,27 +49,11 @@ const getEmployeeByIdentificationNumberAsync = async (identificationNumber) => {
     return employee;
 };
 
-const getEmployees = () => {
-    let employees = DatabaseManager.query(`SELECT * FROM ${tableName}`);
-
-    return employees;
-};
-
 const getEmployeesAsync = (skip = 0, limit = 10, orderBy = 'DESC') => Employee.findAll({
         order: [['lastName', orderBy]],
         offset: skip,
         limit
     });
-
-const getEmployeesByDepartment = (departmentId) => {
-    if (isNullOrUndefined(departmentId)){
-        throw new BadRequestError('Department id cannot be null');
-    }
-
-    let employees = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE departmentId = ${+departmentId}`);
-
-    return employees;
-};
 
 const getEmployeesByDepartmentIdAsync = (departmentId, skip = 0, limit = 10, orderBy = 'DESC') => Employee.findAll({
         where: {
@@ -101,16 +64,6 @@ const getEmployeesByDepartmentIdAsync = (departmentId, skip = 0, limit = 10, ord
         limit
     });
 
-const getEmployeesBySupervisor = (supervisorId) => {
-    if (isNullOrUndefined(supervisorId)){
-        throw new BadRequestError('Supervisor id cannot be null');
-    }
-
-    let employees = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE supervisorId = ${+supervisorId}`);
-
-    return employees;
-};
-
 const getEmployeesBySupervisorIdAsync = (supervisorId, skip = 0, limit = 10, orderBy = 'DESC') => Employee.findAll({
         where: {
             supervisorId
@@ -119,16 +72,6 @@ const getEmployeesBySupervisorIdAsync = (supervisorId, skip = 0, limit = 10, ord
         offset: skip,
         limit
     });
-
-const getEmployeesByPosition = (positionId) => {
-    if (isNullOrUndefined(positionId)){
-        throw new BadRequestError('Position id cannot be null');
-    }
-
-    let employees = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE positionId = ${+positionId}`);
-
-    return employees;
-};
 
 const getEmployeesByPositionIdAsync = (positionId, skip = 0, limit = 10, orderBy = 'DESC') => Employee.findAll({
         where: {
@@ -175,17 +118,11 @@ const deleteEmployeeAsync = (id) => {
 
 module.exports = {
     createEmployeeAsync,
-    getEmployeeById,
     getEmployeeByIdAsync,
-    getEmployeeByIdentificationNumber,
     getEmployeeByIdentificationNumberAsync,
-    getEmployees,
     getEmployeesAsync,
-    getEmployeesByDepartment,
     getEmployeesByDepartmentIdAsync,
-    getEmployeesBySupervisor,
     getEmployeesBySupervisorIdAsync,
-    getEmployeesByPosition,
     getEmployeesByPositionIdAsync,
     updateEmployeeAsync,
     deleteEmployeeAsync

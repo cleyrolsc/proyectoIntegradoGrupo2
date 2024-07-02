@@ -1,7 +1,7 @@
 const { isNullOrUndefined, isNullUndefinedOrEmpty } = require("../Core/Utils/null-checker.util");
 const { NotImplementedError, BadRequestError } = require("../Core/Abstractions/Exceptions");
 
-const { Privilege } = require('./Entities/index');
+const Privilege = require('./Entities/privilege.class');
 
 const createPrivilegeAsync = (name, level) => Privilege.create({
         name,
