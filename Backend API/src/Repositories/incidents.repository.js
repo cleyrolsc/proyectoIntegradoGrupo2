@@ -1,57 +1,76 @@
 const { FatalError, BadRequestError, NotImplementedError } = require("../Core/Abstractions/Exceptions");
 const { isNullUndefinedOrEmpty, isNullOrUndefined, isListEmpty } = require("../Core/Utils/null-checker.util");
 
+const Incident = require('./Entities/incident.class');
+
 const DatabaseManager = require("../Database/database");
 
 const tableName = "incidents";
 
-const createIncident = (employeeId, comment) => {
+const createIncidentAsync = (employeeId, comment) => {
     if(isNullUndefinedOrEmpty(comment)){
         throw new BadRequestError('Comment cannot be empty');
     }
 
-    return DatabaseManager.run(`INSERT INTO ${tableName} (employeeId, comment) VALUES (${employeeId}, '${comment}')`);
+    return Incident.create({
+        employeeId,
+        comment
+    });
 };
 
-const getIncidentById = (id) => {
-    let incidents = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE id = ${+id} LIMIT 1`);
-    if (isListEmpty(incidents)) {
+const getIncidentByIdAsync = async (id) => {
+    let incident = await Incident.findByPk(id);
+    if (isNullOrUndefined(incident)) {
         return undefined;
     }
 
-    return incidents[0];
+    return incident;
 };
 
-const getIncidents = () => {
-    let incidents = DatabaseManager.query(`SELECT * FROM ${tableName}`);
+const getIncidentsAsync = (skip = 0, limit = 10, orderBy = 'DESC') => Incident.findAll({
+    order: [['createdAt', orderBy]],
+    offset: skip,
+    limit
+});
 
-    return incidents;
-};
-
-const getIncidentsByEmployeeId = (employeeId) => {
-    let incidents = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE employeeId = ${+employeeId}`);
-    if (isListEmpty(incidents)) {
-        return undefined;
+const getIncidentsByEmployeeIdAsync = (employeeId, skip = 0, limit = 10, orderBy = 'DESC') => {
+    if(isNullOrUndefined(employeeId)){
+        throw new BadRequestError('Employee id cannot be undefined');
     }
 
-    return incidents[0];
+    return Incident.findAll({
+        where: {
+            employeeId
+        },
+        order: [['createdAt', orderBy]],
+        offset: skip,
+        limit
+    });
 };
 
-const getIncidentsBetween = (startDate, endDate = new Date()) => {
+const getIncidentsBetweenAsync = (startDate, endDate = new Date(), skip = 0, limit = 10, orderBy = 'DESC') => {
     if (startDate > endDate){
         throw new BadRequestError('Start date cannot be at a later date than end date');
     }
-    let incidents = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE reportDate BETWEEN ${startDate} and ${endDate}`);
 
-    return incidents;
+    return Incident.findAll({
+        where: {
+            createdAt: {
+                [Op.between]: [startDate, endDate]
+            }
+        },
+        order: [['createdAt', orderBy]],
+        offset: skip,
+        limit
+    });
 };
 
-const updateIncident = (id, newComment) => {
+const updateIncidentAsync = async (id, newComment) => {
     if(isNullUndefinedOrEmpty(newComment)){
         throw new BadRequestError('Comment cannot be empty');
     }
 
-    let incident = getIncidentById(id);
+    let incident = await getIncidentByIdAsync(id);
     if (isNullOrUndefined(incident)) {
         return undefined;
     }
@@ -60,25 +79,23 @@ const updateIncident = (id, newComment) => {
         return incident;
     }
 
-    let result = DatabaseManager.run(`UPDATE ${tableName} SET comment = '${newComment}' WHERE id = ${id}`);
-    if (result.changes === 0) {
-        throw new FatalError(`Unable to update incident with id '${id}'`);
-    }
+    await incident.update({
+        comment: newComment
+    });
 
-    return getIncidentById(id);
-
+    return incident;
 };
 
-const deleteIncident = (id) => {
+const deleteIncidentAsync = (id) => {
     throw new NotImplementedError();
 };
 
 module.exports = {
-    createIncident,
-    getIncidentById,
-    getIncidents,
-    getIncidentsByEmployeeId,
-    getIncidentsBetween,
-    updateIncident,
-    deleteIncident
+    createIncidentAsync,
+    getIncidentByIdAsync,
+    getIncidentsAsync,
+    getIncidentsByEmployeeIdAsync,
+    getIncidentsBetweenAsync,
+    updateIncidentAsync,
+    deleteIncidentAsync
 };
