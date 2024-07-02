@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TMS</title>
+    <link rel="stylesheet" href="/styles/app.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="userinfo">
+        <img
+          src="https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2670&q=80"
+          alt=""
+        />
+        <p>Cleyrol Santana</p>
+      </div>
+      <ul>
+        <li><a href="#">Dashboard</a></li>
+        <li><a href="#">Reports</a></li>
+        <li><a href="#">Complaints</a></li>
+        <li><a href="#">Logout</a></li>
+      </ul>
+    </nav>
+    <div>
+      <p id="timer">00:00:00</p>
+    </div>
+    <button type="button" class="btn btn-success" id="mainbtn">Start</button>
+    <div id="paused">
+      <div>
+        <button class="status lunch">Lunch</button
+        ><button class="status break">Break</button>
+      </div>
+      <div class="end">
+        <button class="status endbtn">End</button>
+      </div>
+    </div>
+    <aside>
+      <h2>Activity Log</h2>
+    </aside>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
