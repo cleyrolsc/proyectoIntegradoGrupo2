@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TMS</title>
+    <link rel="stylesheet" href="/styles/header.css" />
+    <link rel="stylesheet" href="/styles/app.css" />
+    <link rel="stylesheet" href="/styles/dispute.css" />
+    <link rel="stylesheet" href="/styles/general.css" />
+  </head>
+  <body>
+    <nav class="nav-bar">
+      <div class="nav-bar-buttons">
+        <ul class="nav-list">
+          <li><a href="">Home</a></li>
+          <li><a href="">Reports</a></li>
+          <li>
+            <a class="logout" href="">logout</a>
+          </li>
+        </ul>
+      </div>
+      <p>[Nombre empleado] - [Codigo Empleado]</p>
+    </nav>
+    <div class="timer-container">
+      <span id="timer">00:00:00</span>
+      <div>
+        <button class="start-button">Start</button>
+      </div>
+      <div class="non-working-buttons hidden">
+        <div class="break-container">
+          <button class="break">Break</button>
+          <button class="lunch">Lunch</button>
+        </div>
+        <div>
+          <button class="coaching-training">Coaching/Training</button>
+        </div>
+      </div>
+    </div>
+    <div class="confirmation-form hidden">
+      <div class="confirmation-container">
+        <p>Please confirm:</p>
+        <div class="confirmation-buttons">
+          <button class="stop-working btn">Stop working</button>
+          <button class="logout-confirmation">Logout</button>
+        </div>
+      </div>
+    </div>
+    <script src="/app.js"></script>
+  </body>
+</html>
