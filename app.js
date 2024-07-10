@@ -1,4 +1,38 @@
 'use strict';
+
+const btnApprove = document.querySelector('.approve');
+const btnStartShift = document.querySelector('.start');
+const disputeModal = document.querySelector('.dispute-modal');
+const btnBreaks = document.querySelector('.non-working-buttons');
+const logoutEl = document.querySelector('.logout');
+const confirmationFormEl = document.querySelector('.confirmation-form');
+// const btnStartShift = document.querySelector('.start-button');
+// const timerEl = document.getElementById('timer');
+// const btnBreak = document.querySelector('.break');
+// const btnLunch = document.querySelector('.lunch');
+// const btnCoachingTraining = document.querySelector('.coaching-training');
+
+// const navList = document.querySelector('.nav-list');
+
+btnApprove.addEventListener('click', () => {
+  btnStartShift.classList.remove('hidden');
+  disputeModal.classList.add('hidden');
+});
+
+btnStartShift.addEventListener('click', () => {
+  if (btnStartShift.textContent === 'Start') {
+    btnStartShift.textContent = 'Pause';
+    btnStartShift.style.backgroundColor = '#e3dc19';
+    logoutEl.textContent = 'Stop Working';
+  } else {
+    btnBreaks.classList.remove('hidden');
+    btnStartShift.classList.add('hidden');
+  }
+});
+
+logoutEl.addEventListener('click', () => {
+  confirmationFormEl.classList.remove('hidden');
+});
 // let timerId;
 // let seconds = 0;
 // let minutes = 0;
@@ -37,55 +71,55 @@
 //   }
 // });
 
-const btnStartShift = document.querySelector('.start-button');
-const timerEl = document.getElementById('timer');
-const btnBreaks = document.querySelector('.non-working-buttons');
-const btnBreak = document.querySelector('.break');
-const btnLunch = document.querySelector('.lunch');
-const btnCoachingTraining = document.querySelector('.coaching-training');
-const logoutEl = document.querySelector('.logout');
-const navList = document.querySelector('.nav-list');
-const confirmationFormEl = document.querySelector('.confirmation-form');
+// const btnStartShift = document.querySelector('.start-button');
+// const timerEl = document.getElementById('timer');
+// const btnBreaks = document.querySelector('.non-working-buttons');
+// const btnBreak = document.querySelector('.break');
+// const btnLunch = document.querySelector('.lunch');
+// const btnCoachingTraining = document.querySelector('.coaching-training');
+// const logoutEl = document.querySelector('.logout');
+// const navList = document.querySelector('.nav-list');
+// const confirmationFormEl = document.querySelector('.confirmation-form');
 
-logoutEl.addEventListener('click', function (event) {
-  event.preventDefault();
-  // disputeModalEl.style.display = 'none';
-  confirmationFormEl.style.display = 'flex';
-  document.querySelector('body').classList.add('overlay');
-  btnStartShift.classList.add('hidden');
-  navList.classList.add('hidden');
-  btnBreaks.classList.add('hidden');
+// logoutEl.addEventListener('click', function (event) {
+//   event.preventDefault();
+//   // disputeModalEl.style.display = 'none';
+//   confirmationFormEl.style.display = 'flex';
+//   document.querySelector('body').classList.add('overlay');
+//   btnStartShift.classList.add('hidden');
+//   navList.classList.add('hidden');
+//   btnBreaks.classList.add('hidden');
 
-  // disputeFormEl.classList.remove('hidden');
-});
+//   // disputeFormEl.classList.remove('hidden');
+// });
 
-btnStartShift.addEventListener('click', function () {
-  if (btnStartShift.textContent === 'Pause') {
-    btnBreaks.classList.remove('hidden');
-    btnStartShift.classList.add('hidden');
-  }
-  logoutEl.textContent = 'Stop working';
-  btnStartShift.style.backgroundColor = '#ffc107';
-  btnStartShift.textContent = 'Pause';
-});
+// btnStartShift.addEventListener('click', function () {
+//   if (btnStartShift.textContent === 'Pause') {
+//     btnBreaks.classList.remove('hidden');
+//     btnStartShift.classList.add('hidden');
+//   }
+//   logoutEl.textContent = 'Stop working';
+//   btnStartShift.style.backgroundColor = '#ffc107';
+//   btnStartShift.textContent = 'Pause';
+// });
 
-btnBreak.addEventListener('click', function () {
-  btnBreaks.classList.add('hidden');
-  btnStartShift.classList.remove('hidden');
-  btnStartShift.textContent = 'Continue working';
-  btnStartShift.style.backgroundColor = '#198754';
-});
+// btnBreak.addEventListener('click', function () {
+//   btnBreaks.classList.add('hidden');
+//   btnStartShift.classList.remove('hidden');
+//   btnStartShift.textContent = 'Continue working';
+//   btnStartShift.style.backgroundColor = '#198754';
+// });
 
-btnLunch.addEventListener('click', function () {
-  btnBreaks.classList.add('hidden');
-  btnStartShift.classList.remove('hidden');
-  btnStartShift.textContent = 'Continue working';
-  btnStartShift.style.backgroundColor = '#198754';
-});
+// btnLunch.addEventListener('click', function () {
+//   btnBreaks.classList.add('hidden');
+//   btnStartShift.classList.remove('hidden');
+//   btnStartShift.textContent = 'Continue working';
+//   btnStartShift.style.backgroundColor = '#198754';
+// });
 
-btnCoachingTraining.addEventListener('click', function () {
-  btnBreaks.classList.add('hidden');
-  btnStartShift.classList.remove('hidden');
-  btnStartShift.textContent = 'Continue working';
-  btnStartShift.style.backgroundColor = '#198754';
-});
+// btnCoachingTraining.addEventListener('click', function () {
+//   btnBreaks.classList.add('hidden');
+//   btnStartShift.classList.remove('hidden');
+//   btnStartShift.textContent = 'Continue working';
+//   btnStartShift.style.backgroundColor = '#198754';
+// });
