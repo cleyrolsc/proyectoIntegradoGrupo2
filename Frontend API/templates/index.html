@@ -11,9 +11,9 @@
       crossorigin="anonymous"
     />
     <!-- <link rel="stylesheet" href="/styles/header.css" /> -->
+    <link rel="stylesheet" href="/styles/app.css" />
     <link rel="stylesheet" href="/styles/dispute.css" />
     <link rel="stylesheet" href="/styles/general.css" />
-    <link rel="stylesheet" href="/styles/app.css" />
   </head>
   <body class="d-flex justify-content-center">
     <!-- Button trigger modal -->
@@ -73,7 +73,11 @@
               >
                 Close
               </button>
-              <button type="button" class="btn btn-primary">
+              <button
+                type="submit"
+                class="escalate btn btn-primary"
+                data-bs-dismiss="modal"
+              >
                 Escalate to Supervisor
               </button>
             </div>
@@ -155,22 +159,26 @@
 
       <div class="non-working-buttons hidden">
         <div class="mb-3 break-container d-flex justify-content-between">
-          <button class="break btn btn-secondary">Break</button>
-          <button class="lunch btn btn-dark">Lunch</button>
+          <button class="break btn btn-warning">Break</button>
+          <button class="lunch btn btn-info">Lunch</button>
         </div>
         <div>
-          <button class="coaching-training btn btn-dark">
+          <button class="coaching-training btn btn-danger">
             Coaching/Training
           </button>
         </div>
       </div>
       <div class="confirmation-form hidden">
-        <div class="confirmation-container">
-          <p>Please confirm:</p>
-          <div class="confirmation-buttons">
-            <button class="stop-working btn">Stop working</button>
-            <button class="logout-confirmation">Logout</button>
-          </div>
+        <p class="logout-text">Please confirm:</p>
+        <div class="confirmation-buttons">
+          <button class="stop-working btn mr-2 btn-warning">
+            Stop working
+          </button>
+          <a href="/templates/login.html">
+            <button class="logout-confirmation btn btn-danger">
+              Logout
+            </button></a
+          >
         </div>
       </div>
     </main>
@@ -214,6 +222,6 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
-    <script src="/app.js"></script>
+    <script src="/scripts/app.js"></script>
   </body>
 </html>
