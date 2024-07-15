@@ -108,27 +108,8 @@
             <li class="nav-item">
               <a class="nav-link" href="#">Reports</a>
             </li>
-            <!-- <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                Dropdown
-              </a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Action</a></li>
-                <li><a class="dropdown-item" href="#">Another action</a></li>
-                <li><hr class="dropdown-divider" /></li>
-                <li>
-                  <a class="dropdown-item" href="#">Something else here</a>
-                </li>
-              </ul>
-            </li> -->
             <li class="nav-item">
-              <a class="nav-link logout" href="login.html">Logout</a>
+              <a class="nav-link logout" href="#">Logout</a>
             </li>
           </ul>
           <div class="d-flex justify-content-center align-items-center">
@@ -140,7 +121,10 @@
         </div>
       </div>
     </nav>
-    <main class="d-flex justify-content-center align-items-center">
+    <main
+      class="d-flex justify-content-center align-items-center flex-column main-content"
+    >
+      <span class="timer hidden mb-2"></span>
       <button class="start btn btn-success btn-lg hidden">Start</button>
       <div class="dispute-modal">
         <p>Last shift [Date]</p>
@@ -184,7 +168,23 @@
           >
         </div>
       </div>
+      <div>
+        <section class="mt-4 table-responsive-md table-section hidden">
+          <div class="table-container tableFixHead">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th class="text-center" scope="col">TimeStamp</th>
+                  <th class="text-center" scope="col">Reason</th>
+                </tr>
+              </thead>
+              <tbody class="table-body"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
     </main>
+
     <footer
       class="fixed-bottom d-flex flex-wrap justify-content-between align-items-center py-3 border-top bg-light"
     >
