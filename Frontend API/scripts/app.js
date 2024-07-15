@@ -129,6 +129,8 @@ logoutEl.addEventListener('click', () => {
     confirmationFormEl.classList.remove('hidden');
     btnStartShift.classList.add('hidden');
     btnBreaks.classList.add('hidden');
+    clearInterval(intervalID);
+    timerEl.classList.add('hidden');
   }
 });
 btnBreak.addEventListener('click', function () {
