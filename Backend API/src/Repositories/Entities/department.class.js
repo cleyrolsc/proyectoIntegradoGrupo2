@@ -16,7 +16,7 @@ Department.init({
         unique: true
     }
 }, {
-    dbContext,
+    sequelize: dbContext,
     modelName: 'Department',
     tableName: 'departments',
     timestamps: false

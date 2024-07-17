@@ -23,12 +23,11 @@ Incident.init({
         allowNull: false,
         references: {
             model: Employee,
-            key: 'id',
-            deferrable: Deferrable.INITIALLY_IMMEDIATE
+            key: 'id'
         }
     }
 }, {
-    dbContext,
+    sequelize: dbContext,
     modelName: 'Incident',
     tableName: 'incidents',
     timestamps: true,

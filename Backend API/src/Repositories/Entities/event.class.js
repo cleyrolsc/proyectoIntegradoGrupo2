@@ -16,7 +16,7 @@ Event.init({
         unique: true
     }
 }, {
-    dbContext,
+    sequelize: dbContext,
     modelName: 'Event',
     tableName: 'events',
     timestamps: false

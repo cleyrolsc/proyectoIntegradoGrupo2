@@ -25,7 +25,7 @@ class Server {
     }
 
     routes(){
-        this. app.use(this.adminEndpoint, adminRouter);
+        this.app.use(this.adminEndpoint, adminRouter);
         this.app.use(this.usersEndpoint, usersRouter);
     }
 
