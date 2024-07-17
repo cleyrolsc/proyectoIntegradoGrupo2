@@ -23,7 +23,8 @@ class Server {
     }
 
     routes(){
-        this.app.use(this.usersEndpoint, require("./Controllers/Users/users.route"));
+        this.app.use(this.adminEndpoint, adminRouter);
+        this.app.use(this.usersEndpoint, usersRouter);
     }
 
     filters(){

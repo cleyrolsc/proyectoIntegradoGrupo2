@@ -16,7 +16,7 @@ Position.init({
         unique: true
     }
 }, {
-    dbContext,
+    sequelize: dbContext,
     modelName: 'Position',
     tableName: 'positions',
     timestamps: false
