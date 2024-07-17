@@ -8,7 +8,7 @@ class CreateUserRequest {
         this.lastName = lastName;
         this.identificationNumber = identificationNumber;
         this.commissionPerHour = commissionPerHour;
-        this.department = department; // Department.Sales
+        this.department = department; // FK Department
     }
 };
 

@@ -2,6 +2,7 @@ const { CreateUserResponse, PaginatedResponse, UserProfileResponse, UpdateEmploy
 const { UserModel } = require("./Models");
 const { BadRequestError, FatalError, NotFoundError, UnauthorizedError } = require("../../Core/Abstractions/Exceptions");
 const { isListEmpty, isNullOrUndefined } = require("../../Core/Utils/null-checker.util");
+const bcrypt = require("bcryptjs")
 
 const { EmployeesRepository, UsersRepository, DepartmentRepository, PositionsRepository, PrivilegesRepository } = require('../../Repositories/index');
 const EncryptionManager = require("../../Core/Utils/encryption-manager.util");
@@ -14,6 +15,7 @@ const registerNewUserAsync = async (createUserRequest) =>{
 
     async function createEmployeeAsync() {
         let { firstName, lastName, identificationNumber, commissionPerHour, department, supervisor, position } = createUserRequest;
+
         var newEmployee = await EmployeesRepository.createEmployeeAsync({
             firstName,
             lastName,
@@ -33,10 +35,14 @@ const registerNewUserAsync = async (createUserRequest) =>{
 
     async function createUserAsync() {
         let { username, password, privilegeLevel, type } = createUserRequest;
+        
+        var salt = bcrypt.genSaltSync(10);
+        var hashPassword = bcrypt.hashSync(password, salt);
+
         let newUser = await UsersRepository.createUserAsync({
             username,
             employeeId: newEmployee.id,
-            password,
+            password: hashPassword,
             privilegeLevel,
             type
         });

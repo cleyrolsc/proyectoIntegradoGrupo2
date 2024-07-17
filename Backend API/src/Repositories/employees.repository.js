@@ -92,13 +92,13 @@ const updateEmployeeAsync = async (employeeId, { firstName = undefined, lastName
         return employee;
     }
 
-    employee.firstName ??= firstName;
-    employee.lastName ??= lastName;
-    employee.identificationNumber ??= identificationNumber;
-    employee.payPerHour ??= payPerHour;
-    employee.departmentId ??= departmentId;
-    employee.supervisorId ??= supervisorId;
-    employee.positionId ??= positionId;
+    employee.firstName = employee.firstName ?? firstName;
+    employee.lastName = employee.lastName ?? lastName;
+    employee.identificationNumber = employee.identificationNumber ?? identificationNumber;
+    employee.payPerHour = employee.payPerHour ?? payPerHour;
+    employee.departmentId = employee.departmentId ?? departmentId;
+    employee.supervisorId = employee.supervisorId ?? supervisorId;
+    employee.positionId = employee.positionId ?? positionId;
 
     await employee.save();
 

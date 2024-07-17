@@ -51,10 +51,10 @@ const updateUserAsync = async (username, { type = undefined, privilegeLevel = un
         return user;
     }
 
-    user.type ??= type;
-    user.privilegeLevel ??= privilegeLevel;
-    user.suspendPrivilege ??= suspendPrivilege;
-    user.status ??= status;
+    user.type = user.type ?? type;
+    user.privilegeLevel = user.privilegeLevel ?? privilegeLevel;
+    user.suspendPrivilege = user.suspendPrivilege ?? suspendPrivilege;
+    user.status = user.status ?? status;
 
     await user.save();
 
