@@ -23,7 +23,12 @@ const globalErrorHandlingFilter = (error, request, response, next) => {
             break;
     };
 
-    response.status(status).send(error.message);
+    response.status(status).json({
+        statusCode: status,
+        message: error.message,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+      });
 };
 
 module.exports = globalErrorHandlingFilter;

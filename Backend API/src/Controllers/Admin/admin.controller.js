@@ -4,7 +4,7 @@ const { UserType } = require("../../Core/Abstractions/Enums");
 const UsersService = require("../../Services/Users/users.service");
 const PrivilegesService = require("../../Services/Privileges/privileges.service");
 
-const registerAdminUserAsync = async (request, response) => {
+const registerAdminUserAsync = async (request, response, next) => {
     try {
         let { type, privilegeLevel: privilege } = request.body;
         if (type < UserType.Accounting) {
@@ -21,15 +21,7 @@ const registerAdminUserAsync = async (request, response) => {
 
         response.status(201).json(newAdmin);
     } catch (error) {
-        if (error.constructor.name === "NotFoundError") {
-            return response.status(404).json(error.message);
-        }
-
-        if (error.constructor.name === "BadRequestError") {
-            return response.status(400).json(error.message);
-        }
-        
-        response.status(500).json(error.message);
+        next(error);
     }
 };
 
@@ -44,7 +36,7 @@ async function isAdminPrivilege(privilege) {
     return adminPrivileges.includes(privilege.name);
 };
 
-const registerUserAsync = async (request, response) => {
+const registerUserAsync = async (request, response, next) => {
     try {
         let { type, privilegeLevel: privilege } = request.body;
         if (type >= UserType.Accounting) {
@@ -61,15 +53,7 @@ const registerUserAsync = async (request, response) => {
 
         response.status(201).json(newUser);
     } catch (error) {
-        if (error.constructor.name === "NotFoundError") {
-            return response.status(404).json(error.message);
-        }
-
-        if (error.constructor.name === "BadRequestError") {
-            return response.status(400).json(error.message);
-        }
-        
-        response.status(500).json(error.message);
+        next(error);
     }
 };
 
