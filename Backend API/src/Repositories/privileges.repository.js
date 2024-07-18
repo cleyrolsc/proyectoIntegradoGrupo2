@@ -1,5 +1,6 @@
 const { isNullOrUndefined, isNullUndefinedOrEmpty } = require("../Core/Utils/null-checker.util");
-const { NotImplementedError, BadRequestError } = require("../Core/Abstractions/Exceptions");
+const { NotImplementedError, BadRequestError, NotFoundError } = require("../Core/Abstractions/Exceptions");
+const { Op } = require('sequelize');
 
 const Privilege = require('./Entities/privilege.class');
 
@@ -9,22 +10,33 @@ const createPrivilegeAsync = (name, level) => Privilege.create({
     });
 
 const getPrivilegeByNameAsync = async (name) => {
-    if(isNullUndefinedOrEmpty(name)) {
-        throw new BadRequestError('Privilege name cannot be undefined');
+    try {
+        if(isNullUndefinedOrEmpty(name)) {
+            throw new BadRequestError('Privilege name cannot be undefined');
+        }
+    
+        let privilege = await Privilege.findByPk(name);
+        if(isNullOrUndefined(privilege)) {
+            return undefined;
+        }
+    
+        return privilege;
+    } catch (error) {
+        console.log(error);
+        throw NotFoundError('Fatal Error!');
     }
-
-    let privilege = await Privilege.findByPk(name);
-    if(isNullOrUndefined(privilege)) {
-        return undefined;
-    }
-
-    return privilege;
 };
 
 const getPrivilegesAsync = (skip = 0, limit = 10, orderBy = "DESC") => Privilege.findAll({
     order: [['name', orderBy]],
     offset: skip,
     limit
+});
+
+const getPrivilegesByLevelAsync = (minLevel = 1, maxLevel = 100) => Privilege.findAll({
+    where: {
+        level: {[Op.between]: [minLevel, maxLevel]}
+    }
 });
 
 const updatePrivilegeAsync = async (name, { level = undefined, status = undefined }) => {
@@ -57,6 +69,7 @@ module.exports = {
     createPrivilegeAsync,
     getPrivilegeByNameAsync,
     getPrivilegesAsync,
+    getPrivilegesByLevelAsync,
     updatePrivilegeAsync,
     deletePrivilegeAsync
 };

@@ -5,14 +5,12 @@ const { NotImplementedError } = require("../Core/Abstractions/Exceptions");
 const EncryptionManager = require("../Core/Utils/encryption-manager.util");
 const User = require('./Entities/user.class');
 
-const createUserAsync = ({username, employeeId, password, privilegeLevel, type = UserType.Agent}) => {
-    let encryptedPassword = EncryptionManager.encrypt(password);
-
+const createUserAsync = ({username, employeeId, password, privilegeId, type = UserType.Agent}) => {
     return User.create({
         username,
         employeeId,
-        password: encryptedPassword,
-        privilegeLevel,
+        password,
+        privilegeId,
         type
     });
 };

@@ -43,13 +43,14 @@ const registerNewUserAsync = async (createUserRequest) =>{
             username,
             employeeId: newEmployee.id,
             password: hashPassword,
-            privilegeLevel,
+            privilegeId: privilegeLevel,
             type
         });
 
         if (isNullOrUndefined(newUser)) {
             throw new FatalError("User was not created");
         }
+
         return newUser;
     }
 };
