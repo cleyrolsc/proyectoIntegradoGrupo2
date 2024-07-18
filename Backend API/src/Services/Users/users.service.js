@@ -2,7 +2,7 @@ const { CreateUserResponse, PaginatedResponse, UserProfileResponse, UpdateEmploy
 const { UserModel } = require("./Models");
 const { BadRequestError, FatalError, NotFoundError, UnauthorizedError } = require("../../Core/Abstractions/Exceptions");
 const { isListEmpty, isNullOrUndefined } = require("../../Core/Utils/null-checker.util");
-const bcrypt = require("bcryptjs")
+const bcrypt = require("bcryptjs");
 
 const { EmployeesRepository, UsersRepository, DepartmentRepository, PositionsRepository, PrivilegesRepository } = require('../../Repositories/index');
 const EncryptionManager = require("../../Core/Utils/encryption-manager.util");

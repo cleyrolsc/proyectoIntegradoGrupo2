@@ -1,8 +1,16 @@
-const UsersService = require("../../Services/Users/users.service");
-const PrivilegesService = require("../../Services/Privileges/privileges.service");
+const AuthService = require('../../Services/Auth/auth.service');
 
 const loginAsync = async (request, response, next) => {
+    try {
+        let {username, password} = request.body;
+        let payload = await AuthService.verifyUserAsync(username, password);
 
+        let token = AuthService.generateToken(payload);
+
+        response.status(200).json({token});
+    } catch (error) {
+        next(error);
+    }
 };
 
 const logoutAsync = async (request, response, next) => {
