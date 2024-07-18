@@ -1,9 +1,9 @@
-INSERT INTO departaments (description) VALUES 
+INSERT INTO departments (description) VALUES 
 ("Call Center"),
 ("Management"),
 ("Accounting");
 
-Select * From departaments;
+Select * From departments;
 
 INSERT INTO events (description) VALUES 
 ("Working Starts"),
