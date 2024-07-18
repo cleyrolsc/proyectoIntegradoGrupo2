@@ -59,6 +59,8 @@ const getPrivilegesByLevelAsync = async (minLevel = 1, maxLevel = 100, currentPa
     return formatPaginatedResponse(currentPage, itemsPerPage, privilegeModels, count);
 };
 
+const getPrivilegesByLevelAsync = (minLevel = 1, maxLevel = 100) => PrivilegesRepository.getPrivilegesByLevelAsync(minLevel, maxLevel);
+
 const updatePrivilegeAsync = async (name, updatePrivilegeRequest) => {
 
     let privilege = await PrivilegesRepository.updatePrivilegeAsync(name, updatePrivilegeRequest);
