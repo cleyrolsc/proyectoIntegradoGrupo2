@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS departaments(
+CREATE TABLE IF NOT EXISTS departments(
 id INTEGER PRIMARY KEY AUTOINCREMENT,
 description TEXT NOT NULL
 );
@@ -20,7 +20,7 @@ payPerHour INTEGER NOT NULL,
 createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
 updatedAt DATETIME,
 
-FOREIGN KEY (departmentId) REFERENCES departaments(id),
+FOREIGN KEY (departmentId) REFERENCES departments(id),
 FOREIGN KEY (supervisorId) REFERENCES employees(id),
 FOREIGN KEY (positionId) REFERENCES positions(id)
 );

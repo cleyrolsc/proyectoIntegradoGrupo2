@@ -56,19 +56,19 @@ const registerNewUserAsync = async (createUserRequest) =>{
 };
 
 const getUserProfileAsync = async (username) => {
-    let user = UsersRepository.getUserByUsernameAsync(username);
+    let user = await UsersRepository.getUserByUsernameAsync(username);
     if (isNullOrUndefined(user)) {
         throw new NotFoundError(`User, ${username}, does not exist`);
     }
 
-    let employee = EmployeesRepository.getEmployeeById(user.employeeId);
+    let employee = await EmployeesRepository.getEmployeeByIdAsync(user.employeeId);
     if (isNullOrUndefined(employee)) {
         throw new FatalError(`Fatal error! Employee information for user, ${username}, and employee id, ${user.employeeId}, does not exist!`);
     }
 
-    let supervisor = EmployeesRepository.getEmployeeByIdAsync(employee.supervisorId);
-    let department = DepartmentRepository.getDepartmentByIdAsync(employee.departmentId);
-    let position = PositionsRepository.getPositionByIdAsync(employee.positionId);
+    let supervisor = await EmployeesRepository.getEmployeeByIdAsync(employee.supervisorId);
+    let department = await DepartmentRepository.getDepartmentByIdAsync(employee.departmentId);
+    let position = await PositionsRepository.getPositionByIdAsync(employee.positionId);
 
     return new UserProfileResponse(user, employee, supervisor, department, position);
 }
