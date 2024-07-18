@@ -8,7 +8,7 @@ class UserProfileResponse {
         };
 
         this.employeeInfo = {
-            employeeId: employeeInfo.employeeId,
+            employeeId: employeeInfo.id,
             firstName: employeeInfo.firstName,
             lastName: employeeInfo.lastName,
             identificationNumber: employeeInfo.identificationNumber,
@@ -21,7 +21,7 @@ class UserProfileResponse {
         };
         
         this.supervisorInfo = {
-            id: supervisorInfo.employeeId,
+            id: supervisorInfo.id,
             firstName: supervisorInfo.firstName,
             lastName: supervisorInfo.lastName
         };

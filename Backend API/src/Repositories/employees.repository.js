@@ -83,7 +83,7 @@ const getEmployeesByPositionIdAsync = (positionId, skip = 0, limit = 10, orderBy
     });
 
 const updateEmployeeAsync = async (employeeId, { firstName = undefined, lastName = undefined, identificationNumber = undefined, payPerHour = undefined, departmentId = undefined, supervisorId = undefined, positionId = undefined }) =>{
-    let employee = getEmployeeByIdAsync(employeeId);
+    let employee = await getEmployeeByIdAsync(employeeId);
     if (isNullOrUndefined(employee)) {
         return undefined;
     }
@@ -92,13 +92,13 @@ const updateEmployeeAsync = async (employeeId, { firstName = undefined, lastName
         return employee;
     }
 
-    employee.firstName = employee.firstName ?? firstName;
-    employee.lastName = employee.lastName ?? lastName;
-    employee.identificationNumber = employee.identificationNumber ?? identificationNumber;
-    employee.payPerHour = employee.payPerHour ?? payPerHour;
-    employee.departmentId = employee.departmentId ?? departmentId;
-    employee.supervisorId = employee.supervisorId ?? supervisorId;
-    employee.positionId = employee.positionId ?? positionId;
+    employee.firstName = firstName ?? employee.firstName;
+    employee.lastName = lastName ??  employee.lastName;
+    employee.identificationNumber = identificationNumber ??  employee.identificationNumber;
+    employee.payPerHour = payPerHour ??  employee.payPerHour;
+    employee.departmentId = departmentId ??  employee.departmentId;
+    employee.supervisorId = supervisorId ??  employee.supervisorId;
+    employee.positionId = positionId ??  employee.positionId;
 
     await employee.save();
 

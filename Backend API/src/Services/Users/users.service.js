@@ -14,13 +14,13 @@ const registerNewUserAsync = async (createUserRequest) =>{
     return new CreateUserResponse(newUser.username, newUser.type, newUser.privilegeLevel, newEmployee.id, newEmployee.firstName, newEmployee.lastName, newEmployee.identificationNumber, newEmployee.payPerHour, newEmployee.departmentId, newEmployee.supervisorId, newEmployee.positionId);
 
     async function createEmployeeAsync() {
-        let { firstName, lastName, identificationNumber, commissionPerHour, department, supervisor, position } = createUserRequest;
+        let { firstName, lastName, identificationNumber, payPerHour, department, supervisor, position } = createUserRequest;
 
         var newEmployee = await EmployeesRepository.createEmployeeAsync({
             firstName,
             lastName,
             identificationNumber,
-            payPerHour: commissionPerHour,
+            payPerHour,
             departmentId: department,
             supervisorId: supervisor,
             positionId: position
@@ -113,9 +113,9 @@ const updateEmployeeInformationAsync = async (employeeId, updateEmployeeInformat
         throw new NotFoundError(`Employee with id '${employeeId}' does not exist.`);
     }
 
-    let supervisor = EmployeesRepository.getEmployeeByIdAsync(updatedEmployee.supervisorId);
-    let department = DepartmentRepository.getDepartmentByIdAsync(updatedEmployee.departmentId);
-    let position = PositionsRepository.getPositionByIdAsync(updatedEmployee.positionId);
+    let supervisor = await EmployeesRepository.getEmployeeByIdAsync(updatedEmployee.supervisorId);
+    let department = await DepartmentRepository.getDepartmentByIdAsync(updatedEmployee.departmentId);
+    let position = await PositionsRepository.getPositionByIdAsync(updatedEmployee.positionId);
 
     return new UpdateEmployeeInformationResponse(updatedEmployee, supervisor, department, position);
 };
