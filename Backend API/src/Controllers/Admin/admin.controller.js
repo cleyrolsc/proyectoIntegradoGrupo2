@@ -3,7 +3,7 @@ const { UserType } = require("../../Core/Abstractions/Enums");
 
 const UsersService = require("../../Services/Users/users.service");
 const PrivilegesService = require("../../Services/Privileges/privileges.service");
-const { isNullOrUndefined, isNotNullNorUndefined } = require("../../Core/Utils/null-checker.util");
+const { isNotNullNorUndefined } = require("../../Core/Utils/null-checker.util");
 
 const registerAdminUserAsync = async (request, response, next) => {
     try {

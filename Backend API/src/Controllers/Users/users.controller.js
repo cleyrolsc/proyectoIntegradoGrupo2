@@ -1,12 +1,15 @@
 const { UpdateEmployeeInformationRequest } = require("../../Core/Abstractions/Contracts/Requests");
-const { isNullOrUndefined } = require("../../Core/Utils/null-checker.util");
+const { isNullOrUndefined, isNotNullNorUndefined } = require("../../Core/Utils/null-checker.util");
 const { BadRequestError, NotFoundError } = require("../../Core/Abstractions/Exceptions");
 
 const UserServices = require("../../Services/Users/users.service");
 
 const fetchAllUsersAsync = async (request, response, next) => {
-    try {
-        let users = await UserServices.getUsersAsync();
+    try {        
+        let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
+        let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
+        let users = await UserServices.getUsersAsync(page, pageSize);
+        
         response.status(200).json(users);
     } catch (error) {
         next(error);

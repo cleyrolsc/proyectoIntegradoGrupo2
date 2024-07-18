@@ -87,8 +87,11 @@ const getUsersAsync = async (currentPage = 1, itemsPerPage = 10, order = 'DESC')
     let response = new PaginatedResponse();
     response.currentPage = currentPage;
     response.itemsPerPage = itemsPerPage;
-    response.totalPages = Math.ceil(users.length / itemsPerPage);
+
+    let userCount = await UsersRepository.countUsersAsync();
+    response.totalPages = Math.ceil(userCount / itemsPerPage);
     response.hasNext = response.currentPage < response.totalPages;
+
     response.content = [];
     users.forEach((entity) => {
         let { username, employeeId, type, privilegeLevel, suspendPrivilege, status, createdAt: registeredOn, updatedAt: modifiedOn } = entity;
