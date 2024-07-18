@@ -1,6 +1,7 @@
 const express = require("express");
 const { urlencoded } = require("express");
 
+const { adminRouter, usersRouter, authRouter } = require("./Controllers");
 //const testConnection = require('./Database/db-config');
 const { globalErrorHandlingFilter } = require("./Core/Filters");
 
@@ -9,6 +10,8 @@ class Server {
         this.app = express();
         this.port = process.env.PORT || 3000;
 
+        this.adminEndpoint = '/api/admin';
+        this.authEndpoint = '/api/auth';
         this.usersEndpoint = '/api/users';
 
         this.middlewares();
@@ -23,6 +26,10 @@ class Server {
     }
 
     routes(){
+        // Public endpoints
+        this.app.use(this.authEndpoint, authRouter);
+
+        // Authenticated endpoints
         this.app.use(this.adminEndpoint, adminRouter);
         this.app.use(this.usersEndpoint, usersRouter);
     }
