@@ -24,6 +24,8 @@ const getUserByUsernameAsync = async (username) => {
     return user;
 };
 
+const countUsersAsync = () => User.count();
+
 const getUsersAsync = (skip = 0, limit = 10, orderBy = 'DESC') => User.findAll({
         attributes: ['username', 'type', 'privilegeSuspended', 'status', 'employeeId', 'privilegeId'],
         order: [['username', orderBy]],
@@ -84,6 +86,7 @@ const deleteUserAsync = (username) => {
 module.exports = {
     createUserAsync,
     getUserByUsernameAsync,
+    countUsersAsync,
     getUsersAsync,
     getUsersByPrivilegeLevelAsync,
     updateUserAsync,
