@@ -3,6 +3,12 @@ const { isNullOrUndefined } = require("../../Core/Utils/null-checker.util");
 const { BadRequestError } = require("../../Core/Abstractions/Exceptions");
 
 const UserServices = require("../../Services/Users/users.service");
+const { response } = require("express");
+
+const fetchAllUsersAsync = async (request, response) => {
+    let users = await UserServices.getUsersAsync();
+    response.status(200).json(users);
+};
 
 const viewProfileAsync = async (request, response) => {
     let username = request.params.username;
@@ -44,6 +50,7 @@ const changePasswordAsync = async (request, response) => {
 };
 
 module.exports = {
+    fetchAllUsersAsync,
     viewProfileAsync,
     updateEmployeeInformationAsync,
     changePasswordAsync
