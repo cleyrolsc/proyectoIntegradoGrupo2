@@ -88,6 +88,12 @@ function encryptPassword(password) {
     return hashPassword;
 };
 
+function encryptPassword(password) {
+    var salt = bcrypt.genSaltSync(10);
+    var hashPassword = bcrypt.hashSync(password, salt);
+    return hashPassword;
+};
+
 const getUserProfileAsync = async (username) => {
     let user = await UsersRepository.getUserByUsernameAsync(username);
     if (isNullOrUndefined(user)) {
