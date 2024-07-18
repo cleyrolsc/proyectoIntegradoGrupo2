@@ -84,9 +84,10 @@ const getUsersAsync = async (currentPage = 1, itemsPerPage = 10, order = 'DESC')
     response.itemsPerPage = itemsPerPage;
     response.totalPages = Math.ceil(users.length / itemsPerPage);
     response.hasNext = response.currentPage < response.totalPages;
-    response.content = users.forEach((entity) => {
+    response.content = [];
+    users.forEach((entity) => {
         let { username, employeeId, type, privilegeLevel, suspendPrivilege, status, createdAt: registeredOn, updatedAt: modifiedOn } = entity;
-        return new UserModel(username, employeeId, type, privilegeLevel, suspendPrivilege, status, registeredOn, modifiedOn);
+        response.content.push(new UserModel(username, employeeId, type, privilegeLevel, suspendPrivilege, status, registeredOn, modifiedOn));
     });
 
     return response;
