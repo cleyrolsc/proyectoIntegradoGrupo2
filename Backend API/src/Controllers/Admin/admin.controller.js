@@ -3,6 +3,7 @@ const { UserType } = require("../../Core/Abstractions/Enums");
 
 const UsersService = require("../../Services/Users/users.service");
 const PrivilegesService = require("../../Services/Privileges/privileges.service");
+const { isNullOrUndefined, isNotNullNorUndefined } = require("../../Core/Utils/null-checker.util");
 
 const registerAdminUserAsync = async (request, response, next) => {
     try {
@@ -57,7 +58,20 @@ const registerUserAsync = async (request, response, next) => {
     }
 };
 
+const getPrivilegesAsync = async (request, response, next) => {
+    try {
+        let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
+        let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
+        let privileges = await PrivilegesService.getPrivilegesAsync(page, pageSize);
+
+        response.status(200).json(privileges);
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     registerAdminUserAsync,
     registerUserAsync,
+    getPrivilegesAsync
 };
