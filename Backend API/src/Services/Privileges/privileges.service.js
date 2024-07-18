@@ -44,6 +44,8 @@ const getPrivilegesAsync = async (currentPage = 1, itemsPerPage = 10, order = "D
     return response;
 };
 
+const getPrivilegesByLevelAsync = (minLevel = 1, maxLevel = 100) => PrivilegesRepository.getPrivilegesByLevelAsync(minLevel, maxLevel);
+
 const updatePrivilegeAsync = async (name, updatePrivilegeRequest) => {
 
     let privilege = await PrivilegesRepository.updatePrivilegeAsync(name, updatePrivilegeRequest);
@@ -63,5 +65,6 @@ module.exports = {
     registerNewPrivilegeAsync,
     getPrivilegeAsync,
     getPrivilegesAsync,
+    getPrivilegesByLevelAsync,
     updatePrivilegeAsync
 };

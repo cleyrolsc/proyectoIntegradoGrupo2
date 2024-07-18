@@ -8,6 +8,6 @@ usersRouter.get('/:username/profile', UsersController.viewProfileAsync);
 
 usersRouter.put('/:username', UsersController.updateEmployeeInformationAsync);
 
-usersRouter.patch('/:username/change-password', UsersController.changePassword)
+usersRouter.patch('/:username/change-password', UsersController.changePasswordAsync)
 
 module.exports = usersRouter;

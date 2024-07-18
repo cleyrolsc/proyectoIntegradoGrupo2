@@ -1,5 +1,6 @@
 const CryptoJS = require('crypto-js');
 
+// TODO: Refactor
 const encrypt = (text) => {
   return CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(text));
 };
