@@ -5,6 +5,6 @@ const AdminController = require('./admin.controller');
 const adminRouter = express.Router();
 
 adminRouter.post('/register-admin', AdminController.registerAdminUserAsync);
-adminRouter.post('/register-employee', AdminController.registerNonAdminUser);
+adminRouter.post('/register-user', AdminController.registerUserAsync);
 
 module.exports = adminRouter;
