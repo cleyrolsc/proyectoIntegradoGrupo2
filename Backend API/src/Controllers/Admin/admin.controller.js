@@ -6,6 +6,7 @@ const { ConflictError } = require("../../Core/Abstractions/Exceptions");
 
 const UsersService = require("../../Services/Users/users.service");
 const PrivilegesService = require("../../Services/Privileges/privileges.service");
+const { isNullOrUndefined, isNotNullNorUndefined } = require("../../Core/Utils/null-checker.util");
 
 const registerAdminUserAsync = async (request, response, next) => {
     try {
@@ -77,6 +78,18 @@ const getPrivilegesAsync = async (request, response, next) => {
         let privileges = await PrivilegesService.getPrivilegesAsync(page, pageSize);
 
         response.status(200).json(formatResponse(200, request.originalUrl, privileges));
+    } catch (error) {
+        next(error);
+    }
+};
+
+const getPrivilegesAsync = async (request, response, next) => {
+    try {
+        let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
+        let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
+        let privileges = await PrivilegesService.getPrivilegesAsync(page, pageSize);
+
+        response.status(200).json(privileges);
     } catch (error) {
         next(error);
     }
