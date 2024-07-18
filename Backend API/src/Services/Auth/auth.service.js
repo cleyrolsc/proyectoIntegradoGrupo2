@@ -5,6 +5,9 @@ const { UnauthorizedError } = require('../../Core/Abstractions/Exceptions');
 const { isNullOrUndefined } = require('../../Core/Utils/null-checker.util');
 const { UsersRepository } = require('../../Repositories/index');
 
+// TODO: Move to environment variables
+const privateKey = '786bd550-7a97-4f50-9fca-40cbb4bbcc06';
+
 const verifyUserAsync = async (username, password) => {
     let user = await UsersRepository.getUserByUsernameAsync(username);
     if (isNullOrUndefined(user)) {
