@@ -24,11 +24,11 @@ const registerAdminUserAsync = async (request, response) => {
         response.status(201).json(newAdmin);
     } catch (error) {
         if (error.constructor.name === "NotFoundError") {
-            response.status(404).json(error.message);
+            return response.status(404).json(error.message);
         }
 
         if (error.constructor.name === "BadRequestError") {
-            response.status(400).json(error.message);
+            return response.status(400).json(error.message);
         }
         
         response.status(500).json(error.message);

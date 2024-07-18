@@ -33,7 +33,8 @@ const updateEmployeeInformationAsync = async (request, response) => {
 };
 
 const changePasswordAsync = async (request, response) => {
-    let username = request.params.username;
+    try {
+        let username = request.params.username;
     if(isNullOrUndefined(username)) {
         throw new BadRequestError('Username is undefined');
     }
@@ -47,6 +48,13 @@ const changePasswordAsync = async (request, response) => {
     await UserServices.updateUserPasswordAsync(username, oldPassword, newPassword);
 
     response.status(200).send("Password successfully changed!");
+    } catch (error) {
+        if (error.constructor.name === "UnauthorizedError") {
+            return response.status(401).json(error.message);
+        }
+        
+        response.status(500).json(error.message);
+    }
 };
 
 module.exports = {

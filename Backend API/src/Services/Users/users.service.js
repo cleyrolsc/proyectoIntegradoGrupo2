@@ -36,8 +36,7 @@ const registerNewUserAsync = async (createUserRequest) =>{
     async function createUserAsync() {
         let { username, password, privilegeLevel, type } = createUserRequest;
         
-        var salt = bcrypt.genSaltSync(10);
-        var hashPassword = bcrypt.hashSync(password, salt);
+        let hashPassword = encryptPassword(password);
 
         let newUser = await UsersRepository.createUserAsync({
             username,
@@ -53,6 +52,12 @@ const registerNewUserAsync = async (createUserRequest) =>{
 
         return newUser;
     }
+};
+
+function encryptPassword(password) {
+    var salt = bcrypt.genSaltSync(10);
+    var hashPassword = bcrypt.hashSync(password, salt);
+    return hashPassword;
 };
 
 const getUserProfileAsync = async (username) => {
@@ -134,9 +139,9 @@ const updateUserPasswordAsync = async (username, oldPassword, newPassword) => {
     if (isNullOrUndefined(user)) {
         throw new NotFoundError(`User, ${username}, does not exist`);
     }
-
-    let encryptedPassword = EncryptionManager.encrypt(oldPassword);
-    if (user.password !== encryptedPassword) {
+    
+    let passwordMatch = bcrypt.compareSync(oldPassword, user.password);
+    if (!passwordMatch) {
         throw new UnauthorizedError("The old password is incorrect.");
     }
 
@@ -144,7 +149,8 @@ const updateUserPasswordAsync = async (username, oldPassword, newPassword) => {
         throw new BadRequestError("New password cannot be the same as old password.");
     }
 
-    await UsersRepository.updateUserPasswordAsync(username, newPassword);
+    let hashPassword = encryptPassword(newPassword);
+    await UsersRepository.updateUserPasswordAsync(username, hashPassword);
 };
 
 const updateUserPrivilegeLevelAsync = async (privilegeName, username) => {
