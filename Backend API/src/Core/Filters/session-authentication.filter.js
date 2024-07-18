@@ -13,7 +13,7 @@ const sessionAuthenticationFilter = async (request, response, next) => {
             });
         }
 
-        let result = await AuthService.validateTokenAsync(token);
+        await AuthService.validateTokenAsync(token);
 
         next();
     } catch (error) {
@@ -31,11 +31,11 @@ const sessionAuthenticationFilter = async (request, response, next) => {
         };
 
         response.status(status).json({
-        statusCode: status,
-        message: error.message,
-        timestamp: new Date().toISOString(),
-        path: request.url,
-      });
+            statusCode: status,
+            message: error.message,
+            timestamp: new Date().toISOString(),
+            path: request.url,
+        });
     }
 };
 

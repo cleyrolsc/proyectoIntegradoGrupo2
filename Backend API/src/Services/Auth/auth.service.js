@@ -48,7 +48,7 @@ const validateTokenAsync = async (token) => {
         throw new UnauthorizedError(`Username, ${username}, does not exist`);
     }
 
-    return true;
+    return {username, privilege};
 };
 
 module.exports = {
