@@ -49,8 +49,8 @@ const updatePrivilegeAsync = async (name, { level = undefined, status = undefine
         return privilege;
     }
 
-    privilege.level = privilege.level ?? level;
-    privilege.status = privilege.status ?? status;
+    privilege.level = level ?? privilege.level;
+    privilege.status = status ?? privilege.status;
 
     await privilege.save();
 
