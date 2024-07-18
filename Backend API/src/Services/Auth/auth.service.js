@@ -5,6 +5,9 @@ const { UnauthorizedError } = require('../../Core/Abstractions/Exceptions');
 const { isNullOrUndefined } = require('../../Core/Utils/null-checker.util');
 const { UsersRepository } = require('../../Repositories/index');
 
+// TODO: Move to environment variables
+const privateKey = '786bd550-7a97-4f50-9fca-40cbb4bbcc06';
+
 const verifyUserAsync = async (username, password) => {
     let user = await UsersRepository.getUserByUsernameAsync(username);
     if (isNullOrUndefined(user)) {
@@ -31,19 +34,25 @@ const verifyUserAsync = async (username, password) => {
 };
 
 const generateToken = ({user, privilege}) => {
-    let privateKey = '786bd550-7a97-4f50-9fca-40cbb4bbcc06';
     return jwt.sign({user, privilege}, privateKey, {
         expiresIn: '9h',
         algorithm: 'HS256'
     });
 };
 
-const validateToken = () => {
+const validateTokenAsync = async (token) => {
+    let {user: username, privilege} = jwt.verify(token, privateKey);
 
+    let user = await UsersRepository.getUserByUsernameAsync(username);
+    if (isNullOrUndefined(user)) {
+        throw new UnauthorizedError(`Username, ${username}, does not exist`);
+    }
+
+    return true;
 };
 
 module.exports = {
     verifyUserAsync,
     generateToken,
-    validateToken
+    validateTokenAsync
 };

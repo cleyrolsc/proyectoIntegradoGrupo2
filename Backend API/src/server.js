@@ -3,7 +3,7 @@ const { urlencoded } = require("express");
 
 const { adminRouter, usersRouter, authRouter } = require("./Controllers");
 //const testConnection = require('./Database/db-config');
-const { globalErrorHandlingFilter } = require("./Core/Filters");
+const { globalErrorHandlingFilter, sessionAuthenticationFilter } = require("./Core/Filters");
 
 class Server {
     constructor() {
@@ -29,6 +29,7 @@ class Server {
         // Public endpoints
         this.app.use(this.authEndpoint, authRouter);
 
+        this.app.use(sessionAuthenticationFilter);
         // Authenticated endpoints
         this.app.use(this.adminEndpoint, adminRouter);
         this.app.use(this.usersEndpoint, usersRouter);
