@@ -70,9 +70,8 @@ const updateUserPasswordAsync = async (username, newPassword) => {
         return undefined;
     }
 
-    let encryptedPassword = EncryptionManager.encrypt(newPassword);
     await user.update({
-        password: encryptedPassword
+        password: newPassword
     });
     
     return user;
