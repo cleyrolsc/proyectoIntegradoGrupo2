@@ -20,7 +20,7 @@ Privilege.init({
         defaultValue: PrivilegeStatus.Active
     }
 }, {
-    dbContext,
+    sequelize: dbContext,
     modelName: 'Privilege',
     tableName: 'privileges',
     timestamps: true

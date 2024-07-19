@@ -37,8 +37,7 @@ User.init({
         allowNull: false,
         references: {
             model: Employee,
-            key: 'id',
-            deferrable: Deferrable.INITIALLY_IMMEDIATE
+            key: 'id'
         }
     },
     privilegeId: {
@@ -46,12 +45,11 @@ User.init({
         allowNull: false,
         references: {
             model: Privilege,
-            key: 'name',
-            deferrable: Deferrable.INITIALLY_IMMEDIATE
+            key: 'name'
         }
     },
 }, {
-    dbContext,
+    sequelize: dbContext,
     modelName: 'User',
     tableName: 'users',
     timestamps: true
