@@ -39,10 +39,10 @@ const getPrivilegesAsync = async (currentPage = 1, itemsPerPage = 10, order = "D
     response.totalPages = Math.ceil(privilegeCount / itemsPerPage);
     response.hasNext = response.currentPage < response.totalPages;
 
-    response.content = [];
+    response.items = [];
     privileges.forEach((entity) => {
         let { name, level, status, createdAt: registeredOn, updatedAt: modifiedOn } = entity;
-        response.content.push(new PrivilegeModel(name, level, status, registeredOn, modifiedOn));
+        response.items.push(new PrivilegeModel(name, level, status, registeredOn, modifiedOn));
     });
 
     return response;

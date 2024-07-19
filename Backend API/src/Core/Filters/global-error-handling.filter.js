@@ -1,3 +1,5 @@
+const formatResponse = require("../Utils/response-formatter.util");
+
 const globalErrorHandlingFilter = (error, request, response, next) => {
     console.log(`${error.constructor.name} -- ${error.message}`);
 
@@ -23,12 +25,7 @@ const globalErrorHandlingFilter = (error, request, response, next) => {
             break;
     };
 
-    response.status(status).json({
-        statusCode: status,
-        message: error.message,
-        timestamp: new Date().toISOString(),
-        path: request.url,
-      });
+    response.status(status).json(formatResponse(status, request.url, error.message));
 };
 
 module.exports = globalErrorHandlingFilter;

@@ -4,23 +4,24 @@ const { UserType } = require("../../Core/Abstractions/Enums");
 const UsersService = require("../../Services/Users/users.service");
 const PrivilegesService = require("../../Services/Privileges/privileges.service");
 const { isNotNullNorUndefined } = require("../../Core/Utils/null-checker.util");
+const formatResponse = require("../../Core/Utils/response-formatter.util");
 
 const registerAdminUserAsync = async (request, response, next) => {
     try {
         let { type, privilegeLevel: privilege } = request.body;
         if (type < UserType.Accounting) {
-            return response.status(400).send("Administrative users cannot be of type lower than 98.");
+            return response.status(400).json(formatResponse(400, request.url, "Administrative users cannot be of type lower than 98."));
         }
 
         let existingPrivilege = await PrivilegesService.getPrivilegeAsync(privilege);
         if (!await isAdminPrivilege(existingPrivilege)) {
-            return response.status(400).send("Administrative users cannot have privilege levels lower than 98.");
+            return response.status(400).json(formatResponse(201, request.url, "Administrative users cannot have privilege levels lower than 98."));
         }
 
         let createUserRequest = new CreateUserRequest(request.body);
         let newAdmin = await UsersService.registerNewUserAsync(createUserRequest);
 
-        response.status(201).json(newAdmin);
+        response.status(201).json(formatResponse(201, request.url, newAdmin));
     } catch (error) {
         next(error);
     }
@@ -41,18 +42,18 @@ const registerUserAsync = async (request, response, next) => {
     try {
         let { type, privilegeLevel: privilege } = request.body;
         if (type >= UserType.Accounting) {
-            return response.status(400).send("Non administrative users cannot be of type 98 or higher.");
+            return response.status(400).json(formatResponse(400, request.url, "Non administrative users cannot be of type 98 or higher."));
         }
 
         let existingPrivilege = await PrivilegesService.getPrivilegeAsync(privilege);
         if (await isAdminPrivilege(existingPrivilege)) {
-            return response.status(400).send("Non administrative users cannot have privilege levels 98 or higher.");
+            return response.status(400).json(formatResponse(400, request.url, "Non administrative users cannot have privilege levels 98 or higher."));
         }
 
         let createUserRequest = new CreateUserRequest(request.body);
         let newUser = await UsersService.registerNewUserAsync(createUserRequest);
 
-        response.status(201).json(newUser);
+        response.status(201).json(formatResponse(201, request.url, newUser));
     } catch (error) {
         next(error);
     }
@@ -64,7 +65,7 @@ const getPrivilegesAsync = async (request, response, next) => {
         let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
         let privileges = await PrivilegesService.getPrivilegesAsync(page, pageSize);
 
-        response.status(200).json(privileges);
+        response.status(200).json(formatResponse(200, request.url, privileges));
     } catch (error) {
         next(error);
     }

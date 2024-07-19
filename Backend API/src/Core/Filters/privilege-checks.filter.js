@@ -1,5 +1,7 @@
-const AuthService = require('../../Services/Auth/auth.service');
 const { isNullUndefinedOrEmpty } = require("../Utils/null-checker.util");
+const formatResponse = require('../Utils/response-formatter.util');
+
+const AuthService = require('../../Services/Auth/auth.service');
 
 const ADMIN = 'admin-super';
 const ACCOUNTANT = 'user-accountant';
@@ -10,32 +12,19 @@ const privilegeCheck = async (request, response, next, privileges = []) => {
     try {
         let token = request.header("token");
         if (isNullUndefinedOrEmpty(token)) {
-            return response.status(403).json({
-                statusCode: 403,
-                message: 'No token was found',
-                timestamp: new Date().toISOString(),
-                path: request.url
-            });
+            return response.status(401)
+                .json(formatResponse(401, request.url, 'No token was found'));
         }
 
         let { privilege } = await AuthService.validateTokenAsync(token);
         if (!privileges.includes(privilege)){
-            return response.status(403).json({
-                statusCode: 403,
-                message: 'User does not have the proper privilege level to access this path',
-                timestamp: new Date().toISOString(),
-                path: request.url
-            });
+            return response.status(403)
+                .json(formatResponse(403, request.url, 'User does not have the proper privilege level to access this path'));
         }
 
         next();
     } catch (error) {
-        response.status(500).json({
-            statusCode: 500,
-            message: error.message,
-            timestamp: new Date().toISOString(),
-            path: request.url,
-        });
+        response.status(500).json(formatResponse(500, request.url, error.message));
     }
 };
 
