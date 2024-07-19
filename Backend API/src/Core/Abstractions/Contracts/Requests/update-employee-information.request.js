@@ -1,10 +1,12 @@
 class UpdateEmployeeInformationRequest {
-    constructor({ firstName, lastName, identificationNumber, commissionPerHour, department } = {}) {
+    constructor({ firstName, lastName, identificationNumber, payPerHour, departmentId, supervisorId, positionId } = {}) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.identificationNumber = identificationNumber;
-        this.commissionPerHour = commissionPerHour;
-        this.department = department;
+        this.payPerHour = payPerHour;
+        this.departmentId = departmentId;
+        this.supervisorId = supervisorId;
+        this.positionId = positionId;
     }
 };
 
