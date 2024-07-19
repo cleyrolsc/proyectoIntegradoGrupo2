@@ -36,6 +36,6 @@ INSERT INTO employees (id, firstName, lastName, identificationNumber, department
 Select * From employees;
 
 INSERT INTO users(username, password, employeeId, type, privilegeId, privilegeSuspended, status) VALUES 
-('admin', '1234', 1, 100, 'admin-super', FALSE, 2);
+('admin', '$2a$10$inCJSoyNHMNf/gqdKC9RoesazTUTUgaFAUex25aJUslAgF2DvxH9y', 1, 100, 'admin-super', FALSE, 2);
 
 Select * From users;

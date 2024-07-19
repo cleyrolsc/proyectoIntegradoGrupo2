@@ -2,10 +2,9 @@ const { CreateUserResponse, PaginatedResponse, UserProfileResponse, UpdateEmploy
 const { UserModel } = require("./Models");
 const { BadRequestError, FatalError, NotFoundError, UnauthorizedError } = require("../../Core/Abstractions/Exceptions");
 const { isListEmpty, isNullOrUndefined } = require("../../Core/Utils/null-checker.util");
-const bcrypt = require("bcryptjs")
+const bcrypt = require("bcryptjs");
 
 const { EmployeesRepository, UsersRepository, DepartmentRepository, PositionsRepository, PrivilegesRepository } = require('../../Repositories/index');
-const EncryptionManager = require("../../Core/Utils/encryption-manager.util");
 
 const registerNewUserAsync = async (createUserRequest) =>{
     var newEmployee = await createEmployeeAsync();
@@ -87,12 +86,15 @@ const getUsersAsync = async (currentPage = 1, itemsPerPage = 10, order = 'DESC')
     let response = new PaginatedResponse();
     response.currentPage = currentPage;
     response.itemsPerPage = itemsPerPage;
-    response.totalPages = Math.ceil(users.length / itemsPerPage);
+
+    let userCount = await UsersRepository.countUsersAsync();
+    response.totalPages = Math.ceil(userCount / itemsPerPage);
     response.hasNext = response.currentPage < response.totalPages;
-    response.content = [];
+
+    response.items = [];
     users.forEach((entity) => {
         let { username, employeeId, type, privilegeLevel, suspendPrivilege, status, createdAt: registeredOn, updatedAt: modifiedOn } = entity;
-        response.content.push(new UserModel(username, employeeId, type, privilegeLevel, suspendPrivilege, status, registeredOn, modifiedOn));
+        response.items.push(new UserModel(username, employeeId, type, privilegeLevel, suspendPrivilege, status, registeredOn, modifiedOn));
     });
 
     return response;

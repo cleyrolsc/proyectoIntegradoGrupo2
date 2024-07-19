@@ -27,6 +27,8 @@ const getPrivilegeByNameAsync = async (name) => {
     }
 };
 
+const countPrivilegesAsync = () => Privilege.count();
+
 const getPrivilegesAsync = (skip = 0, limit = 10, orderBy = "DESC") => Privilege.findAll({
     order: [['name', orderBy]],
     offset: skip,
@@ -68,6 +70,7 @@ const deletePrivilegeAsync = (name) => {
 module.exports = {
     createPrivilegeAsync,
     getPrivilegeByNameAsync,
+    countPrivilegesAsync,
     getPrivilegesAsync,
     getPrivilegesByLevelAsync,
     updatePrivilegeAsync,

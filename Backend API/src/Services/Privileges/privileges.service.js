@@ -34,11 +34,15 @@ const getPrivilegesAsync = async (currentPage = 1, itemsPerPage = 10, order = "D
     let response = new PaginatedResponse();
     response.currentPage = currentPage;
     response.itemsPerPage = itemsPerPage;
-    response.totalPages = Math.ceil(users.length / itemsPerPage);
+
+    let privilegeCount = await PrivilegesRepository.countPrivilegesAsync();
+    response.totalPages = Math.ceil(privilegeCount / itemsPerPage);
     response.hasNext = response.currentPage < response.totalPages;
-    response.content = privileges.forEach((entity) => {
+
+    response.items = [];
+    privileges.forEach((entity) => {
         let { name, level, status, createdAt: registeredOn, updatedAt: modifiedOn } = entity;
-        return new PrivilegeModel(name, level, status, registeredOn, modifiedOn);
+        response.items.push(new PrivilegeModel(name, level, status, registeredOn, modifiedOn));
     });
 
     return response;

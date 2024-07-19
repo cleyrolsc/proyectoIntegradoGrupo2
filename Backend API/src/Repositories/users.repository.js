@@ -2,7 +2,6 @@ const { UserType } = require("../Core/Abstractions/Enums");
 const { isNotNullNorUndefined, isNullOrUndefined, isNullUndefinedOrEmpty } = require("../Core/Utils/null-checker.util");
 const { NotImplementedError } = require("../Core/Abstractions/Exceptions");
 
-const EncryptionManager = require("../Core/Utils/encryption-manager.util");
 const User = require('./Entities/user.class');
 
 const createUserAsync = ({username, employeeId, password, privilegeId, type = UserType.Agent}) => {
@@ -23,6 +22,8 @@ const getUserByUsernameAsync = async (username) => {
 
     return user;
 };
+
+const countUsersAsync = () => User.count();
 
 const getUsersAsync = (skip = 0, limit = 10, orderBy = 'DESC') => User.findAll({
         attributes: ['username', 'type', 'privilegeSuspended', 'status', 'employeeId', 'privilegeId'],
@@ -84,6 +85,7 @@ const deleteUserAsync = (username) => {
 module.exports = {
     createUserAsync,
     getUserByUsernameAsync,
+    countUsersAsync,
     getUsersAsync,
     getUsersByPrivilegeLevelAsync,
     updateUserAsync,
