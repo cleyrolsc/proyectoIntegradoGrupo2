@@ -5,14 +5,12 @@ const { NotImplementedError } = require("../Core/Abstractions/Exceptions");
 const EncryptionManager = require("../Core/Utils/encryption-manager.util");
 const User = require('./Entities/user.class');
 
-const createUserAsync = ({username, employeeId, password, privilegeLevel, type = UserType.Agent}) => {
-    let encryptedPassword = EncryptionManager.encrypt(password);
-
+const createUserAsync = ({username, employeeId, password, privilegeId, type = UserType.Agent}) => {
     return User.create({
         username,
         employeeId,
-        password: encryptedPassword,
-        privilegeLevel,
+        password,
+        privilegeId,
         type
     });
 };
@@ -51,10 +49,10 @@ const updateUserAsync = async (username, { type = undefined, privilegeLevel = un
         return user;
     }
 
-    user.type ??= type;
-    user.privilegeLevel ??= privilegeLevel;
-    user.suspendPrivilege ??= suspendPrivilege;
-    user.status ??= status;
+    user.type = type ?? user.type;
+    user.privilegeLevel = privilegeLevel ?? user.privilegeLevel;
+    user.suspendPrivilege = suspendPrivilege ?? user.suspendPrivilege;
+    user.status = status ?? user.status;
 
     await user.save();
 
@@ -72,9 +70,8 @@ const updateUserPasswordAsync = async (username, newPassword) => {
         return undefined;
     }
 
-    let encryptedPassword = EncryptionManager.encrypt(newPassword);
     await user.update({
-        password: encryptedPassword
+        password: newPassword
     });
     
     return user;

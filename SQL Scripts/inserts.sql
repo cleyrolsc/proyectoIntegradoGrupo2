@@ -1,0 +1,41 @@
+INSERT INTO departments (description) VALUES 
+("Call Center"),
+("Management"),
+("Accounting");
+
+Select * From departments;
+
+INSERT INTO events (description) VALUES 
+("Working Starts"),
+("Working Stops"),
+("Break Starts"),
+("Break Stops"),
+("Training Starts"),
+("Training Stops");
+
+Select * From events;
+
+INSERT INTO positions (description) VALUES 
+("Manager"),
+("Agent"),
+("Accountant");
+
+Select * From positions;
+
+INSERT INTO privileges (name, level, status) VALUES 
+("user-agent", 1, 2),
+("user-accountant", 98, 2),
+("admin-manager", 99, 2),
+("admin-super", 100, 2);
+
+Select * From privileges;
+
+INSERT INTO employees (id, firstName, lastName, identificationNumber, departmentId, supervisorId, positionId, payPerHour) VALUES 
+(1, 'admin', 'super', '', 2, 1, 1, 0.0);
+
+Select * From employees;
+
+INSERT INTO users(username, password, employeeId, type, privilegeId, privilegeSuspended, status) VALUES 
+('admin', '1234', 1, 100, 'admin-super', FALSE, 2);
+
+Select * From users;
