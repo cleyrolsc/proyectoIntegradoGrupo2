@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require("express");
 const { urlencoded } = require("express");
 
@@ -8,7 +9,7 @@ const { globalErrorHandlingFilter, sessionAuthenticationFilter } = require("./Co
 class Server {
     constructor() {
         this.app = express();
-        this.port = process.env.PORT || 3000;
+        this.port = +process.env.PORT || 3000;
 
         this.adminEndpoint = '/api/admin';
         this.authEndpoint = '/api/auth';
