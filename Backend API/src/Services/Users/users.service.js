@@ -5,7 +5,6 @@ const { isListEmpty, isNullOrUndefined } = require("../../Core/Utils/null-checke
 const bcrypt = require("bcryptjs");
 
 const { EmployeesRepository, UsersRepository, DepartmentRepository, PositionsRepository, PrivilegesRepository } = require('../../Repositories/index');
-const EncryptionManager = require("../../Core/Utils/encryption-manager.util");
 
 const registerNewUserAsync = async (createUserRequest) =>{
     var newEmployee = await createEmployeeAsync();
@@ -92,10 +91,10 @@ const getUsersAsync = async (currentPage = 1, itemsPerPage = 10, order = 'DESC')
     response.totalPages = Math.ceil(userCount / itemsPerPage);
     response.hasNext = response.currentPage < response.totalPages;
 
-    response.content = [];
+    response.items = [];
     users.forEach((entity) => {
         let { username, employeeId, type, privilegeLevel, suspendPrivilege, status, createdAt: registeredOn, updatedAt: modifiedOn } = entity;
-        response.content.push(new UserModel(username, employeeId, type, privilegeLevel, suspendPrivilege, status, registeredOn, modifiedOn));
+        response.items.push(new UserModel(username, employeeId, type, privilegeLevel, suspendPrivilege, status, registeredOn, modifiedOn));
     });
 
     return response;
