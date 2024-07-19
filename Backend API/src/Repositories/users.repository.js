@@ -1,112 +1,95 @@
-const User = require("./Entities/user.class");
-const { UserStatus, UserType } = require("../Core/Abstractions/Enums");
-const { isNotNullNorUndefined, isNullOrUndefined, isListEmpty } = require("../Core/Utils/null-checker.util");
+const { UserType } = require("../Core/Abstractions/Enums");
+const { isNotNullNorUndefined, isNullOrUndefined, isNullUndefinedOrEmpty } = require("../Core/Utils/null-checker.util");
+const { NotImplementedError } = require("../Core/Abstractions/Exceptions");
 
-const DatabaseManager = require("../Database/database");
 const EncryptionManager = require("../Core/Utils/encryption-manager.util");
+const User = require('./Entities/user.class');
 
-const tableName = "users";
-
-const createUser = (username, employeeId, password, privilegeLevel, type = UserType.Agent) => {
-    // Validate data
-
+const createUserAsync = ({username, employeeId, password, privilegeLevel, type = UserType.Agent}) => {
     let encryptedPassword = EncryptionManager.encrypt(password);
-    let today = new Date();
-    let values = `'${username}', ${+employeeId}, '${encryptedPassword}', ${+type}, '${privilegeLevel}', ${+UserStatus.Active}, ${false}, '${today.toString()}'`;
 
-    return DatabaseManager.run(`INSERT INTO ${tableName} (username, employeeId, password, type, privilegeLevel, status, suspendPrivilege, createdOn) VALUES (${values})`);
+    return User.create({
+        username,
+        employeeId,
+        password: encryptedPassword,
+        privilegeLevel,
+        type
+    });
 };
 
-const getUserByUsername = (username) => {
-    let users = DatabaseManager.query(`SELECT * FROM ${tableName} WHERE username = '${username}' LIMIT 1`);
-    if (isListEmpty(users)) {
-        return undefined;
-    }
-
-    return users[0];
-};
-
-const getUsers = (skip = 0, limit = 10, order = 'DESC') => {
-    let users = DatabaseManager.query(`SELECT * FROM ${tableName} ORDER BY username ${order} OFFSET ${+(skip * limit)} LIMIT ${+limit}`);
-
-    return users;
-};
-
-const updateUser = (username, { type = undefined, privilegeLevel = undefined, suspendPrivilege = undefined, status = undefined }) => {
-    let user = getUserByUsername(username);
+const getUserByUsernameAsync = async (username) => {
+    let user = await User.findByPk(username);
     if (isNullOrUndefined(user)) {
         return undefined;
     }
 
-    let params = generateUpdateParameters();
-
-    if (params === "") {
-        return getUserByUsername(username);
-    }
-
-    let result = DatabaseManager.run(`UPDATE ${tableName} SET ${params} WHERE username = ${username}`);
-    if (result.changes === 0) {
-        throw new FatalError(`Unable to update user '${username}'`);
-    }
-
-    return getUserByUsername(username);
-
-    function generateUpdateParameters() {
-        let params = "";
-
-        if (isNotNullNorUndefined(type)) {
-            params += `type = ${+type}`;
-        }
-
-        if (isNotNullUndefinedNorEmpty(privilegeLevel)) {
-            params += params !== "" ? ", " : params;
-
-            params += `privilegeLevel = '${privilegeLevel}'`;
-        }
-
-        if (isNotNullNorUndefined(suspendPrivilege)) {
-            params += params !== "" ? ", " : params;
-
-            params += `suspendPrivilege = ${suspendPrivilege}`;
-        }
-
-        if (isNotNullNorUndefined(status)) {
-            params += params !== "" ? ", " : params;
-
-            params += `status = ${+status}`;
-        }
-
-        let today = new Date();
-        params += params !== "" ? `, modifiedOn = '${today.toString()}'` : `modifiedOn = '${today.toString()}'`;
-        return params;
-    }
+    return user;
 };
 
-const updateUserPassword = (username, password) => {
-    let user = getUserByUsername(username);
+const getUsersAsync = (skip = 0, limit = 10, orderBy = 'DESC') => User.findAll({
+        attributes: ['username', 'type', 'privilegeSuspended', 'status', 'employeeId', 'privilegeId'],
+        order: [['username', orderBy]],
+        offset: skip,
+        limit
+    });
+
+const getUsersByPrivilegeLevelAsync = (privilegeLevel) => User.findAll({
+        attributes: ['username', 'type', 'privilegeSuspended', 'status', 'employeeId', 'privilegeId']
+    }, {
+        where: {
+            privilegeLevel
+        }
+    });
+
+const updateUserAsync = async (username, { type = undefined, privilegeLevel = undefined, suspendPrivilege = undefined, status = undefined }) => {
+    let user = await getUserByUsernameAsync(username);
     if (isNullOrUndefined(user)) {
         return undefined;
     }
 
-    let encryptedPassword = EncryptionManager.encrypt(password);
-    let today = new Date();
-    let result = DatabaseManager.run(`UPDATE ${tableName} SET password = '${encryptedPassword}', modifiedOn = '${today.toString()}' WHERE username = '${username}'`);
-    if (result.changes === 0) {
-        throw new FatalError(`Unable to update user '${username}'`);
+    if (areAllParametersEmpty()){
+        return user;
     }
 
-    return getUserByUsername(username);
+    user.type ??= type;
+    user.privilegeLevel ??= privilegeLevel;
+    user.suspendPrivilege ??= suspendPrivilege;
+    user.status ??= status;
+
+    await user.save();
+
+    return user;
+
+    function areAllParametersEmpty(){
+        return isNullOrUndefined(type) && isNullUndefinedOrEmpty(privilegeLevel) && 
+        isNullOrUndefined(suspendPrivilege) &&isNotNullNorUndefined(status);
+    }
 };
 
-const deleteUser = (username) => {
-    throw new Error("Not Implemented");
-}
+const updateUserPasswordAsync = async (username, newPassword) => {
+    let user = await getUserByUsernameAsync(username);
+    if (isNullOrUndefined(user)) {
+        return undefined;
+    }
+
+    let encryptedPassword = EncryptionManager.encrypt(newPassword);
+    await user.update({
+        password: encryptedPassword
+    });
+    
+    return user;
+};
+
+const deleteUserAsync = (username) => {
+    throw new NotImplementedError();
+};
 
 module.exports = {
-    createUser,
-    getUserByUsername,
-    getUsers,
-    updateUser,
-    updateUserPassword,
-    deleteUser
+    createUserAsync,
+    getUserByUsernameAsync,
+    getUsersAsync,
+    getUsersByPrivilegeLevelAsync,
+    updateUserAsync,
+    updateUserPasswordAsync,
+    deleteUserAsync
 };

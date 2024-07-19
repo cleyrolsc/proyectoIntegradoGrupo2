@@ -1,31 +1,40 @@
 const express = require("express");
 const { urlencoded } = require("express");
 
-const UsersRouter = require("./Controllers/Users/users.route");
+//const testConnection = require('./Database/db-config');
 const { globalErrorHandlingFilter } = require("./Core/Filters");
 
-const app = express();
-app.set('port', process.env.PORT || 3000);
+class Server {
+    constructor() {
+        this.app = express();
+        this.port = process.env.PORT || 3000;
 
-//#region Middleware
+        this.usersEndpoint = '/api/users';
 
-app.use(express.json());
-app.use(urlencoded({ extended: true }));
+        this.middlewares();
+        //testConnection();
+        this.routes();
+        this.filters();
+    }
 
-//#endregion
+    middlewares(){
+        this.app.use(express.json());
+        this.app.use(urlencoded({ extended: true }));
+    }
 
-app.get('/', (req, res) => {
-    res.send('Hola, Mundo! Esto es el Backend API');
-});
+    routes(){
+        this.app.use(this.usersEndpoint, require("./Controllers/Users/users.route"));
+    }
 
-app.use('/api/users', UsersRouter);
+    filters(){
+        this.app.use(globalErrorHandlingFilter);
+    }
 
-//#region middleware
+    listen(){
+        this.app.listen(this.port, () => {
+            console.log(`Server Started. Port: ${this.port}`);
+        });
+    }
+}
 
-app.use(globalErrorHandlingFilter);
-
-//#endregion
-
-app.listen(app.get('port'), () => {
-    console.log(`Server Started. Port: ${app.get('port')}`);
-});
+module.exports = Server;
