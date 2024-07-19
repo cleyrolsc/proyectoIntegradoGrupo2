@@ -2,27 +2,44 @@
 import { users } from '/data/users.js';
 
 const btnSubmitLogin = document.getElementById('submit-btn');
-const emailInput = document.querySelector('.email');
-const passwordInput = document.getElementById('password');
 
 let currentUser;
 
-btnSubmitLogin.addEventListener('click', function (e) {
-  e.preventDefault(); // Prevent form submission
+btnSubmitLogin.addEventListener('submit', function (event) {
+  event.preventDefault();
 
-  currentUser = users.find((user) => user.email === emailInput.value);
+  const email = document.getElementById('email');
+  const password = document.getElementById('password');
 
-  if (currentUser?.email !== emailInput.value) {
-    console.log('Invalid email address');
-  } else {
-    if (currentUser?.password === passwordInput.value) {
-      // Redirect to the index page only if the password is correct
-      window.location.href = '/templates/index.html';
-    } else {
-      // Handle incorrect password (e.g., show an error message)
-      console.log('Incorrect password');
-    }
-  }
+  const loginData = {
+    email: email,
+    password: password,
+  };
+
+  fetch('https://yourserver.com/api/login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(loginData),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Login failed');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      // Manejar la respuesta del servidor
+      console.log(data);
+      document.getElementById('loginMessage').textContent = 'Login successful!';
+
+      // Redirigir al usuario a la página de inicio
+      window.location.href = 'https://yourserver.com/home';
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+      document.getElementById('loginMessage').textContent =
+        'Login failed. Please try again.';
+    });
 });
-
-export { currentUser };
