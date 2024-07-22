@@ -5,7 +5,7 @@ const btnSubmitLogin = document.getElementById('submit-btn');
 
 let currentUser;
 
-btnSubmitLogin.addEventListener('submit', function (event) {
+btnSubmitLogin.addEventListener('click', function (event) {
   event.preventDefault();
 
   const username = document.getElementById('email');
@@ -41,7 +41,5 @@ btnSubmitLogin.addEventListener('submit', function (event) {
     })
     .catch((error) => {
       console.error('Error:', error);
-      document.getElementById('loginMessage').textContent =
-        'Login failed. Please try again.';
     });
 });
