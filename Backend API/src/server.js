@@ -1,5 +1,6 @@
 require('dotenv').config()
 const express = require("express");
+const cors = require('cors');
 const { urlencoded } = require("express");
 
 const { adminRouter, usersRouter, authRouter } = require("./Controllers");
@@ -24,6 +25,7 @@ class Server {
     middlewares(){
         this.app.use(express.json());
         this.app.use(urlencoded({ extended: true }));
+        this.app.use(cors);
     }
 
     routes(){
