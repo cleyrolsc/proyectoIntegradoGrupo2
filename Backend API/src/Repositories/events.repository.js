@@ -22,6 +22,8 @@ const getEventByIdAsync = async (id) => {
     return event;
 };
 
+const countEventsAsync = () => Event.count();
+
 const getEventsAsync = (skip = 0, limit = 100, orderBy = 'DESC') => Event.findAll({
     order: [['description', orderBy]],
     offset: skip,
@@ -56,6 +58,7 @@ const deleteEventAsync = (id) => {
 module.exports = {
     createEventAsync,
     getEventByIdAsync,
+    countEventsAsync,
     getEventsAsync,
     updateEventAsync,
     deleteEventAsync,

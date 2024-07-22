@@ -1,3 +1,4 @@
+const { PaginatedResponse } = require("../../Core/Abstractions/Contracts/Responses");
 const { BadRequestError } = require("../../Core/Abstractions/Exceptions");
 const { isNullUndefinedOrEmpty } = require("../../Core/Utils/null-checker.util");
 
@@ -11,19 +12,30 @@ const registerDepartmentAsync = (description) => {
     return DepartmentRepository.createDepartmentAsync(description);
 };
 
-const getDepartmentsAsync = async (skip = 0, limit = 10, orderBy = 'DESC') => {
-    let departments =  await DepartmentRepository.getDepartmentsAsync(skip, limit, orderBy);
+const getDepartmentsAsync = async (currentPage = 1, itemsPerPage = 10, orderBy = 'DESC') => {
+    let departments =  await DepartmentRepository.getDepartmentsAsync(currentPage - 1, itemsPerPage, orderBy);
+    if (isListEmpty(departments)) {
+        return new PaginatedResponse();
+    }
 
-    let departmentModels = [];
-    departments.forEach(department => {
-        let { id, description } = department;
-        departmentModels.push({
-            id,
+    let response = new PaginatedResponse();
+    response.currentPage = currentPage;
+    response.itemsPerPage = itemsPerPage;
+
+    let departmentCount = await DepartmentRepository.countDepartmentsAsync();
+    response.totalPages = Math.ceil(departmentCount / itemsPerPage);
+    response.hasNext = response.currentPage < response.totalPages;
+    
+    response.items = [];
+    departments.forEach((entity) => {
+        let { id, description } = entity;
+        response.items.push({
+            id, 
             description
         });
     });
 
-    return departmentModels;
+    return response;
 };
 
 const registerEventAsync = (description) => {
@@ -34,19 +46,30 @@ const registerEventAsync = (description) => {
     return EventsRepository.createEventAsync(description);
 };
 
-const getEventsAsync = async (skip = 0, limit = 100, orderBy = 'DESC') => {
-    let events =  await EventsRepository.getEventsAsync(skip, limit, orderBy);
+const getEventsAsync = async (currentPage = 1, itemsPerPage = 100, orderBy = 'DESC') => {
+    let events =  await EventsRepository.getEventsAsync(currentPage - 1, itemsPerPage, orderBy);
+    if (isListEmpty(events)) {
+        return new PaginatedResponse();
+    }
 
-    let eventModels = [];
-    events.forEach(event => {
-        let { id, description } = event;
-        eventModels.push({
-            id,
+    let response = new PaginatedResponse();
+    response.currentPage = currentPage;
+    response.itemsPerPage = itemsPerPage;
+
+    let eventCount = await EventsRepository.countEventsAsync();
+    response.totalPages = Math.ceil(eventCount / itemsPerPage);
+    response.hasNext = response.currentPage < response.totalPages;
+    
+    response.items = [];
+    events.forEach((entity) => {
+        let { id, description } = entity;
+        response.items.push({
+            id, 
             description
         });
     });
 
-    return eventModels;
+    return response;
 };
 
 const registerPositionAsync = (description) => {
@@ -57,19 +80,30 @@ const registerPositionAsync = (description) => {
     return PositionsRepository.createPositionAsync(description);
 }
 
-const getPositionsAsync = async (skip = 0, limit = 100, orderBy = 'DESC') => {
-    let positions =  await PositionsRepository.getPositionsAsync(skip, limit, orderBy);
+const getPositionsAsync = async (currentPage = 1, itemsPerPage = 100, orderBy = 'DESC') => {
+    let positions =  await PositionsRepository.getPositionsAsync(currentPage - 1, itemsPerPage, orderBy);
+    if (isListEmpty(positions)) {
+        return new PaginatedResponse();
+    }
 
-    let positionModels = [];
-    positions.forEach(position => {
-        let { id, description } = position;
-        positionModels.push({
-            id,
+    let response = new PaginatedResponse();
+    response.currentPage = currentPage;
+    response.itemsPerPage = itemsPerPage;
+
+    let positionCount = await PositionsRepository.countPositionsAsync();
+    response.totalPages = Math.ceil(positionCount / itemsPerPage);
+    response.hasNext = response.currentPage < response.totalPages;
+    
+    response.items = [];
+    positions.forEach((entity) => {
+        let { id, description } = entity;
+        response.items.push({
+            id, 
             description
         });
     });
 
-    return positionModels;
+    return response;
 };
 
 module.exports = {
