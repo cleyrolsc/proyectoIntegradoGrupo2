@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require('cors');
 const { urlencoded } = require("express");
 
-const { adminRouter, usersRouter, authRouter } = require("./Controllers");
+const { adminRouter, usersRouter, authRouter, systemRouter } = require("./Controllers");
 //const testConnection = require('./Database/db-config');
 const { globalErrorHandlingFilter, sessionAuthenticationFilter } = require("./Core/Filters");
 
@@ -14,6 +14,7 @@ class Server {
 
         this.adminEndpoint = '/api/admin';
         this.authEndpoint = '/api/auth';
+        this.systemEndpoint = '/api/system';
         this.usersEndpoint = '/api/users';
 
         this.middlewares();
@@ -40,6 +41,7 @@ class Server {
         this.app.use(sessionAuthenticationFilter);
         // Authenticated endpoints
         this.app.use(this.adminEndpoint, adminRouter);
+        this.app.use(this.systemEndpoint, systemRouter);
         this.app.use(this.usersEndpoint, usersRouter);
     }
 

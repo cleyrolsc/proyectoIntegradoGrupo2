@@ -22,6 +22,8 @@ const getDepartmentByIdAsync = async (id) => {
     return department;
 };
 
+const countDepartmentsAsync = () => Department.count();
+
 const getDepartmentsAsync = (skip = 0, limit = 10, orderBy = 'DESC') => Department.findAll({
     order: [['description', orderBy]],
     offset: skip,
@@ -56,6 +58,7 @@ const deleteDepartmentAsync = (id) => {
 module.exports = {
     createDepartmentAsync,
     getDepartmentByIdAsync,
+    countDepartmentsAsync,
     getDepartmentsAsync,
     updateDepartmentAsync,
     deleteDepartmentAsync,
