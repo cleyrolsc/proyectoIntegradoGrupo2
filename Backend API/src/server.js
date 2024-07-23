@@ -25,7 +25,7 @@ class Server {
     middlewares(){
         this.app.use(express.json());
         this.app.use(urlencoded({ extended: true }));
-        this.app.use(cors);
+        this.app.use(cors());
     }
 
     routes(){
