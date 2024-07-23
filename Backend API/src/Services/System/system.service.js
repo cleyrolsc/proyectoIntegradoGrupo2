@@ -1,6 +1,6 @@
 const { PaginatedResponse } = require("../../Core/Abstractions/Contracts/Responses");
 const { BadRequestError } = require("../../Core/Abstractions/Exceptions");
-const { isNullUndefinedOrEmpty } = require("../../Core/Utils/null-checker.util");
+const { isNullUndefinedOrEmpty, isListEmpty } = require("../../Core/Utils/null-checker.util");
 
 const { EventsRepository, PositionsRepository, DepartmentRepository } = require("../../Repositories");
 
@@ -12,7 +12,7 @@ const registerDepartmentAsync = (description) => {
     return DepartmentRepository.createDepartmentAsync(description);
 };
 
-const getDepartmentsAsync = async (currentPage = 1, itemsPerPage = 10, orderBy = 'DESC') => {
+const getDepartmentsAsync = async (currentPage = 1, itemsPerPage = 100, orderBy = 'DESC') => {
     let departments =  await DepartmentRepository.getDepartmentsAsync(currentPage - 1, itemsPerPage, orderBy);
     if (isListEmpty(departments)) {
         return new PaginatedResponse();
@@ -46,7 +46,7 @@ const registerEventAsync = (description) => {
     return EventsRepository.createEventAsync(description);
 };
 
-const getEventsAsync = async (currentPage = 1, itemsPerPage = 100, orderBy = 'DESC') => {
+const getEventsAsync = async (currentPage = 1, itemsPerPage = 10, orderBy = 'DESC') => {
     let events =  await EventsRepository.getEventsAsync(currentPage - 1, itemsPerPage, orderBy);
     if (isListEmpty(events)) {
         return new PaginatedResponse();
