@@ -25,7 +25,12 @@ class Server {
     middlewares(){
         this.app.use(express.json());
         this.app.use(urlencoded({ extended: true }));
-        this.app.use(cors());
+
+        const corsOptions = {
+            origin: 'http://127.0.0.1:5500',  // Replace with your frontend URL
+            optionsSuccessStatus: 200  // Some legacy browsers (IE11, various SmartTVs) choke on 204
+        };
+        this.app.use(cors(corsOptions));
     }
 
     routes(){
