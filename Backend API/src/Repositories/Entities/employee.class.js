@@ -35,8 +35,7 @@ Employee.init({
         allowNull: false,
         references: {
             model: Department,
-            key: 'id',
-            deferrable: Deferrable.INITIALLY_IMMEDIATE
+            key: 'id'
         }
     },
     supervisorId: {
@@ -44,8 +43,7 @@ Employee.init({
         allowNull: false,
         references: {
             model: Employee,
-            key: 'id',
-            deferrable: Deferrable.INITIALLY_IMMEDIATE
+            key: 'id'
         }
     }, 
     positionId: {
@@ -53,12 +51,11 @@ Employee.init({
         allowNull: false,
         references: {
             model: Position,
-            key: 'id',
-            deferrable: Deferrable.INITIALLY_IMMEDIATE
+            key: 'id'
         }
     }
 }, {
-    dbContext,
+    sequelize: dbContext,
     modelName: 'Employee',
     tableName: 'employees',
     timestamps: true

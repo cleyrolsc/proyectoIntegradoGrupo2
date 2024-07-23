@@ -24,12 +24,11 @@ ReportedHour.init({
         allowNull: false,
         references: {
             model: Employee,
-            key: 'id',
-            deferrable: Deferrable.INITIALLY_IMMEDIATE
+            key: 'id'
         }
     }
 }, {
-    dbContext,
+    sequelize: dbContext,
     modelName: 'ReportedHour',
     tableName: 'reportedHours',
     timestamps: false,
