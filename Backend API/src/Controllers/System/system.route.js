@@ -10,7 +10,7 @@ systemRoute.use('/', checkForAdminPrivileges);
 systemRoute.get('/departments', SystemController.fetchDepartmentsAsync);
 systemRoute.post('/departments', SystemController.registerNewDepartmentAsync);
 
-systemRoute.get('/events', SystemController.fetchDepartmentsAsync);
+systemRoute.get('/events', SystemController.fetchEventsAsync);
 systemRoute.post('/events', SystemController.registerNewEventAsync);
 
 systemRoute.get('/positions', SystemController.fetchPositionsAsync);
