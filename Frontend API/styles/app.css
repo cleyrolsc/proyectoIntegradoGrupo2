@@ -38,6 +38,26 @@ html {
   top: 0;
 }
 
+/* Ensure this section is added to app.css */
+.table-container {
+  max-height: 400px; /* Adjust based on your design */
+  overflow-y: auto;
+  width: 100%;
+  max-width: 1000px; /* Adjust based on your design */
+}
+
+.tableFixHead thead th {
+  position: sticky;
+  top: 0;
+  background-color: #fff; /* Ensure the background color is consistent */
+  z-index: 1;
+}
+
+.table th, .table td {
+  text-align: center; /* Center align all table text */
+}
+
+
 /* .stop-working {
   background-color: #198754;
   color: white;
