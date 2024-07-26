@@ -6,7 +6,12 @@ const AuthService = require('../../Services/Auth/auth.service');
 
 const sessionAuthenticationFilter = async (request, response, next) => {
     try {
-        let token = request.header("token");
+        const bearerHeader = request.header('authorization');
+        if (isNullUndefinedOrEmpty(bearerHeader)) {
+            throw new UnauthorizedError('No bearer authorization token was found');
+        }
+
+        let token = bearerHeader.split(' ')[1];
         if (isNullUndefinedOrEmpty(token)) {
             throw new UnauthorizedError('No token was found');
         }

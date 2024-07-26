@@ -12,7 +12,7 @@ const registerDepartmentAsync = (description) => {
     return DepartmentRepository.createDepartmentAsync(description);
 };
 
-const getDepartmentsAsync = async (currentPage = 1, itemsPerPage = 100, orderBy = 'DESC') => {
+const getDepartmentsAsync = async (currentPage = 1, itemsPerPage = 100, orderBy = 'ASC') => {
     let departments =  await DepartmentRepository.getDepartmentsAsync(currentPage - 1, itemsPerPage, orderBy);
     if (isListEmpty(departments)) {
         return new PaginatedResponse();
@@ -46,7 +46,7 @@ const registerEventAsync = (description) => {
     return EventsRepository.createEventAsync(description);
 };
 
-const getEventsAsync = async (currentPage = 1, itemsPerPage = 10, orderBy = 'DESC') => {
+const getEventsAsync = async (currentPage = 1, itemsPerPage = 10, orderBy = 'ASC') => {
     let events =  await EventsRepository.getEventsAsync(currentPage - 1, itemsPerPage, orderBy);
     if (isListEmpty(events)) {
         return new PaginatedResponse();
@@ -80,7 +80,7 @@ const registerPositionAsync = (description) => {
     return PositionsRepository.createPositionAsync(description);
 }
 
-const getPositionsAsync = async (currentPage = 1, itemsPerPage = 100, orderBy = 'DESC') => {
+const getPositionsAsync = async (currentPage = 1, itemsPerPage = 100, orderBy = 'ASC') => {
     let positions =  await PositionsRepository.getPositionsAsync(currentPage - 1, itemsPerPage, orderBy);
     if (isListEmpty(positions)) {
         return new PaginatedResponse();

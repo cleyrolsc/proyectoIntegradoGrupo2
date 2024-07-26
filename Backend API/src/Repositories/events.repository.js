@@ -24,7 +24,7 @@ const getEventByIdAsync = async (id) => {
 
 const countEventsAsync = () => Event.count();
 
-const getEventsAsync = (skip = 0, limit = 100, orderBy = 'DESC') => Event.findAll({
+const getEventsAsync = (skip = 0, limit = 100, orderBy = 'ASC') => Event.findAll({
     order: [['description', orderBy]],
     offset: skip,
     limit
