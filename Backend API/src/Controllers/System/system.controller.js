@@ -8,7 +8,8 @@ const registerNewDepartmentAsync = async (request, response, next) => {
         let { description } = request.body;
         let department = await SystemService.registerDepartmentAsync(description);
 
-        response.status(201).json(formatResponse(201, department));
+        let { id } = department;
+        response.status(201).json(formatResponse(201, request.url, { id, description }));
     } catch (error) {
         next(error);
     }
@@ -21,7 +22,7 @@ const fetchDepartmentsAsync = async (request, response, next) => {
 
         let departments = await SystemService.getDepartmentsAsync(page, pageSize);
 
-        response.status(200).json(formatResponse(200, departments));
+        response.status(200).json(formatResponse(200, request.url, departments));
     } catch (error) {
         next(error);
     }
@@ -32,7 +33,8 @@ const registerNewEventAsync = async (request, response, next) => {
         let { description } = request.body;
         let event = await SystemService.registerEventAsync(description);
 
-        response.status(201).json(formatResponse(201, event));        
+        let { id } = event;
+        response.status(201).json(formatResponse(201, request.url, { id, description }));        
     } catch (error) {
         next(error);
     }
@@ -45,7 +47,7 @@ const fetchEventsAsync = async (request, response, next) => {
 
         let events = await SystemService.getEventsAsync(page, pageSize);
 
-        response.status(200).json(formatResponse(200, events));
+        response.status(200).json(formatResponse(200, request.url, events));
     } catch (error) {
         next(error)
     }
@@ -56,7 +58,8 @@ const registerNewPositionAsync = async (request, response, next) => {
         let { description } = request.body;
         let position = await SystemService.registerPositionAsync(description);
 
-        response.status(201).json(formatResponse(201, position));        
+        let { id } = event;
+        response.status(201).json(formatResponse(201, request.url, position));        
     } catch (error) {
         next(error);
     }
@@ -69,7 +72,7 @@ const fetchPositionsAsync = async (request, response, next) => {
 
         let positions = await SystemService.getPositionsAsync(page, pageSize);
 
-        response.status(200).json(formatResponse(200, positions));
+        response.status(200).json(formatResponse(200, request.url, { id, description }));
     } catch (error) {
         next(error)
     }

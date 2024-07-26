@@ -24,7 +24,7 @@ const getDepartmentByIdAsync = async (id) => {
 
 const countDepartmentsAsync = () => Department.count();
 
-const getDepartmentsAsync = (skip = 0, limit = 10, orderBy = 'DESC') => Department.findAll({
+const getDepartmentsAsync = (skip = 0, limit = 10, orderBy = 'ASC') => Department.findAll({
     order: [['description', orderBy]],
     offset: skip,
     limit

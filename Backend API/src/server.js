@@ -2,6 +2,8 @@ require('dotenv').config()
 const express = require("express");
 const cors = require('cors');
 const { urlencoded } = require("express");
+const swaggerUI = require('swagger-ui-express');
+const swaggerSpec = require('./swagger');
 
 const { adminRouter, usersRouter, authRouter, systemRouter } = require("./Controllers");
 //const testConnection = require('./Database/db-config');
@@ -32,6 +34,12 @@ class Server {
             optionsSuccessStatus: 200  // Some legacy browsers (IE11, various SmartTVs) choke on 204
         };
         this.app.use(cors(corsOptions));
+
+        /*var customHeaders = {
+            token: new SwaggerClient.ApiKeyAuthorization("token", "Foo", "header"),
+        };
+        swaggerUi.api.clientAuthorizations.add(customHeaders)*/
+        this.app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
     }
 
     routes(){

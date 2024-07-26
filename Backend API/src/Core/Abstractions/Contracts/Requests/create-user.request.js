@@ -9,8 +9,8 @@ class CreateUserRequest {
         this.identificationNumber = identificationNumber;
         this.payPerHour = payPerHour;
         this.department = department; // FK Department
-        this.supervisor = supervisor; // FK Supervisor
-        this.position = position; // FK Supervisor
+        this.supervisor = supervisor; // FK User
+        this.position = position; // FK Position
     }
 };
 
