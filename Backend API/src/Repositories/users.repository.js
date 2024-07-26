@@ -25,7 +25,7 @@ const getUserByUsernameAsync = async (username) => {
 
 const countUsersAsync = () => User.count();
 
-const getUsersAsync = (skip = 0, limit = 10, orderBy = 'DESC') => User.findAll({
+const getUsersAsync = (skip = 0, limit = 10, orderBy = 'ASC') => User.findAll({
         attributes: ['username', 'type', 'privilegeSuspended', 'status', 'employeeId', 'privilegeId'],
         order: [['username', orderBy]],
         offset: skip,
