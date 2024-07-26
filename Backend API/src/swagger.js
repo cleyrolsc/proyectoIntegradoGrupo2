@@ -4,12 +4,12 @@ const options = {
   swaggerDefinition: {
       openapi: '3.0.1',
       info: {
-        title: 'Mini Blog API',
-        description: "API endpoints for a mini blog services documented on swagger",
+        title: 'Backend API',
+        description: "API endpoints to manage call center operations",
         contact: {
-          name: "Desmond Obisi",
-          email: "info@miniblog.com",
-          url: "https://github.com/DesmondSanctity/node-js-swagger"
+          name: "Proyecto Integrado Grupo 2",
+          email: "",
+          url: "https://github.com/cleyrolsc/proyectoIntegradoGrupo2"
         },
         version: '1.0.0',
       },
