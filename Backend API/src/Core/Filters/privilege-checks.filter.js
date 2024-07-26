@@ -10,7 +10,12 @@ const MANAGER = 'admin-manager';
 
 const privilegeCheck = async (request, response, next, privileges = []) => {
     try {
-        let token = request.header("token");
+        const bearerHeader = request.headers['authorization'];
+        if (isNullUndefinedOrEmpty(bearerHeader)) {
+            throw new UnauthorizedError('No bearer authorization token was found');
+        }
+
+        let token = bearerHeader.split(' ')[1];
         if (isNullUndefinedOrEmpty(token)) {
             return response.status(401)
                 .json(formatResponse(401, request.url, 'No token was found'));

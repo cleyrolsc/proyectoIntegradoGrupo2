@@ -77,7 +77,7 @@ const getUserProfileAsync = async (username) => {
     return new UserProfileResponse(user, employee, supervisor, department, position);
 }
 
-const getUsersAsync = async (currentPage = 1, itemsPerPage = 10, order = 'DESC') => {
+const getUsersAsync = async (currentPage = 1, itemsPerPage = 10, order = 'ASC') => {
     let users = await UsersRepository.getUsersAsync(currentPage - 1, itemsPerPage, order);
     if (isListEmpty(users)) {
         return new PaginatedResponse();

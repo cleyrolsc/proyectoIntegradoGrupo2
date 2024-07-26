@@ -29,7 +29,7 @@ const getPrivilegeByNameAsync = async (name) => {
 
 const countPrivilegesAsync = () => Privilege.count();
 
-const getPrivilegesAsync = (skip = 0, limit = 10, orderBy = "DESC") => Privilege.findAll({
+const getPrivilegesAsync = (skip = 0, limit = 10, orderBy = "ASC") => Privilege.findAll({
     order: [['name', orderBy]],
     offset: skip,
     limit

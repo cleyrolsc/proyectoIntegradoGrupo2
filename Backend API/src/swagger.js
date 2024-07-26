@@ -1,9 +1,8 @@
 const swaggerJSDoc = require('swagger-jsdoc');
-const CustomHeaderFilter = require('./custom-header.filter');
 
 const options = {
-    definition: {
-      openapi: '3.0.0',
+  swaggerDefinition: {
+      openapi: '3.0.1',
       info: {
         title: 'Mini Blog API',
         description: "API endpoints for a mini blog services documented on swagger",
@@ -16,34 +15,16 @@ const options = {
       },
       components: {
           securitySchemes: {
-              Authorization: {
-                  type: "http",
-                  scheme: "bearer",
-                  bearerFormat: "JWT",
-                  value: "Bearer <JWT token here>"
-              },
-              JWT: {
-                  type: "apiKey",
-                  name: "token",
-                  in: "header"
-              }
+            bearerAuth: {
+              type: 'http',
+              scheme: 'bearer',
+              bearerFormat: 'JWT',
+            }
           }
       },
-      
-      securityDefinitions: {
-        /*AuthToken: {
-            type: "apiKey",
-            name: "token",
-            in: "header",
-            description: "The token for authentication"
-        },*/
-        JWT: {
-            type: "apiKey",
-            name: "token",
-            in: "header"
-        }
-      },
-
+      security: [{
+        bearerAuth: []
+      }],
       servers: [
         {
           url: "http://localhost:3000/",
@@ -56,14 +37,12 @@ const options = {
       ]
     },
     // looks for configuration in specified directories
-    apis: [`${__dirname}/Controllers/admin/*.js`],
-    //operationFilters: [CustomHeaderFilter]
-    /*paths: {
-    "/admin": {
-                parameters: [{ name: "token", in: "header", type: "string", description: "auth token" }]
-
-                }
-        }*/
+    apis: [
+      `${__dirname}/Controllers/Admin/*.js`,
+      `${__dirname}/Controllers/Auth/*.js`,
+      `${__dirname}/Controllers/System/*.js`,
+      `${__dirname}/Controllers/Users/*.js`
+    ]
   }
 
 const swaggerSpec = swaggerJSDoc(options);
