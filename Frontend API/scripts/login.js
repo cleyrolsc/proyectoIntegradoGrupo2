@@ -46,3 +46,5 @@ btnSubmitLogin.addEventListener('click', function (event) {
       console.error('Error:', error);
     });
 });
+
+// localStorage.clear();
