@@ -18,6 +18,7 @@ const modalEl = document.getElementById('exampleModal');
 const tableBodyEl = document.querySelector('.table-body');
 const tableSection = document.querySelector('.table-section');
 const timerEl = document.querySelector('.timer');
+const departments = document.querySelector('.departments');
 
 //Initial States
 let intervalID;
@@ -163,4 +164,27 @@ btnStopWorking.addEventListener('click', () => {
   btnStartShift.classList.remove('hidden');
   logoutEl.textContent = 'Logout';
   tableBodyEl.innerHTML = '';
+});
+
+departments.addEventListener('click', function (event) {
+  fetch('http://localhost:3000/api/system/departments', {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => {
+      console.log('pin');
+      if (!response.ok) {
+        throw new Error();
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log(data);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
 });
