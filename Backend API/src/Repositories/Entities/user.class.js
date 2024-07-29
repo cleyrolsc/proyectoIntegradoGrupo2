@@ -41,7 +41,7 @@ User.init({
         }
     },
     privilegeId: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.TEXT,
         allowNull: false,
         references: {
             model: Privilege,
