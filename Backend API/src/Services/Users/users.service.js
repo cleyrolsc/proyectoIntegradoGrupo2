@@ -1,7 +1,7 @@
 const { CreateUserResponse, PaginatedResponse, UserProfileResponse, UpdateEmployeeInformationResponse, UpdateUserResponse } = require("../../Core/Abstractions/Contracts/Responses");
 const { UserModel } = require("./Models");
-const { BadRequestError, FatalError, NotFoundError, UnauthorizedError } = require("../../Core/Abstractions/Exceptions");
-const { isListEmpty, isNullOrUndefined } = require("../../Core/Utils/null-checker.util");
+const { BadRequestError, FatalError, NotFoundError, UnauthorizedError, ConflictError } = require("../../Core/Abstractions/Exceptions");
+const { isListEmpty, isNullOrUndefined, isNotNullNorUndefined } = require("../../Core/Utils/null-checker.util");
 const bcrypt = require("bcryptjs");
 
 const { EmployeesRepository, UsersRepository, DepartmentRepository, PositionsRepository, PrivilegesRepository } = require('../../Repositories/index');
@@ -13,7 +13,18 @@ const registerNewUserAsync = async (createUserRequest) =>{
     return new CreateUserResponse(newUser.username, newUser.type, newUser.privilegeLevel, newEmployee.id, newEmployee.firstName, newEmployee.lastName, newEmployee.identificationNumber, newEmployee.payPerHour, newEmployee.departmentId, newEmployee.supervisorId, newEmployee.positionId);
 
     async function createEmployeeAsync() {
-        let { firstName, lastName, identificationNumber, payPerHour, department, supervisor, position } = createUserRequest;
+        let { firstName, lastName, identificationNumber } = createUserRequest;
+
+        let existingEmployee = await EmployeesRepository.getEmployeeByIdentificationNumberAsync(identificationNumber);
+        if (existingEmployee.firstName !== firstName || existingEmployee.lastName !== lastName) {
+            throw new ConflictError(`Identification number (${identificationNumber}) already belongs to ${existingEmployee.lastName !== lastName} ${existingEmployee.firstName}`);
+        }
+        
+        if (isNotNullNorUndefined(existingEmployee)) {
+            return existingEmployee;
+        }
+
+        let { payPerHour, department, supervisor, position } = createUserRequest;
 
         var newEmployee = await EmployeesRepository.createEmployeeAsync({
             firstName,
@@ -33,7 +44,7 @@ const registerNewUserAsync = async (createUserRequest) =>{
     }
 
     async function createUserAsync() {
-        let { username, password, privilegeLevel, type } = createUserRequest;
+        let { username, password, privilege, type } = createUserRequest;
         
         let hashPassword = encryptPassword(password);
 
@@ -41,7 +52,7 @@ const registerNewUserAsync = async (createUserRequest) =>{
             username,
             employeeId: newEmployee.id,
             password: hashPassword,
-            privilegeId: privilegeLevel,
+            privilegeId: privilege,
             type
         });
 
@@ -169,6 +180,11 @@ const updateUserPrivilegeLevelAsync = async (privilegeName, username) => {
     await UsersRepository.updateUserAsync(user.username, { privilegeLevel: privilege.name });
 };
 
+const isUsernameAvailable = async (username) => {
+    let existingUser = await UsersRepository.getUserByUsernameAsync(username);
+    return isNullOrUndefined(existingUser);
+}
+
 module.exports = {
     registerNewUserAsync,
     getUserProfileAsync,
@@ -177,5 +193,6 @@ module.exports = {
     updateEmployeeInformationAsync,
     updateUserAsync,
     updateUserPasswordAsync,
-    updateUserPrivilegeLevelAsync
+    updateUserPrivilegeLevelAsync,
+    isUsernameAvailable
 };
