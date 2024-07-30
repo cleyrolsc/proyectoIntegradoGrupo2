@@ -2,7 +2,7 @@ const { PaginatedResponse } = require("../../Core/Abstractions/Contracts/Respons
 const { BadRequestError } = require("../../Core/Abstractions/Exceptions");
 const { isNullUndefinedOrEmpty, isListEmpty } = require("../../Core/Utils/null-checker.util");
 
-const { EventsRepository, PositionsRepository, DepartmentRepository } = require("../../Repositories");
+const { EventsRepository, PositionsRepository, DepartmentRepository, EmployeesRepository } = require("../../Repositories");
 
 const registerDepartmentAsync = (description) => {
     if (isNullUndefinedOrEmpty(description)) {
@@ -106,11 +106,33 @@ const getPositionsAsync = async (currentPage = 1, itemsPerPage = 100, orderBy = 
     return response;
 };
 
+const getEmployeesAsync = async (currentPage = 1, itemsPerPage = 100, orderBy = 'ASC') => {
+    let {count, rows: employees} = await EmployeesRepository.getEmployeesAsync(currentPage - 1, itemsPerPage, orderBy);
+    if (isListEmpty(employees)) {
+        return new PaginatedResponse();
+    }
+
+    let response = new PaginatedResponse();
+    response.currentPage = currentPage;
+    response.itemsPerPage = itemsPerPage;
+    response.totalPages = Math.ceil(count / itemsPerPage);
+    response.hasNext = response.currentPage < response.totalPages;
+    
+    response.items = [];
+    employees.forEach((entity) => {
+        //let { id, description } = entity;
+        response.items.push(entity);
+    });
+
+    return response;
+};
+
 module.exports = {
     registerDepartmentAsync,
     getDepartmentsAsync,
     registerEventAsync,
     getEventsAsync,
     registerPositionAsync,
-    getPositionsAsync
+    getPositionsAsync,
+    getEmployeesAsync
 };
