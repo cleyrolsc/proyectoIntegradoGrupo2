@@ -47,7 +47,7 @@ async function isAdminPrivilege(privilege) {
 const registerUserAsync = async (request, response, next) => {
     try {
         let { username } = request.body;
-        if (!await UsersService.isUsernameAvailable(username)) {
+        if (!await UsersService.isUsernameAvailableAsync(username)) {
             throw new ConflictError(`Username, ${username}, is not available`);
         }
 
