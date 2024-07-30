@@ -1,14 +1,20 @@
 const { CreateUserRequest } = require("../../Core/Abstractions/Contracts/Requests");
 const { UserType } = require("../../Core/Abstractions/Enums");
+const { isNotNullNorUndefined } = require("../../Core/Utils/null-checker.util");
+const formatResponse = require("../../Core/Utils/response-formatter.util");
+const { ConflictError } = require("../../Core/Abstractions/Exceptions");
 
 const UsersService = require("../../Services/Users/users.service");
 const PrivilegesService = require("../../Services/Privileges/privileges.service");
-const { isNotNullNorUndefined } = require("../../Core/Utils/null-checker.util");
-const formatResponse = require("../../Core/Utils/response-formatter.util");
 
 const registerAdminUserAsync = async (request, response, next) => {
     try {
-        let { type, privilegeLevel: privilege } = request.body;
+        let { username } = request.body;
+        if (!await UsersService.isUsernameAvailable(username)) {
+            throw new ConflictError(`Username, ${username}, is not available`);
+        }
+
+        let { type, privilege } = request.body;
         if (type < UserType.Accounting) {
             return response.status(400).json(formatResponse(400, request.url, "Administrative users cannot be of type lower than 98."));
         }
@@ -40,7 +46,12 @@ async function isAdminPrivilege(privilege) {
 
 const registerUserAsync = async (request, response, next) => {
     try {
-        let { type, privilegeLevel: privilege } = request.body;
+        let { username } = request.body;
+        if (!await UsersService.isUsernameAvailableAsync(username)) {
+            throw new ConflictError(`Username, ${username}, is not available`);
+        }
+
+        let { type, privilege } = request.body;
         if (type >= UserType.Accounting) {
             return response.status(400).json(formatResponse(400, request.url, "Non administrative users cannot be of type 98 or higher."));
         }
