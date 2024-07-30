@@ -16,11 +16,11 @@ const registerNewUserAsync = async (createUserRequest) =>{
         let { firstName, lastName, identificationNumber } = createUserRequest;
 
         let existingEmployee = await EmployeesRepository.getEmployeeByIdentificationNumberAsync(identificationNumber);
-        if (existingEmployee.firstName !== firstName || existingEmployee.lastName !== lastName) {
-            throw new ConflictError(`Identification number (${identificationNumber}) already belongs to ${existingEmployee.lastName !== lastName} ${existingEmployee.firstName}`);
+        if (isNotNullNorUndefined(existingEmployee) && `${existingEmployee.firstName} ${existingEmployee.lastName}`.toLocaleLowerCase() !== `${firstName} ${lastName}`.toLocaleLowerCase()) {
+            throw new ConflictError(`Identification number (${identificationNumber}) already belongs to ${existingEmployee.lastName} ${existingEmployee.firstName}`);
         }
         
-        if (isNotNullNorUndefined(existingEmployee)) {
+        if (isNotNullNorUndefined(existingEmployee) && `${existingEmployee.firstName} ${existingEmployee.lastName}`.toLocaleLowerCase() === `${firstName} ${lastName}`.toLocaleLowerCase()) {
             return existingEmployee;
         }
 
@@ -44,8 +44,10 @@ const registerNewUserAsync = async (createUserRequest) =>{
     }
 
     async function createUserAsync() {
+        await doesEmployeeAlreadyHaveAUserAccountAsync(newEmployee.id);
+        await validateUsernameAsync();
+
         let { username, password, privilege, type } = createUserRequest;
-        
         let hashPassword = encryptPassword(password);
 
         let newUser = await UsersRepository.createUserAsync({
@@ -61,6 +63,20 @@ const registerNewUserAsync = async (createUserRequest) =>{
         }
 
         return newUser;
+    }
+
+    async function doesEmployeeAlreadyHaveAUserAccountAsync(employeeId) {
+        let existingUser = await UsersRepository.getUserByEmployeeId(employeeId);
+        if (isNotNullNorUndefined(existingUser)) {
+            throw new ConflictError(`Employee, ${newEmployee.firstName} ${newEmployee.lastName}, already has a username: ${existingUser.username}`);
+        }
+    }
+
+    async function validateUsernameAsync() {
+        let { username } = createUserRequest;
+        if (!await isUsernameAvailableAsync(username)) {
+            throw new ConflictError(`Username, ${username}, is not available`);
+        }
     }
 };
 
@@ -180,8 +196,9 @@ const updateUserPrivilegeLevelAsync = async (privilegeName, username) => {
     await UsersRepository.updateUserAsync(user.username, { privilegeLevel: privilege.name });
 };
 
-const isUsernameAvailable = async (username) => {
+const isUsernameAvailableAsync = async (username) => {
     let existingUser = await UsersRepository.getUserByUsernameAsync(username);
+    
     return isNullOrUndefined(existingUser);
 }
 
@@ -194,5 +211,5 @@ module.exports = {
     updateUserAsync,
     updateUserPasswordAsync,
     updateUserPrivilegeLevelAsync,
-    isUsernameAvailable
+    isUsernameAvailableAsync
 };
