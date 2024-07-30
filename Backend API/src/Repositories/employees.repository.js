@@ -49,7 +49,8 @@ const getEmployeeByIdentificationNumberAsync = async (identificationNumber) => {
     return employee;
 };
 
-const getEmployeesAsync = (skip = 0, limit = 10, orderBy = 'ASC') => Employee.findAll({
+
+const getEmployeesAsync = (skip = 0, limit = 10, orderBy = 'ASC') => Employee.findAndCountAll({
         order: [['lastName', orderBy]],
         offset: skip,
         limit

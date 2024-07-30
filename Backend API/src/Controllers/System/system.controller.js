@@ -78,11 +78,25 @@ const fetchPositionsAsync = async (request, response, next) => {
     }
 };
 
+const fetchEmployeesAsync = async (request, response, next) => {
+    try {
+        let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
+        let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 100;
+
+        let employees = await SystemService.getEmployeesAsync(page, pageSize);
+
+        response.status(200).json(formatResponse(200, request.url, employees));
+    } catch (error) {
+        next(error)
+    }
+}
+
 module.exports = {
     registerNewDepartmentAsync,
     fetchDepartmentsAsync,
     registerNewEventAsync,
     fetchEventsAsync,
     registerNewPositionAsync,
-    fetchPositionsAsync
+    fetchPositionsAsync,
+    fetchEmployeesAsync
 };
