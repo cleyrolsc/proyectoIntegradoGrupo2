@@ -202,7 +202,7 @@ adminRouter.get('/privileges', checkForAdminPrivileges, AdminController.getPrivi
 *              - username
 *              - password
 *              - type
-*              - privilegeLevel
+*              - privilege
 *              - firstName
 *              - lastName
 *              - identificationNumber
@@ -230,14 +230,14 @@ adminRouter.get('/privileges', checkForAdminPrivileges, AdminController.getPrivi
 *                type: number
 *                default: 102.35
 *              supervisor:
-*                type: string
-*                default: supervisor1
+*                type: integer
+*                default: 98
 *              type:
 *                type: integer
 *                default: 1
-*              privilegeLevel:
-*                type: integer
-*                default: 1
+*              privilege:
+*                type: string
+*                default: 'user-accountant'
 *              department:
 *                type: integer
 *                default: 1
@@ -286,11 +286,11 @@ adminRouter.get('/privileges', checkForAdminPrivileges, AdminController.getPrivi
 *                      type: number
 *                      default: 102.35
 *                    supervisor:
-*                      type: string
-*                      default: supervisor1
-*                    type:
 *                      type: integer
 *                      default: 1
+*                    type:
+*                      type: integer
+*                      default: 98
 *                    privilegeLevel:
 *                      type: integer
 *                      default: 1
@@ -354,6 +354,28 @@ adminRouter.get('/privileges', checkForAdminPrivileges, AdminController.getPrivi
 *                statusCode:
 *                  type: integer
 *                  example: 403
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/register-admin'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: string
+*                  description: error message
+*                  example: 'this is an example error message'
+*      409:
+*        description: Conflict
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 409
 *                path:
 *                  type: string
 *                  description: Url path of request
@@ -410,7 +432,7 @@ adminRouter.post('/register-admin', checkForAdminPrivileges, AdminController.reg
 *              - username
 *              - password
 *              - type
-*              - privilegeLevel
+*              - privilege
 *              - firstName
 *              - lastName
 *              - identificationNumber
@@ -438,14 +460,14 @@ adminRouter.post('/register-admin', checkForAdminPrivileges, AdminController.reg
 *                type: number
 *                default: 102.35
 *              supervisor:
-*                type: string
-*                default: supervisor1
+*                type: integer
+*                default: 1
 *              type:
 *                type: integer
 *                default: 1
-*              privilegeLevel:
-*                type: integer
-*                default: 1
+*              privilege:
+*                type: string
+*                default: 'user-agent'
 *              department:
 *                type: integer
 *                default: 1
@@ -494,8 +516,8 @@ adminRouter.post('/register-admin', checkForAdminPrivileges, AdminController.reg
 *                      type: number
 *                      default: 102.35
 *                    supervisor:
-*                      type: string
-*                      default: supervisor1
+*                      type: integer
+*                      default: 1
 *                    type:
 *                      type: integer
 *                      default: 1
@@ -566,6 +588,28 @@ adminRouter.post('/register-admin', checkForAdminPrivileges, AdminController.reg
 *                  type: string
 *                  description: Url path of request
 *                  example: '/register-user'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: string
+*                  description: error message
+*                  example: 'this is an example error message'
+*      409:
+*        description: Conflict
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 409
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/register-admin'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned

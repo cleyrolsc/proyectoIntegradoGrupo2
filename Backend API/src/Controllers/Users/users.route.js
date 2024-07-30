@@ -180,7 +180,7 @@ usersRouter.get('/', checkForAdminPrivileges, UsersController.fetchAllUsersAsync
 
 /**
 * @openapi
-* '/api/users/{username}:/profile':
+* '/api/users/{username}/profile':
 *  get:
 *     security:              
 *     - bearerAuth: []
@@ -207,7 +207,7 @@ usersRouter.get('/', checkForAdminPrivileges, UsersController.fetchAllUsersAsync
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}:/profile'
+*                  example: '/{username}/profile'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -284,7 +284,7 @@ usersRouter.get('/', checkForAdminPrivileges, UsersController.fetchAllUsersAsync
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}:/profile'
+*                  example: '/{username}/profile'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -306,7 +306,7 @@ usersRouter.get('/', checkForAdminPrivileges, UsersController.fetchAllUsersAsync
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}:/profile'
+*                  example: '/{username}/profile'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -328,7 +328,7 @@ usersRouter.get('/', checkForAdminPrivileges, UsersController.fetchAllUsersAsync
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}:/profile'
+*                  example: '/{username}/profile'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -350,7 +350,7 @@ usersRouter.get('/', checkForAdminPrivileges, UsersController.fetchAllUsersAsync
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}:/profile'
+*                  example: '/{username}/profile'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -364,7 +364,7 @@ usersRouter.get('/:username/profile', UsersController.viewProfileAsync);
 
 /**
 * @openapi
-* '/api/users/{username}:':
+* '/api/users/{username}':
 *  put:
 *     tags:
 *     - Users Controller
@@ -417,7 +417,7 @@ usersRouter.get('/:username/profile', UsersController.viewProfileAsync);
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}:'
+*                  example: '/{username}'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -481,7 +481,7 @@ usersRouter.get('/:username/profile', UsersController.viewProfileAsync);
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}:'
+*                  example: '/{username}'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -503,7 +503,7 @@ usersRouter.get('/:username/profile', UsersController.viewProfileAsync);
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}:'
+*                  example: '/{username}'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -525,7 +525,7 @@ usersRouter.get('/:username/profile', UsersController.viewProfileAsync);
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}:'
+*                  example: '/{username}'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -539,7 +539,7 @@ usersRouter.put('/:username', UsersController.updateEmployeeInformationAsync);
 
 /**
 * @openapi
-* '/api/users/{username}:/change-password':
+* '/api/users/{username}/change-password':
 *  patch:
 *     tags:
 *     - Users Controller
@@ -577,7 +577,7 @@ usersRouter.put('/:username', UsersController.updateEmployeeInformationAsync);
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}:/change-password'
+*                  example: '/{username}/change-password'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -599,7 +599,7 @@ usersRouter.put('/:username', UsersController.updateEmployeeInformationAsync);
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}:/change-password'
+*                  example: '/{username}/change-password'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -621,7 +621,7 @@ usersRouter.put('/:username', UsersController.updateEmployeeInformationAsync);
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}:/change-password'
+*                  example: '/{username}/change-password'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -643,7 +643,7 @@ usersRouter.put('/:username', UsersController.updateEmployeeInformationAsync);
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}:/change-password'
+*                  example: '/{username}/change-password'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
