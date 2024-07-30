@@ -40,6 +40,20 @@ const getUsersByPrivilegeLevelAsync = (privilegeLevel) => User.findAll({
         }
     });
 
+const getUserByEmployeeId = async (employeeId) => {
+    let user = await User.findOne({
+        where: {
+            employeeId
+        }
+    });
+
+    if (isNullOrUndefined(user)) {
+        return undefined;
+    }
+
+    return user;
+}
+
 const updateUserAsync = async (username, { type = undefined, privilegeLevel = undefined, suspendPrivilege = undefined, status = undefined }) => {
     let user = await getUserByUsernameAsync(username);
     if (isNullOrUndefined(user)) {
@@ -88,6 +102,7 @@ module.exports = {
     countUsersAsync,
     getUsersAsync,
     getUsersByPrivilegeLevelAsync,
+    getUserByEmployeeId,
     updateUserAsync,
     updateUserPasswordAsync,
     deleteUserAsync
