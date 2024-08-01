@@ -34,11 +34,7 @@ class Server {
             optionsSuccessStatus: 200  // Some legacy browsers (IE11, various SmartTVs) choke on 204
         };
         this.app.use(cors(corsOptions));
-
-        /*var customHeaders = {
-            token: new SwaggerClient.ApiKeyAuthorization("token", "Foo", "header"),
-        };
-        swaggerUi.api.clientAuthorizations.add(customHeaders)*/
+      
         this.app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
     }
 
