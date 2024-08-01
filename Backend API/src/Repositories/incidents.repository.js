@@ -2,7 +2,6 @@ const { BadRequestError, NotImplementedError } = require("../Core/Abstractions/E
 const { isNullUndefinedOrEmpty, isNullOrUndefined } = require("../Core/Utils/null-checker.util");
 
 const Incident = require('./Entities/incident.class');
-
 const createIncidentAsync = (employeeId, comment) => {
     if(isNullUndefinedOrEmpty(comment)){
         throw new BadRequestError('Comment cannot be empty');
@@ -23,13 +22,13 @@ const getIncidentByIdAsync = async (id) => {
     return incident;
 };
 
-const getIncidentsAsync = (skip = 0, limit = 10, orderBy = 'DESC') => Incident.findAll({
+const getIncidentsAsync = (skip = 0, limit = 10, orderBy = 'ASC') => Incident.findAll({
     order: [['createdAt', orderBy]],
     offset: skip,
     limit
 });
 
-const getIncidentsByEmployeeIdAsync = (employeeId, skip = 0, limit = 10, orderBy = 'DESC') => {
+const getIncidentsByEmployeeIdAsync = (employeeId, skip = 0, limit = 10, orderBy = 'ASC') => {
     if(isNullOrUndefined(employeeId)){
         throw new BadRequestError('Employee id cannot be undefined');
     }
@@ -44,7 +43,7 @@ const getIncidentsByEmployeeIdAsync = (employeeId, skip = 0, limit = 10, orderBy
     });
 };
 
-const getIncidentsBetweenAsync = (startDate, endDate = new Date(), skip = 0, limit = 10, orderBy = 'DESC') => {
+const getIncidentsBetweenAsync = (startDate, endDate = new Date(), skip = 0, limit = 10, orderBy = 'ASC') => {
     if (startDate > endDate){
         throw new BadRequestError('Start date cannot be at a later date than end date');
     }

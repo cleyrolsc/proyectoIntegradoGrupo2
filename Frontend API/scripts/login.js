@@ -8,8 +8,8 @@ let currentUser;
 btnSubmitLogin.addEventListener('click', function (event) {
   event.preventDefault();
 
-  const username = document.getElementById('email');
-  const password = document.getElementById('password');
+  const username = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
 
   const loginData = {
     username: username,
@@ -22,6 +22,7 @@ btnSubmitLogin.addEventListener('click', function (event) {
       Authorization: 'Bearer {token}',
       'Content-Type': 'application/json',
     },
+
     body: JSON.stringify(loginData),
   })
     .then((response) => {
@@ -29,13 +30,15 @@ btnSubmitLogin.addEventListener('click', function (event) {
       if (!response.ok) {
         throw new Error('Login failed');
       }
-      console.log(response);
+      // console.log(response);
       return response.json();
     })
     .then((data) => {
       // Manejar la respuesta del servidor
-      console.log(data);
-      document.getElementById('loginMessage').textContent = 'Login successful!';
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('token', data.content.token);
+
+      // document.getElementById('loginMessage').textContent = 'Login successful!';
 
       // Redirigir al usuario a la página de inicio
       window.location.href = 'index.html';
@@ -44,3 +47,5 @@ btnSubmitLogin.addEventListener('click', function (event) {
       console.error('Error:', error);
     });
 });
+
+// localStorage.clear();

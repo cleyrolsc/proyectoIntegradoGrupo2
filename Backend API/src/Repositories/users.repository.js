@@ -25,7 +25,7 @@ const getUserByUsernameAsync = async (username) => {
 
 const countUsersAsync = () => User.count();
 
-const getUsersAsync = (skip = 0, limit = 10, orderBy = 'DESC') => User.findAll({
+const getUsersAsync = (skip = 0, limit = 10, orderBy = 'ASC') => User.findAll({
         attributes: ['username', 'type', 'privilegeSuspended', 'status', 'employeeId', 'privilegeId'],
         order: [['username', orderBy]],
         offset: skip,
@@ -39,6 +39,20 @@ const getUsersByPrivilegeLevelAsync = (privilegeLevel) => User.findAll({
             privilegeLevel
         }
     });
+
+const getUserByEmployeeId = async (employeeId) => {
+    let user = await User.findOne({
+        where: {
+            employeeId
+        }
+    });
+
+    if (isNullOrUndefined(user)) {
+        return undefined;
+    }
+
+    return user;
+}
 
 const updateUserAsync = async (username, { type = undefined, privilegeLevel = undefined, suspendPrivilege = undefined, status = undefined }) => {
     let user = await getUserByUsernameAsync(username);
@@ -88,6 +102,7 @@ module.exports = {
     countUsersAsync,
     getUsersAsync,
     getUsersByPrivilegeLevelAsync,
+    getUserByEmployeeId,
     updateUserAsync,
     updateUserPasswordAsync,
     deleteUserAsync
