@@ -38,6 +38,10 @@ html {
   top: 0;
 }
 
+#employee-info {
+  margin: 0;
+}
+
 /* .stop-working {
   background-color: #198754;
   color: white;
