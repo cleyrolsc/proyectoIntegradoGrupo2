@@ -19,6 +19,7 @@ const tableBodyEl = document.querySelector('.table-body');
 const tableSection = document.querySelector('.table-section');
 const timerEl = document.querySelector('.timer');
 const departments = document.querySelector('.departments');
+const employeeInfo = document.getElementById('employee-info');
 
 //Initial States
 let intervalID;
@@ -132,6 +133,9 @@ logoutEl.addEventListener('click', () => {
     btnBreaks.classList.add('hidden');
     clearInterval(intervalID);
     timerEl.classList.add('hidden');
+  } else if (logoutEl.textContent === 'Logout') {
+    localStorage.clear();
+    window.location = 'login.html';
   }
 });
 btnBreak.addEventListener('click', function () {
@@ -166,6 +170,52 @@ btnStopWorking.addEventListener('click', () => {
   tableBodyEl.innerHTML = '';
 });
 
+//Helper functions
+
+//Capitalize
+
+function capitalizeFirstLetter(word) {
+  if (!word) return ''; // Check for empty string
+  return `${word.charAt(0).toUpperCase() + word.slice(1)} `;
+}
+
+//Format ID
+
+function formatId(number) {
+  return `NTG${number.toString().padStart(4, '0')}`;
+}
+
+//Render employee
+const renderEmployeeInfo = function (userCapitalize, formattedId) {
+  employeeInfo.textContent = `${userCapitalize} - ${formattedId}`;
+};
+//Fetch
+
+fetch('http://localhost:3000/api/users/my-profile', {
+  method: 'GET',
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem('token')}`,
+    'Content-Type': 'application/json',
+  },
+})
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error();
+    }
+    return response.json();
+  })
+  .then((data) => {
+    console.log(data);
+    const userCapitalize = capitalizeFirstLetter(
+      data.content.employeeInfo.firstName
+    );
+    const formattedId = formatId(data.content.employeeInfo.employeeId);
+    renderEmployeeInfo(userCapitalize, formattedId);
+  })
+  .catch((error) => {
+    console.error('Error:', error);
+  });
+
 departments.addEventListener('click', function (event) {
   fetch('http://localhost:3000/api/system/departments', {
     method: 'GET',
@@ -187,4 +237,13 @@ departments.addEventListener('click', function (event) {
     .catch((error) => {
       console.error('Error:', error);
     });
+});
+
+//If not logged in, send user to login page
+
+document.addEventListener('DOMContentLoaded', (event) => {
+  event.preventDefault();
+  if (!localStorage.getItem('isLoggedIn')) {
+    window.location = 'login.html';
+  }
 });
