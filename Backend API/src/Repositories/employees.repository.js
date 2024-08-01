@@ -49,13 +49,14 @@ const getEmployeeByIdentificationNumberAsync = async (identificationNumber) => {
     return employee;
 };
 
-const getEmployeesAsync = (skip = 0, limit = 10, orderBy = 'DESC') => Employee.findAll({
+
+const getEmployeesAsync = (skip = 0, limit = 10, orderBy = 'ASC') => Employee.findAndCountAll({
         order: [['lastName', orderBy]],
         offset: skip,
         limit
     });
 
-const getEmployeesByDepartmentIdAsync = (departmentId, skip = 0, limit = 10, orderBy = 'DESC') => Employee.findAll({
+const getEmployeesByDepartmentIdAsync = (departmentId, skip = 0, limit = 10, orderBy = 'ASC') => Employee.findAll({
         where: {
             departmentId
         },
@@ -64,7 +65,7 @@ const getEmployeesByDepartmentIdAsync = (departmentId, skip = 0, limit = 10, ord
         limit
     });
 
-const getEmployeesBySupervisorIdAsync = (supervisorId, skip = 0, limit = 10, orderBy = 'DESC') => Employee.findAll({
+const getEmployeesBySupervisorIdAsync = (supervisorId, skip = 0, limit = 10, orderBy = 'ASC') => Employee.findAll({
         where: {
             supervisorId
         },
@@ -73,7 +74,7 @@ const getEmployeesBySupervisorIdAsync = (supervisorId, skip = 0, limit = 10, ord
         limit
     });
 
-const getEmployeesByPositionIdAsync = (positionId, skip = 0, limit = 10, orderBy = 'DESC') => Employee.findAll({
+const getEmployeesByPositionIdAsync = (positionId, skip = 0, limit = 10, orderBy = 'ASC') => Employee.findAll({
         where: {
             positionId
         },

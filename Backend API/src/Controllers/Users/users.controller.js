@@ -1,9 +1,10 @@
 const { UpdateEmployeeInformationRequest } = require("../../Core/Abstractions/Contracts/Requests");
-const { isNullOrUndefined, isNotNullNorUndefined } = require("../../Core/Utils/null-checker.util");
+const { isNullOrUndefined, isNotNullNorUndefined, isNullUndefinedOrEmpty } = require("../../Core/Utils/null-checker.util");
 const { BadRequestError } = require("../../Core/Abstractions/Exceptions");
 const formatResponse = require("../../Core/Utils/response-formatter.util");
 
 const UserServices = require("../../Services/Users/users.service");
+const AuthService = require('../../Services/Auth/auth.service')
 
 const fetchAllUsersAsync = async (request, response, next) => {
     try {        
@@ -17,18 +18,40 @@ const fetchAllUsersAsync = async (request, response, next) => {
     }
 };
 
-const viewProfileAsync = async (request, response, next) => {
+const viewMyProfileAsync = async (request, response, next) => {
     try {
-        let username = request.params.username;
-        if(isNullOrUndefined(username)) {
-            throw new BadRequestError('Username is undefined');
+        const bearerHeader = request.header('authorization');
+        if (isNullUndefinedOrEmpty(bearerHeader)) {
+            throw new UnauthorizedError('No bearer authorization token was found');
         }
 
-        let profile = await UserServices.getUserProfileAsync(username);
-        response.status(200).json(formatResponse(200, request.url, profile));
+        let token = bearerHeader.split(' ')[1];
+        if (isNullUndefinedOrEmpty(token)) {
+            throw new UnauthorizedError('No token was found');
+        }
+
+        let { username } = await AuthService.validateTokenAsync(token);
+        await getUseProfileAsync(username, response, request);
     } catch (error) {
         next(error);
     }
+};
+
+const viewProfileAsync = async (request, response, next) => {
+    try {
+        await getUseProfileAsync(request.params.username, response, request);
+    } catch (error) {
+        next(error);
+    }
+};
+
+async function getUseProfileAsync(username, response, request) {
+    if (isNullOrUndefined(username)) {
+        throw new BadRequestError('Username is undefined');
+    }
+  
+    let profile = await UserServices.getUserProfileAsync(username);
+    response.status(200).json(formatResponse(200, request.url, profile));
 };
 
 const updateEmployeeInformationAsync = async (request, response, next) => {
@@ -59,7 +82,7 @@ const changePasswordAsync = async (request, response, next) => {
         if (oldPassword === newPassword) {
             throw new BadRequestError("New password cannot be the same as old password.");
         }
-
+      
         await UserServices.updateUserPasswordAsync(username, oldPassword, newPassword);
 
         response.status(200).send(formatResponse(200, request.url, "Password successfully changed!"));
@@ -70,6 +93,7 @@ const changePasswordAsync = async (request, response, next) => {
 
 module.exports = {
     fetchAllUsersAsync,
+    viewMyProfileAsync,
     viewProfileAsync,
     updateEmployeeInformationAsync,
     changePasswordAsync

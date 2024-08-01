@@ -25,7 +25,7 @@ const getPrivilegeAsync = async (name) => {
     return new PrivilegeModel(privilege.name, privilege.level, privilege.status, privilege.createdOn, privilege.modifiedOn)
 };
 
-const getPrivilegesAsync = async (currentPage = 1, itemsPerPage = 10, order = "DESC") => {
+const getPrivilegesAsync = async (currentPage = 1, itemsPerPage = 10, order = "ASC") => {
     let privileges = await PrivilegesRepository.getPrivilegesAsync(currentPage - 1, itemsPerPage, order);
     if (isListEmpty(privileges)) {
         return new PaginatedResponse();

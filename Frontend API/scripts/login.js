@@ -5,41 +5,46 @@ const btnSubmitLogin = document.getElementById('submit-btn');
 
 let currentUser;
 
-btnSubmitLogin.addEventListener('submit', function (event) {
+btnSubmitLogin.addEventListener('click', function (event) {
   event.preventDefault();
 
-  const email = document.getElementById('email');
-  const password = document.getElementById('password');
+  const username = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
 
   const loginData = {
-    email: email,
+    username: username,
     password: password,
   };
 
-  fetch('https://yourserver.com/api/login', {
+  fetch('http://localhost:3000/api/auth/login', {
     method: 'POST',
     headers: {
+      Authorization: 'Bearer {token}',
       'Content-Type': 'application/json',
     },
+
     body: JSON.stringify(loginData),
   })
     .then((response) => {
+      console.log('pin');
       if (!response.ok) {
         throw new Error('Login failed');
       }
+      // console.log(response);
       return response.json();
     })
     .then((data) => {
       // Manejar la respuesta del servidor
-      console.log(data);
-      document.getElementById('loginMessage').textContent = 'Login successful!';
+      localStorage.setItem('token', data.content.token);
+
+      // document.getElementById('loginMessage').textContent = 'Login successful!';
 
       // Redirigir al usuario a la página de inicio
-      window.location.href = 'https://yourserver.com/home';
+      window.location.href = 'index.html';
     })
     .catch((error) => {
       console.error('Error:', error);
-      document.getElementById('loginMessage').textContent =
-        'Login failed. Please try again.';
     });
 });
+
+// localStorage.clear();
