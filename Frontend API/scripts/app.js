@@ -222,28 +222,28 @@ fetch('http://localhost:3000/api/users/my-profile', {
     console.error('Error:', error);
   });
 
-departments.addEventListener('click', function (event) {
-  fetch('http://localhost:3000/api/system/departments', {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => {
-      console.log('pin');
-      if (!response.ok) {
-        throw new Error();
-      }
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data);
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-});
+// departments.addEventListener('click', function (event) {
+//   fetch('http://localhost:3000/api/system/departments', {
+//     method: 'GET',
+//     headers: {
+//       Authorization: `Bearer ${localStorage.getItem('token')}`,
+//       'Content-Type': 'application/json',
+//     },
+//   })
+//     .then((response) => {
+//       console.log('pin');
+//       if (!response.ok) {
+//         throw new Error();
+//       }
+//       return response.json();
+//     })
+//     .then((data) => {
+//       console.log(data);
+//     })
+//     .catch((error) => {
+//       console.error('Error:', error);
+//     });
+// });
 
 //If not logged in, send user to login page
 
