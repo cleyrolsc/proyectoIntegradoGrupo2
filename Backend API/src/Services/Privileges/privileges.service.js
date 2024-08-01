@@ -61,6 +61,8 @@ const updatePrivilegeAsync = async (name, updatePrivilegeRequest) => {
         registeredOn: privilege.createdAt,
         modifiedOn: privilege.updatedAt
     });
+
+    return response;
 };
 
 module.exports = {
