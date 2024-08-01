@@ -655,4 +655,182 @@ usersRouter.put('/:username', UsersController.updateEmployeeInformationAsync);
 */
 usersRouter.patch('/:username/change-password', UsersController.changePasswordAsync);
 
+/**
+* @openapi
+* '/api/users/my-profile':
+*  get:
+*     security:              
+*     - bearerAuth: []
+*     tags:
+*     - Users Controller
+*     summary: Get user profile.
+*     responses:
+*      200:
+*        description: Ok
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 200
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/my-profile'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: result of the request
+*                  properties:
+*                    userInfo:
+*                      type: object
+*                      description: User information
+*                      properties:
+*                        username:
+*                          type: string
+*                          example: 'johndoe'
+*                        type:
+*                          type: integer
+*                          example: 1
+*                        status:
+*                          type: integer
+*                          example: 1
+*                    employeeInfo:
+*                      type: object
+*                      description: Employee information for the user
+*                      properties:
+*                        employeeId:
+*                          type: integer
+*                          example: 1
+*                        firstName:
+*                          type: string
+*                          example: 'John'
+*                        lastName:
+*                          type: string
+*                          example: 'Doe'
+*                        identificationNumber:
+*                          type: string
+*                          example: 'ABC-123'
+*                        position:
+*                          type: string
+*                          example: 'Senior Accountant'
+*                        commissionPerHour:
+*                          type: number
+*                          example: 165.89
+*                        department:
+*                          type: object
+*                          description: Department information
+*                          properties:
+*                            departmentName:
+*                              type: string
+*                              example: 'Accounting'
+*                    supervisorInfo:
+*                      type: object
+*                      description: Employee information for the user
+*                      properties:
+*                        id:
+*                          type: integer
+*                          example: 41
+*                        firstName:
+*                          type: string
+*                          example: 'Maria'
+*                        lastName:
+*                          type: string
+*                          example: 'Fernandez'
+*      400:
+*        description: Bad Request
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 400
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/my-profile'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: string
+*                  description: error message
+*                  example: 'this is an example error message'
+*      401:
+*        description: Unauthorized
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 401
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/my-profile'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: string
+*                  description: error message
+*                  example: 'this is an example error message'
+*      404:
+*        description: Not Found
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 404
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/my-profile'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: string
+*                  description: error message
+*                  example: 'this is an example error message'
+*      500:
+*        description: Server Error
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 500
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/my-profile'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: string
+*                  description: error message
+*                  example: 'this is an example error message'
+*/
+usersRouter.get('/my-profile', UsersController.viewMyProfileAsync);
+
 module.exports = usersRouter;
