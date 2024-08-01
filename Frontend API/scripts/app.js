@@ -20,6 +20,7 @@ const tableSection = document.querySelector('.table-section');
 const timerEl = document.querySelector('.timer');
 const departments = document.querySelector('.departments');
 const employeeInfo = document.getElementById('employee-info');
+const logoutConfirmation = document.querySelector('.logout-confirmation');
 
 //Initial States
 let intervalID;
@@ -137,6 +138,11 @@ logoutEl.addEventListener('click', () => {
     localStorage.clear();
     window.location = 'login.html';
   }
+});
+
+logoutConfirmation.addEventListener('click', function (e) {
+  localStorage.clear();
+  window.location = 'login.html';
 });
 btnBreak.addEventListener('click', function () {
   clearInterval(intervalID);
