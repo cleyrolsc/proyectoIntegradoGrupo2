@@ -35,6 +35,7 @@ btnSubmitLogin.addEventListener('click', function (event) {
     })
     .then((data) => {
       // Manejar la respuesta del servidor
+      localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('token', data.content.token);
 
       // document.getElementById('loginMessage').textContent = 'Login successful!';
