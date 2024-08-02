@@ -22,7 +22,9 @@ const getPositionByIdAsync = async (id) => {
     return position;
 };
 
-const getPositionsAsync = (skip = 0, limit = 10, orderBy = 'DESC') => Position.findAll({
+const countPositionsAsync = () => Position.count();
+
+const getPositionsAsync = (skip = 0, limit = 10, orderBy = 'ASC') => Position.findAll({
     order: [['description', orderBy]],
     offset: skip,
     limit
@@ -56,6 +58,7 @@ const deletePositionAsync = (id) => {
 module.exports = {
     createPositionAsync,
     getPositionByIdAsync,
+    countPositionsAsync,
     getPositionsAsync,
     updatePositionAsync,
     deletePositionAsync

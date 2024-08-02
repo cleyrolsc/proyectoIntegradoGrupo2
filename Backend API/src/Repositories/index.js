@@ -4,7 +4,6 @@ const EventsRepository = require("./events.repository");
 const IncidentsRepository = require("./incidents.repository");
 const PositionsRepository = require("./positions.repository");
 const PrivilegesRepository = require("./privileges.repository");
-const ReportedHoursRepository = require("./reported-hours.repository");
 const UsersRepository = require("./users.repository");
 
 module.exports = {
@@ -14,6 +13,5 @@ module.exports = {
     IncidentsRepository,
     PositionsRepository,
     PrivilegesRepository,
-    ReportedHoursRepository,
     UsersRepository
 };

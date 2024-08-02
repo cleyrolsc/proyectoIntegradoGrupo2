@@ -1,0 +1,288 @@
+body,
+html {
+  height: 100%;
+  margin: 0;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(
+    100vh - 100px
+  ); /* Adjust based on header and footer height */
+  padding: 20px;
+}
+
+.table-container {
+  max-height: 400px; /* Adjust based on your design */
+  overflow-y: auto;
+  width: 100%;
+  max-width: 600px; /* Adjust based on your design */
+}
+
+.table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+.tableFixHead {
+  overflow: auto;
+  /* Adjust the height as needed */
+  max-height: 300px;
+}
+
+.tableFixHead thead th {
+  position: sticky;
+  top: 0;
+}
+
+/* .stop-working {
+  background-color: #198754;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 1.5rem;
+  font-size: 2rem;
+  border-radius: 0.6rem;
+} */
+
+/* .logout-confirmation {
+  background-color: #ffc107;
+  color: black;
+  border: none;
+  cursor: pointer;
+  padding: 1.5rem;
+  font-size: 2rem;
+  border-radius: 0.6rem;
+} */
+
+/* .confirmation-buttons {
+  display: flex;
+  column-gap: 1rem;
+} */
+
+/*
+
+
+.status {
+  margin-left: 20px;
+}
+
+.end {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.status:last-child {
+  margin-top: 30px;
+}
+
+#paused {
+  display: none;
+}
+
+p {
+  font-size: 5rem;
+  display: none;
+  margin: 0;
+}
+
+.lunch {
+  background-color: rgb(10, 90, 206);
+}
+
+.break {
+  background-color: rgb(87, 95, 101);
+}
+
+.endbtn {
+  background-color: rgb(181, 43, 57);
+}
+
+aside {
+  height: 100vh;
+  width: 20%;
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  border: solid 2px black;
+}
+
+h2 {
+  margin: 10px auto;
+  text-align: center;
+}
+
+li a {
+  text-decoration: none;
+  color: black;
+}
+
+img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+}
+
+.userinfo {
+
+  margin-top: 15px;
+  margin-left: 25px;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+
+
+.hidden {
+  display: none;
+}
+
+.notification-modal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  z-index: 5;
+}
+
+
+.timer-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#timer {
+  display: none;
+}
+
+.start-button {
+  background-color: #198754;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 2.5rem 4.5rem;
+  font-size: 2rem;
+  border-radius: 0.6rem;
+  /* display: none; 
+}
+
+.break {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 1.5rem;
+  font-size: 2rem;
+  border-radius: 0.6rem;
+}
+
+.non-working-buttons {
+  display: flex;
+  flex-direction: column;
+}
+
+.break-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.lunch {
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 1.5rem;
+  font-size: 2rem;
+  border-radius: 0.6rem;
+}
+
+.coaching-training {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 1.5rem;
+  font-size: 2rem;
+  border-radius: 0.6rem;
+}
+
+/* Confirm Logout/Stop Working modal
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  z-index: 5;
+}
+
+.confirmation-form {
+  height: 30rem;
+  width: 30rem;
+  background-color: white;
+  /* z-index: 6; 
+  border: solid black 0.1rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confirmation-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  row-gap: 1rem;
+}
+
+.stop-working {
+  background-color: #198754;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 1.5rem;
+  font-size: 2rem;
+  border-radius: 0.6rem;
+}
+
+.logout-confirmation {
+  background-color: #ffc107;
+  color: black;
+  border: none;
+  cursor: pointer;
+  padding: 1.5rem;
+  font-size: 2rem;
+  border-radius: 0.6rem;
+}
+
+.confirmation-buttons {
+  display: flex;
+  column-gap: 1rem;
+}
+
+
+button {
+  padding: 2rem 4rem;
+  background-color: green;
+  font-size: 8rem;
+  color: white;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  transition: 0.5s;
+}
+*/

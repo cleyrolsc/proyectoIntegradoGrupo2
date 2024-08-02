@@ -25,7 +25,7 @@ const getPrivilegeAsync = async (name) => {
     return new PrivilegeModel(privilege.name, privilege.level, privilege.status, privilege.createdOn, privilege.modifiedOn)
 };
 
-const getPrivilegesAsync = async (currentPage = 1, itemsPerPage = 10, order = "DESC") => {
+const getPrivilegesAsync = async (currentPage = 1, itemsPerPage = 10, order = "ASC") => {
     let privileges = await PrivilegesRepository.getPrivilegesAsync(currentPage - 1, itemsPerPage, order);
     if (isListEmpty(privileges)) {
         return new PaginatedResponse();
@@ -34,15 +34,21 @@ const getPrivilegesAsync = async (currentPage = 1, itemsPerPage = 10, order = "D
     let response = new PaginatedResponse();
     response.currentPage = currentPage;
     response.itemsPerPage = itemsPerPage;
-    response.totalPages = Math.ceil(users.length / itemsPerPage);
+
+    let privilegeCount = await PrivilegesRepository.countPrivilegesAsync();
+    response.totalPages = Math.ceil(privilegeCount / itemsPerPage);
     response.hasNext = response.currentPage < response.totalPages;
-    response.content = privileges.forEach((entity) => {
+
+    response.items = [];
+    privileges.forEach((entity) => {
         let { name, level, status, createdAt: registeredOn, updatedAt: modifiedOn } = entity;
-        return new PrivilegeModel(name, level, status, registeredOn, modifiedOn);
+        response.items.push(new PrivilegeModel(name, level, status, registeredOn, modifiedOn));
     });
 
     return response;
 };
+
+const getPrivilegesByLevelAsync = (minLevel = 1, maxLevel = 100) => PrivilegesRepository.getPrivilegesByLevelAsync(minLevel, maxLevel);
 
 const updatePrivilegeAsync = async (name, updatePrivilegeRequest) => {
 
@@ -61,5 +67,6 @@ module.exports = {
     registerNewPrivilegeAsync,
     getPrivilegeAsync,
     getPrivilegesAsync,
+    getPrivilegesByLevelAsync,
     updatePrivilegeAsync
 };

@@ -49,13 +49,14 @@ const getEmployeeByIdentificationNumberAsync = async (identificationNumber) => {
     return employee;
 };
 
-const getEmployeesAsync = (skip = 0, limit = 10, orderBy = 'DESC') => Employee.findAll({
+
+const getEmployeesAsync = (skip = 0, limit = 10, orderBy = 'ASC') => Employee.findAndCountAll({
         order: [['lastName', orderBy]],
         offset: skip,
         limit
     });
 
-const getEmployeesByDepartmentIdAsync = (departmentId, skip = 0, limit = 10, orderBy = 'DESC') => Employee.findAll({
+const getEmployeesByDepartmentIdAsync = (departmentId, skip = 0, limit = 10, orderBy = 'ASC') => Employee.findAll({
         where: {
             departmentId
         },
@@ -64,7 +65,7 @@ const getEmployeesByDepartmentIdAsync = (departmentId, skip = 0, limit = 10, ord
         limit
     });
 
-const getEmployeesBySupervisorIdAsync = (supervisorId, skip = 0, limit = 10, orderBy = 'DESC') => Employee.findAll({
+const getEmployeesBySupervisorIdAsync = (supervisorId, skip = 0, limit = 10, orderBy = 'ASC') => Employee.findAll({
         where: {
             supervisorId
         },
@@ -73,7 +74,7 @@ const getEmployeesBySupervisorIdAsync = (supervisorId, skip = 0, limit = 10, ord
         limit
     });
 
-const getEmployeesByPositionIdAsync = (positionId, skip = 0, limit = 10, orderBy = 'DESC') => Employee.findAll({
+const getEmployeesByPositionIdAsync = (positionId, skip = 0, limit = 10, orderBy = 'ASC') => Employee.findAll({
         where: {
             positionId
         },
@@ -83,7 +84,7 @@ const getEmployeesByPositionIdAsync = (positionId, skip = 0, limit = 10, orderBy
     });
 
 const updateEmployeeAsync = async (employeeId, { firstName = undefined, lastName = undefined, identificationNumber = undefined, payPerHour = undefined, departmentId = undefined, supervisorId = undefined, positionId = undefined }) =>{
-    let employee = getEmployeeByIdAsync(employeeId);
+    let employee = await getEmployeeByIdAsync(employeeId);
     if (isNullOrUndefined(employee)) {
         return undefined;
     }
@@ -92,13 +93,13 @@ const updateEmployeeAsync = async (employeeId, { firstName = undefined, lastName
         return employee;
     }
 
-    employee.firstName ??= firstName;
-    employee.lastName ??= lastName;
-    employee.identificationNumber ??= identificationNumber;
-    employee.payPerHour ??= payPerHour;
-    employee.departmentId ??= departmentId;
-    employee.supervisorId ??= supervisorId;
-    employee.positionId ??= positionId;
+    employee.firstName = firstName ?? employee.firstName;
+    employee.lastName = lastName ??  employee.lastName;
+    employee.identificationNumber = identificationNumber ??  employee.identificationNumber;
+    employee.payPerHour = payPerHour ??  employee.payPerHour;
+    employee.departmentId = departmentId ??  employee.departmentId;
+    employee.supervisorId = supervisorId ??  employee.supervisorId;
+    employee.positionId = positionId ??  employee.positionId;
 
     await employee.save();
 

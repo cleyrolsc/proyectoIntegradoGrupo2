@@ -2,17 +2,14 @@ const { UserType } = require("../Core/Abstractions/Enums");
 const { isNotNullNorUndefined, isNullOrUndefined, isNullUndefinedOrEmpty } = require("../Core/Utils/null-checker.util");
 const { NotImplementedError } = require("../Core/Abstractions/Exceptions");
 
-const EncryptionManager = require("../Core/Utils/encryption-manager.util");
 const User = require('./Entities/user.class');
 
-const createUserAsync = ({username, employeeId, password, privilegeLevel, type = UserType.Agent}) => {
-    let encryptedPassword = EncryptionManager.encrypt(password);
-
+const createUserAsync = ({username, employeeId, password, privilegeId, type = UserType.Agent}) => {
     return User.create({
         username,
         employeeId,
-        password: encryptedPassword,
-        privilegeLevel,
+        password,
+        privilegeId,
         type
     });
 };
@@ -26,7 +23,9 @@ const getUserByUsernameAsync = async (username) => {
     return user;
 };
 
-const getUsersAsync = (skip = 0, limit = 10, orderBy = 'DESC') => User.findAll({
+const countUsersAsync = () => User.count();
+
+const getUsersAsync = (skip = 0, limit = 10, orderBy = 'ASC') => User.findAll({
         attributes: ['username', 'type', 'privilegeSuspended', 'status', 'employeeId', 'privilegeId'],
         order: [['username', orderBy]],
         offset: skip,
@@ -41,6 +40,20 @@ const getUsersByPrivilegeLevelAsync = (privilegeLevel) => User.findAll({
         }
     });
 
+const getUserByEmployeeId = async (employeeId) => {
+    let user = await User.findOne({
+        where: {
+            employeeId
+        }
+    });
+
+    if (isNullOrUndefined(user)) {
+        return undefined;
+    }
+
+    return user;
+}
+
 const updateUserAsync = async (username, { type = undefined, privilegeLevel = undefined, suspendPrivilege = undefined, status = undefined }) => {
     let user = await getUserByUsernameAsync(username);
     if (isNullOrUndefined(user)) {
@@ -51,10 +64,10 @@ const updateUserAsync = async (username, { type = undefined, privilegeLevel = un
         return user;
     }
 
-    user.type ??= type;
-    user.privilegeLevel ??= privilegeLevel;
-    user.suspendPrivilege ??= suspendPrivilege;
-    user.status ??= status;
+    user.type = type ?? user.type;
+    user.privilegeLevel = privilegeLevel ?? user.privilegeLevel;
+    user.suspendPrivilege = suspendPrivilege ?? user.suspendPrivilege;
+    user.status = status ?? user.status;
 
     await user.save();
 
@@ -72,9 +85,8 @@ const updateUserPasswordAsync = async (username, newPassword) => {
         return undefined;
     }
 
-    let encryptedPassword = EncryptionManager.encrypt(newPassword);
     await user.update({
-        password: encryptedPassword
+        password: newPassword
     });
     
     return user;
@@ -87,8 +99,10 @@ const deleteUserAsync = (username) => {
 module.exports = {
     createUserAsync,
     getUserByUsernameAsync,
+    countUsersAsync,
     getUsersAsync,
     getUsersByPrivilegeLevelAsync,
+    getUserByEmployeeId,
     updateUserAsync,
     updateUserPasswordAsync,
     deleteUserAsync
