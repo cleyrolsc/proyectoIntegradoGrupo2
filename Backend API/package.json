@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/cleyrolsc/proyectoIntegradoGrupo2#readme",
   "dependencies": {
+    "@sequelize/mysql": "^7.0.0-alpha.41",
     "bcryptjs": "^2.4.3",
     "better-sqlite3": "^9.2.2",
     "cors": "^2.8.5",
