@@ -1,6 +1,5 @@
 require('dotenv').config();
 const { Sequelize } = require('sequelize');
-const { MySqlDialect } = require('@sequelize/mysql');
 
 /*const dbContext = new Sequelize({
     dialect: 'sqlite',
