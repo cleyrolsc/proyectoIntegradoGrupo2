@@ -1,6 +1,6 @@
 const { UnauthorizedError } = require('../Abstractions/Exceptions');
 const { isNullUndefinedOrEmpty } = require('../Utils/null-checker.util');
-const formatResponse = require('../Utils/response-formatter.util');
+const { formatErrorResponse } = require('../Utils/response-formatter.util');
 
 const AuthService = require('../../Services/Auth/auth.service');
 
@@ -31,7 +31,7 @@ const sessionAuthenticationFilter = async (request, response, next) => {
                 break;
         };
 
-        response.status(status).json(formatResponse(status, request.url, error.message));
+        response.status(status).json(formatErrorResponse(status, request.originalUrl, error));
     }
 };
 

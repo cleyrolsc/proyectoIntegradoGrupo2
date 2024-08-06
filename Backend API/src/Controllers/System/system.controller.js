@@ -1,5 +1,5 @@
 const { isNotNullNorUndefined } = require("../../Core/Utils/null-checker.util");
-const formatResponse = require("../../Core/Utils/response-formatter.util");
+const { formatResponse } = require("../../Core/Utils/response-formatter.util");
 
 const { SystemService } = require("../../Services");
 
@@ -9,7 +9,7 @@ const registerNewDepartmentAsync = async (request, response, next) => {
         let department = await SystemService.registerDepartmentAsync(description);
 
         let { id } = department;
-        response.status(201).json(formatResponse(201, request.url, { id, description }));
+        response.status(201).json(formatResponse(201, request.originalUrl, { id, description }));
     } catch (error) {
         next(error);
     }
@@ -22,7 +22,7 @@ const fetchDepartmentsAsync = async (request, response, next) => {
 
         let departments = await SystemService.getDepartmentsAsync(page, pageSize);
 
-        response.status(200).json(formatResponse(200, request.url, departments));
+        response.status(200).json(formatResponse(200, request.originalUrl, departments));
     } catch (error) {
         next(error);
     }
@@ -34,7 +34,7 @@ const registerNewEventAsync = async (request, response, next) => {
         let event = await SystemService.registerEventAsync(description);
 
         let { id } = event;
-        response.status(201).json(formatResponse(201, request.url, { id, description }));        
+        response.status(201).json(formatResponse(201, request.originalUrl, { id, description }));        
     } catch (error) {
         next(error);
     }
@@ -47,7 +47,7 @@ const fetchEventsAsync = async (request, response, next) => {
 
         let events = await SystemService.getEventsAsync(page, pageSize);
 
-        response.status(200).json(formatResponse(200, request.url, events));
+        response.status(200).json(formatResponse(200, request.originalUrl, events));
     } catch (error) {
         next(error)
     }
@@ -59,7 +59,7 @@ const registerNewPositionAsync = async (request, response, next) => {
         let position = await SystemService.registerPositionAsync(description);
 
         let { id } = position;
-        response.status(201).json(formatResponse(201, request.url, { id, description }));        
+        response.status(201).json(formatResponse(201, request.originalUrl, { id, description }));        
     } catch (error) {
         next(error);
     }
@@ -72,7 +72,7 @@ const fetchPositionsAsync = async (request, response, next) => {
 
         let positions = await SystemService.getPositionsAsync(page, pageSize);
 
-        response.status(200).json(formatResponse(200, request.url, positions));
+        response.status(200).json(formatResponse(200, request.originalUrl, positions));
     } catch (error) {
         next(error)
     }
@@ -85,7 +85,7 @@ const fetchEmployeesAsync = async (request, response, next) => {
 
         let employees = await SystemService.getEmployeesAsync(page, pageSize);
 
-        response.status(200).json(formatResponse(200, request.url, employees));
+        response.status(200).json(formatResponse(200, request.originalUrl, employees));
     } catch (error) {
         next(error)
     }

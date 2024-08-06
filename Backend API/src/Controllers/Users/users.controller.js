@@ -1,7 +1,7 @@
 const { UpdateEmployeeInformationRequest } = require("../../Core/Abstractions/Contracts/Requests");
 const { isNullOrUndefined, isNotNullNorUndefined, isNullUndefinedOrEmpty } = require("../../Core/Utils/null-checker.util");
 const { BadRequestError } = require("../../Core/Abstractions/Exceptions");
-const formatResponse = require("../../Core/Utils/response-formatter.util");
+const { formatResponse } = require("../../Core/Utils/response-formatter.util");
 
 const UserServices = require("../../Services/Users/users.service");
 const AuthService = require('../../Services/Auth/auth.service')
@@ -12,7 +12,7 @@ const fetchAllUsersAsync = async (request, response, next) => {
         let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
         let users = await UserServices.getUsersAsync(page, pageSize);
         
-        response.status(200).json(formatResponse(200, request.url, users));
+        response.status(200).json(formatResponse(200, request.originalUrl, users));
     } catch (error) {
         next(error);
     }
@@ -51,7 +51,7 @@ async function getUseProfileAsync(username, response, request) {
     }
   
     let profile = await UserServices.getUserProfileAsync(username);
-    response.status(200).json(formatResponse(200, request.url, profile));
+    response.status(200).json(formatResponse(200, request.originalUrl, profile));
 };
 
 const updateEmployeeInformationAsync = async (request, response, next) => {
@@ -64,7 +64,7 @@ const updateEmployeeInformationAsync = async (request, response, next) => {
         let { employeeInfo } = await UserServices.getUserProfileAsync(username);
         let updatedInfo = await UserServices.updateEmployeeInformationAsync(employeeInfo.employeeId, new UpdateEmployeeInformationRequest(request.body));
 
-        response.status(200).json(formatResponse(200, request.url, updatedInfo));
+        response.status(200).json(formatResponse(200, request.originalUrl, updatedInfo));
     } catch (error) {
         next(error);
     }
@@ -85,7 +85,7 @@ const changePasswordAsync = async (request, response, next) => {
       
         await UserServices.updateUserPasswordAsync(username, oldPassword, newPassword);
 
-        response.status(200).send(formatResponse(200, request.url, "Password successfully changed!"));
+        response.status(200).send(formatResponse(200, request.originalUrl, "Password successfully changed!"));
     } catch (error) {
         next(error);
     }
