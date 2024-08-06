@@ -6,7 +6,6 @@ const swaggerUI = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
 
 const { adminRouter, usersRouter, authRouter, systemRouter } = require("./Controllers");
-//const testConnection = require('./Database/db-config');
 const { globalErrorHandlingFilter, sessionAuthenticationFilter } = require("./Core/Filters");
 
 class Server {
@@ -20,7 +19,6 @@ class Server {
         this.usersEndpoint = '/api/users';
 
         this.middlewares();
-        //testConnection();
         this.routes();
         this.filters();
     }
