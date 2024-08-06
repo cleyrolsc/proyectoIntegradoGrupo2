@@ -73,9 +73,15 @@ const authRouter = express.Router();
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      404:
 *        description: Not Found
 *        content:
@@ -95,9 +101,15 @@ const authRouter = express.Router();
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      500:
 *        description: Server Error
 *        content:
