@@ -1,5 +1,4 @@
 const { isNullOrUndefined } = require("../Core/Utils/null-checker.util");
-// const { NotImplementedError } = require("../Core/Abstractions/Exceptions");
 
 const Schedule = require("./Entities/schedule.class");
 
@@ -10,6 +9,14 @@ const createScheduleAsync = ({ eventId, employeeId, eventDate }) => {
         eventDate
     });
 }
+
+const getAllSchedules = async (skip = 0, limit = 10, orderBy = 'ASC') => Schedule.findAll({
+    order: [
+        ['username', orderBy]
+    ],
+    offset: skip,
+    limit
+});
 
 const getSchedulesByEmployeeId = async employeeId => {
     let schedules = await Schedule.findAll({
@@ -43,6 +50,41 @@ const getSchedulesByEventId = async eventId => {
 const getScheduleByDateRange = async (startDate, endDate) => {
     let schedules = await Schedule.findAll({
         where: {
+
+            from: {
+                $between: [startDate, endDate]
+            }
+        }
+    });
+
+    if (isNullOrUndefined(schedules)) {
+        return undefined;
+    }
+
+    return schedules;
+}
+
+const getEmployeeSchedulesByDateRange = async (employeeId, startDate, endDate) => {
+    let schedules = await Schedule.findAll({
+        where: {
+            employeeId,
+            from: {
+                $between: [startDate, endDate]
+            }
+        }
+    });
+
+    if (isNullOrUndefined(schedules)) {
+        return undefined;
+    }
+
+    return schedules;
+}
+
+const getEventsScheduleByDateRange = async (eventId, startDate, endDate) => {
+    let schedules = await Schedule.findAll({
+        where: {
+            eventId,
             from: {
                 $between: [startDate, endDate]
             }
@@ -58,9 +100,12 @@ const getScheduleByDateRange = async (startDate, endDate) => {
 
 module.exports = {
     createScheduleAsync,
+    getAllSchedules,
     getSchedulesByEmployeeId,
     getSchedulesByEventId,
-    getScheduleByDateRange
+    getScheduleByDateRange,
+    getEventsScheduleByDateRange,
+    getEmployeeSchedulesByDateRange
 }
 
 
