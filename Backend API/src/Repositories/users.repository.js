@@ -32,11 +32,10 @@ const getUsersAsync = (skip = 0, limit = 10, orderBy = 'ASC') => User.findAndCou
         limit
     });
 
-const getUsersByPrivilegeLevelAsync = (privilegeLevel, skip = 0, limit = 10, orderBy = 'ASC') => User.findAndCountAll({
-        attributes: ['username', 'type', 'privilegeSuspended', 'status', 'employeeId', 'privilegeId']
-    }, {
+const getUsersByPrivilegeIdAsync = (privilegeId, skip = 0, limit = 10, orderBy = 'ASC') => User.findAndCountAll({
+        attributes: ['username', 'type', 'privilegeSuspended', 'status', 'employeeId', 'privilegeId'],
         where: {
-            privilegeLevel
+            privilegeId
         },
         order: [['username', orderBy]],
         offset: skip,
@@ -104,7 +103,7 @@ module.exports = {
     getUserByUsernameAsync,
     countUsersAsync,
     getUsersAsync,
-    getUsersByPrivilegeLevelAsync,
+    getUsersByPrivilegeIdAsync,
     getUserByEmployeeId,
     updateUserAsync,
     updateUserPasswordAsync,

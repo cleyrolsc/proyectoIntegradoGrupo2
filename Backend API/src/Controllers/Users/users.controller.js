@@ -1,5 +1,5 @@
 const { UpdateEmployeeInformationRequest } = require("../../Core/Abstractions/Contracts/Requests");
-const { isNullOrUndefined, isNotNullNorUndefined, isNullUndefinedOrEmpty } = require("../../Core/Utils/null-checker.util");
+const { isNullOrUndefined, isNotNullNorUndefined, isNullUndefinedOrEmpty, isNotNullUndefinedNorEmpty } = require("../../Core/Utils/null-checker.util");
 const { BadRequestError } = require("../../Core/Abstractions/Exceptions");
 const { formatResponse } = require("../../Core/Utils/response-formatter.util");
 
@@ -7,11 +7,32 @@ const UserServices = require("../../Services/Users/users.service");
 const AuthService = require('../../Services/Auth/auth.service')
 
 const fetchAllUsersAsync = async (request, response, next) => {
-    try {        
+    try {
         let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
         let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
         let users = await UserServices.getUsersAsync(page, pageSize);
         
+        response.status(200).json(formatResponse(200, request.originalUrl, users));
+    } catch (error) {
+        next(error);
+    }
+};
+
+const fetchUsersByPrivilegeLevelAsync = async (request, response, next) => {
+    try {
+        let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
+        let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
+        
+        let privilege = '';
+        if (isNotNullUndefinedNorEmpty(request.query.privilegeLevel)) {
+            privilege = request.query.privilegeLevel
+        }
+        else {
+            throw new BadRequestError('Please specify privilege level');
+        }
+
+        let users = await UserServices.getUsersByPrivilegeAsync(privilege, page, pageSize);
+
         response.status(200).json(formatResponse(200, request.originalUrl, users));
     } catch (error) {
         next(error);
@@ -93,6 +114,7 @@ const changePasswordAsync = async (request, response, next) => {
 
 module.exports = {
     fetchAllUsersAsync,
+    fetchUsersByPrivilegeLevelAsync,
     viewMyProfileAsync,
     viewProfileAsync,
     updateEmployeeInformationAsync,

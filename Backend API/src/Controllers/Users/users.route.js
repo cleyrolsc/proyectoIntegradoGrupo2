@@ -204,6 +204,209 @@ usersRouter.get('/', checkForAdminPrivileges, UsersController.fetchAllUsersAsync
 
 /**
 * @openapi
+* '/api/users/by-privilege':
+*  get:
+*     security:              
+*     - bearerAuth: []
+*     tags:
+*     - Users Controller
+*     summary: Get list of users.
+*     parameters:
+*       - in: query
+*         name: privilegeLevel
+*         description: Name (id) of the privilege level
+*         schema:
+*           type: string
+*           example: 'user-agent'
+*       - in: query
+*         name: page
+*         description: Current page the user wishes to view from 1 to N
+*         schema:
+*           type: integer
+*           example: 1
+*       - in: query
+*         name: pageSize
+*         description: Number of items each page should have
+*         schema:
+*           type: integer
+*           example: 10
+*     responses:
+*      200:
+*        description: Ok
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 200
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/by-privilege'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: result of the request
+*                  properties:
+*                    currentPage:
+*                      type: integer
+*                      description: Current page that is being viewed
+*                      example: 1
+*                    itemsPerPage:
+*                      type: integer
+*                      description: Number of items included inside each page
+*                      example: 10
+*                    totalPages:
+*                      type: integer
+*                      description: Total numbers of pages that exist to be viewed
+*                      example: 100
+*                    hasNext:
+*                      type: boolean
+*                      description: Indicate if there are more pages left to be viewed (currentPage > totalPages)
+*                      example: true
+*                    items:
+*                      type: array
+*                      description: all items displayed on the page
+*                      items:
+*                        type: object
+*                        properties:
+*                          username:
+*                            type: string
+*                            example: 'johndoe'
+*                          employeeId:
+*                            type: integer
+*                            description: Identifier that links the employee with their username
+*                            example: 50
+*                          type:
+*                            type: integer
+*                            description: Type of the user
+*                            example: 2
+*                          status:
+*                            type: integer
+*                            description: Status of the user
+*                            example: 2
+*      400:
+*        description: Bad Request
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 400
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/by-privilege'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: error message
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
+*      401:
+*        description: Unauthorized
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 401
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/by-privilege'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: error message
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
+*      403:
+*        description: Forbidden
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 403
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/by-privilege'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: error message
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
+*      500:
+*        description: Server Error
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 500
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/by-privilege'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: error message
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
+*/
+usersRouter.get('/by-privilege', checkForAdminPrivileges, UsersController.fetchUsersByPrivilegeLevelAsync);
+
+/**
+* @openapi
 * '/api/users/{username}/profile':
 *  get:
 *     security:              
