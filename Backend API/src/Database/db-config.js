@@ -17,7 +17,7 @@ const dbContext = new Sequelize({
    
 dbContext.authenticate()
 .then(() => {
-  console.log('conected to MySql Server Database');
+  console.log('connected to MySql Server Database');
 }).catch(error => {
   console.log(`Error: ${error}`);
 })

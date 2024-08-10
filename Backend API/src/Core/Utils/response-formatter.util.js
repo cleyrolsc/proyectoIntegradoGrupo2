@@ -1,3 +1,5 @@
+const { PaginatedResponse } = require("../Abstractions/Contracts/Responses");
+
 const formatResponse = (statusCode = 200, path, content) => {
     return {
         statusCode,
@@ -20,7 +22,17 @@ const formatErrorResponse = (statusCode = 200, path, error) => {
     };
 };
 
+const formatPaginatedResponse = (currentPage, itemsPerPage, items, count) => {
+    let response = new PaginatedResponse();
+    response.currentPage = currentPage;
+    response.itemsPerPage = itemsPerPage;
+    response.paginate(items, count);
+
+    return response;
+}
+
 module.exports = {
     formatResponse,
-    formatErrorResponse
+    formatErrorResponse,
+    formatPaginatedResponse
 };
