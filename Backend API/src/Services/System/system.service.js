@@ -1,6 +1,7 @@
 const { PaginatedResponse } = require("../../Core/Abstractions/Contracts/Responses");
 const { BadRequestError } = require("../../Core/Abstractions/Exceptions");
 const { isNullUndefinedOrEmpty, isListEmpty } = require("../../Core/Utils/null-checker.util");
+const { formatPaginatedResponse } = require("../../Core/Utils/response-formatter.util");
 
 const { EventsRepository, PositionsRepository, DepartmentRepository, EmployeesRepository } = require("../../Repositories");
 
@@ -13,29 +14,22 @@ const registerDepartmentAsync = (description) => {
 };
 
 const getDepartmentsAsync = async (currentPage = 1, itemsPerPage = 100, orderBy = 'ASC') => {
-    let departments =  await DepartmentRepository.getDepartmentsAsync(currentPage - 1, itemsPerPage, orderBy);
+    let skip = (currentPage - 1) * itemsPerPage;
+    let {count, rows: departments} =  await DepartmentRepository.getDepartmentsAsync(skip, itemsPerPage, orderBy);
     if (isListEmpty(departments)) {
         return new PaginatedResponse();
     }
-
-    let response = new PaginatedResponse();
-    response.currentPage = currentPage;
-    response.itemsPerPage = itemsPerPage;
-
-    let departmentCount = await DepartmentRepository.countDepartmentsAsync();
-    response.totalPages = Math.ceil(departmentCount / itemsPerPage);
-    response.hasNext = response.currentPage < response.totalPages;
     
-    response.items = [];
+    let departmentModels = [];
     departments.forEach((entity) => {
         let { id, description } = entity;
-        response.items.push({
+        departmentModels.push({
             id, 
             description
         });
     });
 
-    return response;
+    return formatPaginatedResponse(currentPage, itemsPerPage, departmentModels, count);
 };
 
 const registerEventAsync = (description) => {
@@ -47,29 +41,22 @@ const registerEventAsync = (description) => {
 };
 
 const getEventsAsync = async (currentPage = 1, itemsPerPage = 10, orderBy = 'ASC') => {
-    let events =  await EventsRepository.getEventsAsync(currentPage - 1, itemsPerPage, orderBy);
+    let skip = (currentPage - 1) * itemsPerPage;
+    let {count, rows: events} =  await EventsRepository.getEventsAsync(skip, itemsPerPage, orderBy);
     if (isListEmpty(events)) {
         return new PaginatedResponse();
     }
-
-    let response = new PaginatedResponse();
-    response.currentPage = currentPage;
-    response.itemsPerPage = itemsPerPage;
-
-    let eventCount = await EventsRepository.countEventsAsync();
-    response.totalPages = Math.ceil(eventCount / itemsPerPage);
-    response.hasNext = response.currentPage < response.totalPages;
     
-    response.items = [];
+    let eventModels =[];
     events.forEach((entity) => {
         let { id, description } = entity;
-        response.items.push({
+        eventModels.push({
             id, 
             description
         });
     });
 
-    return response;
+    return formatPaginatedResponse(currentPage, itemsPerPage, eventModels, count);
 };
 
 const registerPositionAsync = (description) => {
@@ -81,50 +68,32 @@ const registerPositionAsync = (description) => {
 }
 
 const getPositionsAsync = async (currentPage = 1, itemsPerPage = 100, orderBy = 'ASC') => {
-    let positions =  await PositionsRepository.getPositionsAsync(currentPage - 1, itemsPerPage, orderBy);
+    let skip = (currentPage - 1) * itemsPerPage;
+    let {count, rows: positions} =  await PositionsRepository.getPositionsAsync(skip, itemsPerPage, orderBy);
     if (isListEmpty(positions)) {
         return new PaginatedResponse();
     }
-
-    let response = new PaginatedResponse();
-    response.currentPage = currentPage;
-    response.itemsPerPage = itemsPerPage;
-
-    let positionCount = await PositionsRepository.countPositionsAsync();
-    response.totalPages = Math.ceil(positionCount / itemsPerPage);
-    response.hasNext = response.currentPage < response.totalPages;
     
-    response.items = [];
+    let positionModels = [];
     positions.forEach((entity) => {
         let { id, description } = entity;
-        response.items.push({
+        positionModels.push({
             id, 
             description
         });
     });
 
-    return response;
+    return formatPaginatedResponse(currentPage, itemsPerPage, positionModels, count);
 };
 
 const getEmployeesAsync = async (currentPage = 1, itemsPerPage = 100, orderBy = 'ASC') => {
-    let {count, rows: employees} = await EmployeesRepository.getEmployeesAsync(currentPage - 1, itemsPerPage, orderBy);
+    let skip = (currentPage - 1) * itemsPerPage;
+    let {count, rows: employees} = await EmployeesRepository.getEmployeesAsync(skip, itemsPerPage, orderBy);
     if (isListEmpty(employees)) {
         return new PaginatedResponse();
     }
 
-    let response = new PaginatedResponse();
-    response.currentPage = currentPage;
-    response.itemsPerPage = itemsPerPage;
-    response.totalPages = Math.ceil(count / itemsPerPage);
-    response.hasNext = response.currentPage < response.totalPages;
-    
-    response.items = [];
-    employees.forEach((entity) => {
-        //let { id, description } = entity;
-        response.items.push(entity);
-    });
-
-    return response;
+    return formatPaginatedResponse(currentPage, itemsPerPage, employees, count);
 };
 
 module.exports = {

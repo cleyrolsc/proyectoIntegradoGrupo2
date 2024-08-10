@@ -24,7 +24,7 @@ const getPositionByIdAsync = async (id) => {
 
 const countPositionsAsync = () => Position.count();
 
-const getPositionsAsync = (skip = 0, limit = 10, orderBy = 'ASC') => Position.findAll({
+const getPositionsAsync = (skip = 0, limit = 10, orderBy = 'ASC') => Position.findAndCountAll({
     order: [['description', orderBy]],
     offset: skip,
     limit
