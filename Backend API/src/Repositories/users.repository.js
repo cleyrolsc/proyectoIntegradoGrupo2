@@ -25,19 +25,22 @@ const getUserByUsernameAsync = async (username) => {
 
 const countUsersAsync = () => User.count();
 
-const getUsersAsync = (skip = 0, limit = 10, orderBy = 'ASC') => User.findAll({
+const getUsersAsync = (skip = 0, limit = 10, orderBy = 'ASC') => User.findAndCountAll({
         attributes: ['username', 'type', 'privilegeSuspended', 'status', 'employeeId', 'privilegeId'],
         order: [['username', orderBy]],
         offset: skip,
         limit
     });
 
-const getUsersByPrivilegeLevelAsync = (privilegeLevel) => User.findAll({
+const getUsersByPrivilegeLevelAsync = (privilegeLevel, skip = 0, limit = 10, orderBy = 'ASC') => User.findAndCountAll({
         attributes: ['username', 'type', 'privilegeSuspended', 'status', 'employeeId', 'privilegeId']
     }, {
         where: {
             privilegeLevel
-        }
+        },
+        order: [['username', orderBy]],
+        offset: skip,
+        limit
     });
 
 const getUserByEmployeeId = async (employeeId) => {

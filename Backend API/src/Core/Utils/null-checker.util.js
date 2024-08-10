@@ -18,10 +18,15 @@ const isNullUndefinedOrEmpty = (param) => {
     return param === undefined || param === null || param === "";
 }
 
+const isArrayNullUndefinedOrEmpty = (param) => {
+    return param === undefined || param === null || param.length === 0;
+}
+
 module.exports = {
     isListEmpty,
     isNotNullNorUndefined,
     isNotNullUndefinedNorEmpty,
     isNullOrUndefined,
-    isNullUndefinedOrEmpty
+    isNullUndefinedOrEmpty,
+    isArrayNullUndefinedOrEmpty
 };
