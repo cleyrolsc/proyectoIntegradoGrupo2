@@ -2,9 +2,11 @@ const { CreateUserResponse, PaginatedResponse, UserProfileResponse, UpdateEmploy
 const { UserModel } = require("./Models");
 const { BadRequestError, FatalError, NotFoundError, UnauthorizedError, ConflictError } = require("../../Core/Abstractions/Exceptions");
 const { isListEmpty, isNullOrUndefined, isNotNullNorUndefined } = require("../../Core/Utils/null-checker.util");
+const { formatPaginatedResponse } = require("../../Core/Utils/response-formatter.util");
 const bcrypt = require("bcryptjs");
 
-const { EmployeesRepository, UsersRepository, DepartmentRepository, PositionsRepository, PrivilegesRepository } = require('../../Repositories/index');
+const { EmployeesRepository, UsersRepository, DepartmentRepository, 
+    PositionsRepository, PrivilegesRepository } = require('../../Repositories/index');
 
 const registerNewUserAsync = async (createUserRequest) =>{
     var newEmployee = await createEmployeeAsync();
@@ -110,40 +112,42 @@ const getUserProfileAsync = async (username) => {
 }
 
 const getUsersAsync = async (currentPage = 1, itemsPerPage = 10, order = 'ASC') => {
-    let users = await UsersRepository.getUsersAsync(currentPage - 1, itemsPerPage, order);
+    let skip = (currentPage - 1) * itemsPerPage;
+    let {count, rows: users} = await UsersRepository.getUsersAsync(skip, itemsPerPage, order);
     if (isListEmpty(users)) {
         return new PaginatedResponse();
     }
 
-    let response = new PaginatedResponse();
-    response.currentPage = currentPage;
-    response.itemsPerPage = itemsPerPage;
+    let userModels = formatUserModels(users);
 
-    let userCount = await UsersRepository.countUsersAsync();
-    response.totalPages = Math.ceil(userCount / itemsPerPage);
-    response.hasNext = response.currentPage < response.totalPages;
-
-    response.items = [];
-    users.forEach((entity) => {
-        let { username, employeeId, type, privilegeLevel, suspendPrivilege, status, createdAt: registeredOn, updatedAt: modifiedOn } = entity;
-        response.items.push(new UserModel(username, employeeId, type, privilegeLevel, suspendPrivilege, status, registeredOn, modifiedOn));
-    });
-
-    return response;
+    return formatPaginatedResponse(currentPage, itemsPerPage, userModels, count);
 };
 
-const getUsersByPrivilegeAsync = async (privilegeName) => {
+function formatUserModels(users) {
+    let userModels = [];
+    users.forEach((entity) => {
+        let { username, employeeId, type, privilegeLevel, suspendPrivilege, status, createdAt: registeredOn, updatedAt: modifiedOn } = entity;
+        userModels.push(new UserModel(username, employeeId, type, privilegeLevel, suspendPrivilege, status, registeredOn, modifiedOn));
+    });
+
+    return userModels;
+}
+
+const getUsersByPrivilegeAsync = async (privilegeName, currentPage = 1, itemsPerPage = 10, order = 'ASC') => {
     let privilege = await PrivilegesRepository.getPrivilegeByNameAsync(privilegeName);
     if (isNullOrUndefined(privilege)) {
         throw new NotFoundError(`Privilege '${privilegeName}' does not exist.`);
     }
 
-    let users = UsersRepository.getUsersByPrivilegeLevelAsync(privilege.name);
-    return users.forEach((entity) => {
-        let { username, employeeId, type, privilegeLevel, suspendPrivilege, status, createdOn: registeredOn, modifiedOn } = entity;
-        return new UserModel(username, employeeId, type, privilegeLevel, suspendPrivilege, status, registeredOn, modifiedOn);
-    });
+    let skip = (currentPage - 1) * itemsPerPage;
+    let {count, rows: users} = UsersRepository.getUsersByPrivilegeLevelAsync(privilege.name, skip, itemsPerPage, order);
+    if (isListEmpty(users)) {
+        return new PaginatedResponse();
+    }
 
+    let userModels = formatUserModels(users);
+    
+    return formatPaginatedResponse(currentPage, itemsPerPage, userModels, count);
 };
 
 const updateEmployeeInformationAsync = async (employeeId, updateEmployeeInformationRequest) => {

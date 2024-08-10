@@ -111,9 +111,15 @@ const adminRouter = express.Router();
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      401:
 *        description: Unauthorized
 *        content:
@@ -133,9 +139,15 @@ const adminRouter = express.Router();
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      403:
 *        description: Forbidden
 *        content:
@@ -155,9 +167,15 @@ const adminRouter = express.Router();
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      500:
 *        description: Server Error
 *        content:
@@ -177,9 +195,15 @@ const adminRouter = express.Router();
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 */
 adminRouter.get('/privileges', checkForAdminPrivileges, AdminController.getPrivilegesAsync);
 
@@ -319,9 +343,15 @@ adminRouter.get('/privileges', checkForAdminPrivileges, AdminController.getPrivi
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      401:
 *        description: Unauthorized
 *        content:
@@ -341,9 +371,15 @@ adminRouter.get('/privileges', checkForAdminPrivileges, AdminController.getPrivi
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      403:
 *        description: Forbidden
 *        content:
@@ -363,9 +399,15 @@ adminRouter.get('/privileges', checkForAdminPrivileges, AdminController.getPrivi
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      409:
 *        description: Conflict
 *        content:
@@ -385,9 +427,15 @@ adminRouter.get('/privileges', checkForAdminPrivileges, AdminController.getPrivi
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      500:
 *        description: Server Error
 *        content:
@@ -407,9 +455,15 @@ adminRouter.get('/privileges', checkForAdminPrivileges, AdminController.getPrivi
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 */
 adminRouter.post('/register-admin', checkForAdminPrivileges, AdminController.registerAdminUserAsync);
 
@@ -549,9 +603,15 @@ adminRouter.post('/register-admin', checkForAdminPrivileges, AdminController.reg
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      401:
 *        description: Unauthorized
 *        content:
@@ -571,9 +631,15 @@ adminRouter.post('/register-admin', checkForAdminPrivileges, AdminController.reg
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      403:
 *        description: Forbidden
 *        content:
@@ -593,9 +659,15 @@ adminRouter.post('/register-admin', checkForAdminPrivileges, AdminController.reg
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      409:
 *        description: Conflict
 *        content:
@@ -615,9 +687,15 @@ adminRouter.post('/register-admin', checkForAdminPrivileges, AdminController.reg
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      500:
 *        description: Server Error
 *        content:
@@ -637,9 +715,15 @@ adminRouter.post('/register-admin', checkForAdminPrivileges, AdminController.reg
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 */
 adminRouter.post('/register-user', checkForAdminPrivileges, AdminController.registerUserAsync);
 
