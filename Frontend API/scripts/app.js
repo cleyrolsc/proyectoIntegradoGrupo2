@@ -20,6 +20,7 @@ const tableSection = document.querySelector('.table-section');
 const timerEl = document.querySelector('.timer');
 const departments = document.querySelector('.departments');
 const employeeInfo = document.getElementById('employee-info');
+const logoutConfirmation = document.querySelector('.logout-confirmation');
 
 //Initial States
 let intervalID;
@@ -138,6 +139,11 @@ logoutEl.addEventListener('click', () => {
     window.location = 'login.html';
   }
 });
+
+logoutConfirmation.addEventListener('click', function (e) {
+  localStorage.clear();
+  window.location = 'login.html';
+});
 btnBreak.addEventListener('click', function () {
   clearInterval(intervalID);
   stopWork();
@@ -216,28 +222,28 @@ fetch('http://localhost:3000/api/users/my-profile', {
     console.error('Error:', error);
   });
 
-departments.addEventListener('click', function (event) {
-  fetch('http://localhost:3000/api/system/departments', {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => {
-      console.log('pin');
-      if (!response.ok) {
-        throw new Error();
-      }
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data);
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-});
+// departments.addEventListener('click', function (event) {
+//   fetch('http://localhost:3000/api/system/departments', {
+//     method: 'GET',
+//     headers: {
+//       Authorization: `Bearer ${localStorage.getItem('token')}`,
+//       'Content-Type': 'application/json',
+//     },
+//   })
+//     .then((response) => {
+//       console.log('pin');
+//       if (!response.ok) {
+//         throw new Error();
+//       }
+//       return response.json();
+//     })
+//     .then((data) => {
+//       console.log(data);
+//     })
+//     .catch((error) => {
+//       console.error('Error:', error);
+//     });
+// });
 
 //If not logged in, send user to login page
 
