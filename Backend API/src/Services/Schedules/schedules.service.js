@@ -1,5 +1,7 @@
+const { PaginatedResponse } = require("../../Core/Abstractions/Contracts/Responses");
+const { formatPaginatedResponse } = require("../../Core/Utils/response-formatter.util");
 const { BadRequestError } = require("../../Core/Abstractions/Exceptions");
-const { isNullOrUndefined } = require("../../Core/Utils/null-checker.util");
+const { isNullOrUndefined, isListEmpty } = require("../../Core/Utils/null-checker.util");
 const { SchedulesRepository, UsersRepository, EventsRepository } = require('../../Repositories/index');
 
 const reportEventTime = async (eventDetails) => {
@@ -23,14 +25,16 @@ const reportEventTime = async (eventDetails) => {
     return newEvent;
 }
 
-const getAllSchedules = async () => {
-    const schedules = await SchedulesRepository.getAllSchedules();
+const getAllSchedules = async (currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
+    let skip = (currentPage - 1) * itemsPerPage
 
-    if (isNullOrUndefined(schedules)) {
-        throw new FatalError("New event was not created");
+    const {count, rows: schedules} = await SchedulesRepository.getAllSchedules(skip, itemsPerPage, orderBy);
+
+    if (isListEmpty(schedules)) {
+        throw new PaginatedResponse()
     }
 
-    return schedules
+    return formatPaginatedResponse(currentPage, itemsPerPage, schedules, count);
 }
 
 const getAllEmployeeSchedules = async (employeeId) => {
@@ -53,14 +57,16 @@ const getAllEventSchedules = async (eventId) => {
     return schedules
 }
 
-const getAllSchedulesByDateRange = async (startDate, endDate) => {
-    const schedules = await SchedulesRepository.getScheduleByDateRange(startDate, endDate);
+const getAllSchedulesByDateRange = async (startDate, endDate, currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
+    let skip = (currentPage - 1) * itemsPerPage
 
-    if (isNullOrUndefined(schedules)) {
-        throw new FatalError("New event was not created");
+    const {count, rows: schedules} = await SchedulesRepository.getScheduleByDateRange(startDate, endDate, skip, itemsPerPage, orderBy);
+
+    if (isListEmpty(schedules)) {
+        throw new PaginatedResponse()
     }
 
-    return schedules
+    return formatPaginatedResponse(currentPage, itemsPerPage, schedules, count);
 }
 
 const getAllEmployeeScheduleByDateRange = async (employeeId, startDate, endDate) => {
