@@ -29,16 +29,19 @@ const getPrivilegeByNameAsync = async (name) => {
 
 const countPrivilegesAsync = () => Privilege.count();
 
-const getPrivilegesAsync = (skip = 0, limit = 10, orderBy = "ASC") => Privilege.findAll({
+const getPrivilegesAsync = (skip = 0, limit = 10, orderBy = "ASC") => Privilege.findAndCountAll({
     order: [['name', orderBy]],
     offset: skip,
     limit
 });
 
-const getPrivilegesByLevelAsync = (minLevel = 1, maxLevel = 100) => Privilege.findAll({
+const getPrivilegesByLevelAsync = (minLevel = 1, maxLevel = 100, skip = 0, limit = 10, orderBy = "ASC") => Privilege.findAndCountAll({
     where: {
         level: {[Op.between]: [minLevel, maxLevel]}
-    }
+    },
+    order: [['name', orderBy]],
+    offset: skip,
+    limit
 });
 
 const updatePrivilegeAsync = async (name, { level = undefined, status = undefined }) => {

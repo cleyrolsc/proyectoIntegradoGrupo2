@@ -21,7 +21,6 @@ class Server {
         this.scheduleEndpoint = '/api/schedules'
 
         this.middlewares();
-        //testConnection();
         this.routes();
         this.filters();
     }
