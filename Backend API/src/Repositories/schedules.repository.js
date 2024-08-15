@@ -10,9 +10,9 @@ const createScheduleAsync = ({ eventId, employeeId, eventDate }) => {
     });
 }
 
-const getAllSchedules = async (skip = 0, limit = 10, orderBy = 'ASC') => Schedule.findAll({
+const getAllSchedules = async (skip = 0, limit = 10, orderBy = 'ASC') => Schedule.findAndCountAll({
     order: [
-        ['username', orderBy]
+        ['employeeId', orderBy]
     ],
     offset: skip,
     limit
@@ -47,22 +47,18 @@ const getSchedulesByEventId = async eventId => {
     return schedules;
 }
 
-const getScheduleByDateRange = async (startDate, endDate) => {
-    let schedules = await Schedule.findAll({
-        where: {
-
-            from: {
-                $between: [startDate, endDate]
-            }
+const getScheduleByDateRange = async (startDate, endDate, skip = 0, limit = 10, orderBy = 'ASC') => await Schedule.findAndCountAll({
+    where: {
+        from: {
+            $between: [startDate, endDate]
         }
-    });
-
-    if (isNullOrUndefined(schedules)) {
-        return undefined;
-    }
-
-    return schedules;
-}
+    },
+    order: [
+        'employeeId', orderBy
+    ],
+    offset: skip,
+    limit
+});
 
 const getEmployeeSchedulesByDateRange = async (employeeId, startDate, endDate) => {
     let schedules = await Schedule.findAll({
