@@ -5,7 +5,8 @@ const { urlencoded } = require("express");
 const swaggerUI = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
 
-const { adminRouter, usersRouter, authRouter, systemRouter } = require("./Controllers");
+const { adminRouter, usersRouter, authRouter, systemRouter, schedulesRouter } = require("./Controllers");
+//const testConnection = require('./Database/db-config');
 const { globalErrorHandlingFilter, sessionAuthenticationFilter } = require("./Core/Filters");
 
 class Server {
@@ -17,6 +18,7 @@ class Server {
         this.authEndpoint = '/api/auth';
         this.systemEndpoint = '/api/system';
         this.usersEndpoint = '/api/users';
+        this.scheduleEndpoint = '/api/schedules'
 
         this.middlewares();
         this.routes();
@@ -45,6 +47,7 @@ class Server {
         this.app.use(this.adminEndpoint, adminRouter);
         this.app.use(this.systemEndpoint, systemRouter);
         this.app.use(this.usersEndpoint, usersRouter);
+        this.app.use(this.scheduleEndpoint, schedulesRouter)
     }
 
     filters(){
