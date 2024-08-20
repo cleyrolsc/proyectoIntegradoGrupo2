@@ -44,12 +44,6 @@ const getPrivilegesByLevelAsync = (minLevel = 1, maxLevel = 100, skip = 0, limit
     limit
 });
 
-const getPrivilegesByLevelAsync = (minLevel = 1, maxLevel = 100) => Privilege.findAll({
-    where: {
-        level: {[Op.between]: [minLevel, maxLevel]}
-    }
-});
-
 const updatePrivilegeAsync = async (name, { level = undefined, status = undefined }) => {
     let privilege = await getPrivilegeByNameAsync(name);
     if (isNullOrUndefined(privilege)) {
