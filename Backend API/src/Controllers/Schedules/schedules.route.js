@@ -342,7 +342,7 @@ schedulesRouter.post('/register-hour', checkForAdminPrivileges, SchedulesControl
 *         description: Number of items each page should have
 *         schema:
 *           type: integer
-*           example: 10
+*           example: 100
 *     responses:
 *      200:
 *        description: Ok
@@ -373,11 +373,11 @@ schedulesRouter.post('/register-hour', checkForAdminPrivileges, SchedulesControl
 *                    itemsPerPage:
 *                      type: integer
 *                      description: Number of items included inside each page
-*                      example: 10
+*                      example: 100
 *                    totalPages:
 *                      type: integer
 *                      description: Total numbers of pages that exist to be viewed
-*                      example: 100
+*                      example: 1000
 *                    hasNext:
 *                      type: boolean
 *                      description: Indicate if there are more pages left to be viewed (currentPage > totalPages)
@@ -562,7 +562,7 @@ schedulesRouter.get('/hours', checkForAdminPrivileges, SchedulesController.fetch
 *         description: Number of items each page should have
 *         schema:
 *           type: integer
-*           example: 10
+*           example: 100
 *     responses:
 *      200:
 *        description: Ok
@@ -593,11 +593,11 @@ schedulesRouter.get('/hours', checkForAdminPrivileges, SchedulesController.fetch
 *                    itemsPerPage:
 *                      type: integer
 *                      description: Number of items included inside each page
-*                      example: 10
+*                      example: 100
 *                    totalPages:
 *                      type: integer
 *                      description: Total numbers of pages that exist to be viewed
-*                      example: 100
+*                      example: 1000
 *                    hasNext:
 *                      type: boolean
 *                      description: Indicate if there are more pages left to be viewed (currentPage > totalPages)
@@ -786,7 +786,7 @@ schedulesRouter.get('/hours/employee/:employeeId', checkForAdminPrivileges, Sche
 *         description: Number of items each page should have
 *         schema:
 *           type: integer
-*           example: 10
+*           example: 100
 *     responses:
 *      200:
 *        description: Ok
@@ -817,11 +817,11 @@ schedulesRouter.get('/hours/employee/:employeeId', checkForAdminPrivileges, Sche
 *                    itemsPerPage:
 *                      type: integer
 *                      description: Number of items included inside each page
-*                      example: 10
+*                      example: 100
 *                    totalPages:
 *                      type: integer
 *                      description: Total numbers of pages that exist to be viewed
-*                      example: 100
+*                      example: 1000
 *                    hasNext:
 *                      type: boolean
 *                      description: Indicate if there are more pages left to be viewed (currentPage > totalPages)

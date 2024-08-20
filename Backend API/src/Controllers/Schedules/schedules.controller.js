@@ -61,7 +61,7 @@ const fetchRegisteredHoursAsync = async (request, response, next) => {
 
 function extractPaginationElements(request) {
   let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
-  let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
+  let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 100;
 
   return { page, pageSize };
 }
