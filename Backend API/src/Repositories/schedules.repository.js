@@ -1,3 +1,6 @@
+const { isNullOrUndefined } = require('../Core/Utils/null-checker.util');
+const { Op } = require('sequelize');
+
 const Schedule = require("./Entities/schedule.class");
 
 const createScheduleAsync = ({ eventId, employeeId, eventDate }) => {
@@ -58,9 +61,7 @@ const getSchedulesByEventIdAsync = async (eventId, skip = 0, limit = 10, orderBy
 
 const getScheduleByDateRangeAsync = (startDate, endDate, skip = 0, limit = 10, orderBy = 'ASC') => Schedule.findAndCountAll({
     where: {
-        from: {
-            $between: [startDate, endDate]
-        }
+        eventDate: {[Op.between]: [startDate, endDate]}
     },
     order: [
         ['eventDate', orderBy]
@@ -70,13 +71,11 @@ const getScheduleByDateRangeAsync = (startDate, endDate, skip = 0, limit = 10, o
     limit
 });
 
-const getEmployeeSchedulesByDateRangeAsync = async (employeeId, startDate, endDate, skip = 0, limit = 10, orderBy = 'ASC') => {
+const getEmployeeSchedulesByDateRangeAsync = async (employeeId, startDate = new Date(Date.now() - 86400000), endDate = new Date(), skip = 0, limit = 10, orderBy = 'ASC') => {
     let schedules = await Schedule.findAndCountAll({
         where: {
             employeeId,
-            from: {
-                $between: [startDate, endDate]
-            }
+            eventDate: {[Op.between]: [startDate, endDate]}
         },
         order: [
             ['eventDate', orderBy]
@@ -96,9 +95,7 @@ const getEventsScheduleByDateRangeAsync = async (eventId, startDate, endDate, sk
     let schedules = await Schedule.findAndCountAll({
         where: {
             eventId,
-            from: {
-                $between: [startDate, endDate]
-            }
+            eventDate: {[Op.between]: [startDate, endDate]}
         },
         order: [
             ['eventDate', orderBy]

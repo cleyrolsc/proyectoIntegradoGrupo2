@@ -1,3 +1,5 @@
+const { BadRequestError } = require('../../Core/Abstractions/Exceptions');
+const { isNullUndefinedOrEmpty, isNullOrUndefined, isNotNullUndefinedNorEmpty, isNotNullNorUndefined } = require('../../Core/Utils/null-checker.util');
 const { formatResponse } = require('../../Core/Utils/response-formatter.util');
 
 const SchedulesService = require('../../Services/Schedules/schedules.service');
@@ -66,9 +68,16 @@ const fetchAllRegisteredHoursByDateRangeAsync = async (request, response, next) 
 
 const fetchEmployeeHourHistoryByDateRangeAsync = async (request, response, next) => {
   try {
+    let employeeId = +request.params.employeeId;
+    if (isNullOrUndefined(employeeId)) {
+      throw new BadRequestError('Employee id cannot be undefined');
+    }
+
     let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
     let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
-    const {employeeId, startDate, endDate} = request.body;
+    let startDate = isNotNullUndefinedNorEmpty(request.query.startDate) ? new Date(request.query.startDate) : new Date(Date.now() - 86400000);
+    let endDate = isNotNullUndefinedNorEmpty(request.query.endDate) ? new Date(request.query.endDate) : new Date();
+
     const schedules = await SchedulesService.getAllEmployeeScheduleByDateRangeAsync(employeeId, startDate, endDate, page, pageSize);
 
     response.status(200).json(formatResponse(200, request.originalUrl, schedules));
