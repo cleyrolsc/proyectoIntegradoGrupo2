@@ -373,8 +373,6 @@ schedulesRouter.post('/register-hour', SchedulesController.registerEmployeeHourA
 */
 schedulesRouter.get('/hours', checkForAdminPrivileges, SchedulesController.fetchAllRegisteredHoursByDateRangeAsync);
 
-//schedulesRouter.get('/api/schedules/employee-hours', SchedulesController.fetchEmployeeHourHistoryAsync);
-
 /**
 * @openapi
 * '/api/schedules/hours/employee/{employeeId}':
@@ -599,8 +597,6 @@ schedulesRouter.get('/hours', checkForAdminPrivileges, SchedulesController.fetch
 */
 schedulesRouter.get('/hours/employee/:employeeId', checkForAdminPrivileges, SchedulesController.fetchEmployeeHourHistoryByDateRangeAsync);
 
-//schedulesRouter.get('/api/schedules/hours-by-event-type', SchedulesController.fetchRegisteredHoursByEventTypeAsync);
-
 /**
 * @openapi
 * '/api/schedules/hours/event-type/{eventId}':
@@ -820,6 +816,5 @@ schedulesRouter.get('/hours/employee/:employeeId', checkForAdminPrivileges, Sche
 *                      example: 'this is an example error message'
 */
 schedulesRouter.get('/hours/event-type/:eventId', checkForAdminPrivileges, SchedulesController.fetchRegisteredHoursByEventTypeByDateRangeAsync);
-
 
 module.exports = schedulesRouter;
