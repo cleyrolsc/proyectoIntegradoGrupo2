@@ -34,7 +34,7 @@ const registerAdminUserAsync = async (request, response, next) => {
 };
 
 async function isAdminPrivilege(privilege) {
-    let privileges = await PrivilegesService.getPrivilegesByLevelAsync(98);
+    let { items: privileges } = await PrivilegesService.getPrivilegesByLevelAsync(98);
 
     let adminPrivileges = [];
     privileges.forEach(privilege => {

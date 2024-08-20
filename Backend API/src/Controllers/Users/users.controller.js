@@ -1,8 +1,9 @@
-const { UpdateEmployeeInformationRequest } = require("../../Core/Abstractions/Contracts/Requests");
+const { UpdateEmployeeInformationRequest, UpdateUserRequest } = require("../../Core/Abstractions/Contracts/Requests");
 const { isNullOrUndefined, isNotNullNorUndefined, isNullUndefinedOrEmpty, isNotNullUndefinedNorEmpty } = require("../../Core/Utils/null-checker.util");
 const { BadRequestError } = require("../../Core/Abstractions/Exceptions");
 const { formatResponse } = require("../../Core/Utils/response-formatter.util");
 const { extractPaginationElements } = require("../../Core/Utils/request-element-extractor.util");
+const { UserStatus } = require("../../Core/Abstractions/Enums");
 
 const UserServices = require("../../Services/Users/users.service");
 const AuthService = require('../../Services/Auth/auth.service');
@@ -51,7 +52,7 @@ const viewMyProfileAsync = async (request, response, next) => {
         }
 
         let { username } = await AuthService.validateTokenAsync(token);
-        await getUseProfileAsync(username, response, request);
+        await getUserProfileAsync(username, response, request);
     } catch (error) {
         next(error);
     }
@@ -59,13 +60,13 @@ const viewMyProfileAsync = async (request, response, next) => {
 
 const viewProfileAsync = async (request, response, next) => {
     try {
-        await getUseProfileAsync(request.params.username, response, request);
+        await getUserProfileAsync(request.params.username, response, request);
     } catch (error) {
         next(error);
     }
 };
 
-async function getUseProfileAsync(username, response, request) {
+async function getUserProfileAsync(username, response, request) {
     if (isNullOrUndefined(username)) {
         throw new BadRequestError('Username is undefined');
     }
@@ -111,11 +112,55 @@ const changePasswordAsync = async (request, response, next) => {
     }
 };
 
+const suspendUserAsync = async(request, response, next) => {
+  try {
+    let username = request.params.username;
+    if(isNullOrUndefined(username)) {
+        throw new BadRequestError('Username is undefined');
+    }
+
+    let { userInfo } = await UserServices.getUserProfileAsync(username);
+    if (userInfo.status === UserStatus.Suspended) {
+        return response.status(200).send(formatResponse(200, request.originalUrl, `User, ${username}, has already been suspended`));
+    }
+
+    let updateUserRequest = new UpdateUserRequest({ status: UserStatus.Suspended});
+    await UserServices.updateUserAsync(username, updateUserRequest)
+
+    response.status(200).send(formatResponse(200, request.originalUrl, `User, ${username}, has been suspended`));
+  } catch (error) {
+    next(error);
+  }
+};
+
+const restoreUserAsync = async(request, response, next) => {
+  try {
+    let username = request.params.username;
+    if(isNullOrUndefined(username)) {
+        throw new BadRequestError('Username is undefined');
+    }
+
+    let { userInfo } = await UserServices.getUserProfileAsync(username);
+    if (userInfo.status === UserStatus.Active) {
+        return response.status(200).send(formatResponse(200, request.originalUrl, `User, ${username}, is already active`));
+    }
+
+    let updateUserRequest = new UpdateUserRequest({ status: UserStatus.Active});
+    await UserServices.updateUserAsync(username, updateUserRequest)
+
+    response.status(200).send(formatResponse(200, request.originalUrl, `User, ${username}, has been restored`));
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
     fetchAllUsersAsync,
     fetchUsersByPrivilegeLevelAsync,
     viewMyProfileAsync,
     viewProfileAsync,
     updateEmployeeInformationAsync,
-    changePasswordAsync
+    changePasswordAsync,
+    suspendUserAsync,
+    restoreUserAsync
 };

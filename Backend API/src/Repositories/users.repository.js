@@ -1,5 +1,5 @@
 const { UserType } = require("../Core/Abstractions/Enums");
-const { isNotNullNorUndefined, isNullOrUndefined, isNullUndefinedOrEmpty } = require("../Core/Utils/null-checker.util");
+const { isNullOrUndefined, isNullUndefinedOrEmpty } = require("../Core/Utils/null-checker.util");
 const { NotImplementedError } = require("../Core/Abstractions/Exceptions");
 
 const User = require('./Entities/user.class');
@@ -77,7 +77,7 @@ const updateUserAsync = async (username, { type = undefined, privilegeLevel = un
 
     function areAllParametersEmpty(){
         return isNullOrUndefined(type) && isNullUndefinedOrEmpty(privilegeLevel) && 
-        isNullOrUndefined(suspendPrivilege) &&isNotNullNorUndefined(status);
+        isNullOrUndefined(suspendPrivilege) && isNullUndefinedOrEmpty(status);
     }
 };
 
