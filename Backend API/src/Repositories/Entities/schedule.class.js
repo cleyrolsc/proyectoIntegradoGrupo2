@@ -7,13 +7,24 @@ const Employee = require('./employee.class');
 class Schedule extends Model {};
 
 Schedule.init({
+    id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    eventDate: {
+        type: DataTypes.DATE,
+        allowNull: false
+    },
+
+    // Foreign Key
     eventId: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: Event,
             key: 'id',
-            deferrable: Deferrable.INITIALLY_IMMEDIATE
         }
     },
     employeeId: {
@@ -22,15 +33,10 @@ Schedule.init({
         references: {
             model: Employee,
             key: 'id',
-            deferrable: Deferrable.INITIALLY_IMMEDIATE
         }
-    },
-    eventDate: {
-        type: DataTypes.DATE,
-        allowNull: false
     }
 }, {
-    dbContext,
+    sequelize: dbContext,
     modelName: 'Schedule',
     tableName: 'schedules',
     timestamps: true

@@ -1,5 +1,3 @@
-const { isNullOrUndefined } = require("../Core/Utils/null-checker.util");
-
 const Schedule = require("./Entities/schedule.class");
 
 const createScheduleAsync = ({ eventId, employeeId, eventDate }) => {
@@ -10,19 +8,25 @@ const createScheduleAsync = ({ eventId, employeeId, eventDate }) => {
     });
 }
 
-const getAllSchedules = async (skip = 0, limit = 10, orderBy = 'ASC') => Schedule.findAndCountAll({
+const getAllSchedulesAsync = (skip = 0, limit = 10, orderBy = 'ASC') => Schedule.findAndCountAll({
     order: [
+        ['eventDate', orderBy]
         ['employeeId', orderBy]
     ],
     offset: skip,
     limit
 });
 
-const getSchedulesByEmployeeId = async employeeId => {
-    let schedules = await Schedule.findAll({
+const getSchedulesByEmployeeIdAsync = async (employeeId, skip = 0, limit = 10, orderBy = 'ASC') => {
+    let schedules = await Schedule.findAndCountAll({
         where: {
             employeeId,
-        }
+        },
+        order: [
+            ['eventDate', orderBy]
+        ],
+        offset: skip,
+        limit
     });
 
     if (isNullOrUndefined(schedules)) {
@@ -32,13 +36,18 @@ const getSchedulesByEmployeeId = async employeeId => {
     return schedules;
 }
 
-const getSchedulesByEventId = async eventId => {
-    let schedules = await Schedule.findAll({
+const getSchedulesByEventIdAsync = async (eventId, skip = 0, limit = 10, orderBy = 'ASC') => {
+    let schedules = await Schedule.findAndCountAll({
         where: {
             eventId,
-        }
+        },
+        order: [
+            ['eventDate', orderBy]
+            ['employeeId', orderBy]
+        ],
+        offset: skip,
+        limit
     });
-
 
     if (isNullOrUndefined(schedules)) {
         return undefined;
@@ -47,27 +56,33 @@ const getSchedulesByEventId = async eventId => {
     return schedules;
 }
 
-const getScheduleByDateRange = async (startDate, endDate, skip = 0, limit = 10, orderBy = 'ASC') => await Schedule.findAndCountAll({
+const getScheduleByDateRangeAsync = (startDate, endDate, skip = 0, limit = 10, orderBy = 'ASC') => Schedule.findAndCountAll({
     where: {
         from: {
             $between: [startDate, endDate]
         }
     },
     order: [
-        'employeeId', orderBy
+        ['eventDate', orderBy]
+        ['employeeId', orderBy]
     ],
     offset: skip,
     limit
 });
 
-const getEmployeeSchedulesByDateRange = async (employeeId, startDate, endDate) => {
-    let schedules = await Schedule.findAll({
+const getEmployeeSchedulesByDateRangeAsync = async (employeeId, startDate, endDate, skip = 0, limit = 10, orderBy = 'ASC') => {
+    let schedules = await Schedule.findAndCountAll({
         where: {
             employeeId,
             from: {
                 $between: [startDate, endDate]
             }
-        }
+        },
+        order: [
+            ['eventDate', orderBy]
+        ],
+        offset: skip,
+        limit
     });
 
     if (isNullOrUndefined(schedules)) {
@@ -77,14 +92,19 @@ const getEmployeeSchedulesByDateRange = async (employeeId, startDate, endDate) =
     return schedules;
 }
 
-const getEventsScheduleByDateRange = async (eventId, startDate, endDate) => {
-    let schedules = await Schedule.findAll({
+const getEventsScheduleByDateRangeAsync = async (eventId, startDate, endDate, skip = 0, limit = 10, orderBy = 'ASC') => {
+    let schedules = await Schedule.findAndCountAll({
         where: {
             eventId,
             from: {
                 $between: [startDate, endDate]
             }
-        }
+        },
+        order: [
+            ['eventDate', orderBy]
+        ],
+        offset: skip,
+        limit
     });
 
     if (isNullOrUndefined(schedules)) {
@@ -96,12 +116,12 @@ const getEventsScheduleByDateRange = async (eventId, startDate, endDate) => {
 
 module.exports = {
     createScheduleAsync,
-    getAllSchedules,
-    getSchedulesByEmployeeId,
-    getSchedulesByEventId,
-    getScheduleByDateRange,
-    getEventsScheduleByDateRange,
-    getEmployeeSchedulesByDateRange
+    getAllSchedulesAsync,
+    getSchedulesByEmployeeIdAsync,
+    getSchedulesByEventIdAsync,
+    getScheduleByDateRangeAsync,
+    getEventsScheduleByDateRangeAsync,
+    getEmployeeSchedulesByDateRangeAsync
 }
 
 

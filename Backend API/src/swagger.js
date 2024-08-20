@@ -41,7 +41,8 @@ const options = {
       `${__dirname}/Controllers/Admin/*.js`,
       `${__dirname}/Controllers/Auth/*.js`,
       `${__dirname}/Controllers/System/*.js`,
-      `${__dirname}/Controllers/Users/*.js`
+      `${__dirname}/Controllers/Users/*.js`,
+      `${__dirname}/Controllers/Schedules/*.js`
     ]
   }
 

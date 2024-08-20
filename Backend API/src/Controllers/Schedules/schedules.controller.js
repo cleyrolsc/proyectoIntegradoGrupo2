@@ -1,21 +1,23 @@
+const { formatResponse } = require('../../Core/Utils/response-formatter.util');
+
 const SchedulesService = require('../../Services/Schedules/schedules.service');
 
-const fetchCreateSchedule = async (request, response, next) => {
+const registerEmployeeHourAsync = async (request, response, next) => {
   try {
     let { eventId, employeeId } = request.body;
-    let schedule = await SchedulesService.reportEventTime({ eventId, employeeId });
+    let schedule = await SchedulesService.reportEventTimeAsync({ eventId, employeeId });
 
-    response.status(200).json(formatResponse(200, request.originalUrl, schedule));
+    response.status(201).json(formatResponse(201, request.originalUrl, schedule));
   } catch (error) {
     next(error);
   }
 }
 
-const fetchGetAllSchedules = async (request, response, next) => {
+const fetchAllRegisteredHoursAsync = async (request, response, next) => {
   try {
     let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
     let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
-    const schedules = await SchedulesService.getAllSchedules(page, pageSize);
+    const schedules = await SchedulesService.getAllSchedulesAsync(page, pageSize);
 
     response.status(200).json(formatResponse(200, request.originalUrl, schedules));
   } catch (error) {
@@ -23,10 +25,12 @@ const fetchGetAllSchedules = async (request, response, next) => {
   }   
 }
 
-const fetchGetAllEmployeeASchedules = async (request, response, next) => {
+const fetchEmployeeHourHistoryAsync = async (request, response, next) => {
   try {
+    let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
+    let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
     const id = request.body.employeeId;
-    const schedules = await SchedulesService.getAllEmployeeSchedules(id);
+    const schedules = await SchedulesService.getAllEmployeeSchedulesAsync(id, page, pageSize);
 
     response.status(200).json(formatResponse(200, request.originalUrl, schedules));
   } catch (error) {
@@ -34,10 +38,12 @@ const fetchGetAllEmployeeASchedules = async (request, response, next) => {
   }
 };
 
-const fetchGetAllEventSchedules = async (request, response, next) => {
+const fetchRegisteredHoursByEventTypeAsync = async (request, response, next) => {
   try {
+    let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
+    let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
     const id = request.body.eventId;
-    const schedules = await SchedulesService.getAllEventSchedules(id);
+    const schedules = await SchedulesService.getAllEventSchedulesAsync(id, page, pageSize);
 
     response.status(200).json(formatResponse(200, request.originalUrl, schedules));
   } catch (error) {
@@ -45,12 +51,12 @@ const fetchGetAllEventSchedules = async (request, response, next) => {
   }
 };
 
-const fetchGetAllSchedulesByDateRange = async (request, response, next) => {
+const fetchAllRegisteredHoursByDateRangeAsync = async (request, response, next) => {
   try {
     let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
     let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
     const {startDate, endDate} = request.body;
-    const schedules = await SchedulesService.getAllSchedulesByDateRange(startDate, endDate, page, pageSize);
+    const schedules = await SchedulesService.getAllSchedulesByDateRangeAsync(startDate, endDate, page, pageSize);
 
     response.status(200).json(formatResponse(200, request.originalUrl, schedules));
   } catch (error) {
@@ -58,10 +64,12 @@ const fetchGetAllSchedulesByDateRange = async (request, response, next) => {
   } 
 }
 
-const fetchGetAllEmployeeScheduleByDateRange = async (request, response, next) => {
+const fetchEmployeeHourHistoryByDateRangeAsync = async (request, response, next) => {
   try {
+    let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
+    let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
     const {employeeId, startDate, endDate} = request.body;
-    const schedules = await SchedulesService.getAllEmployeeScheduleByDateRange(employeeId, startDate, endDate);
+    const schedules = await SchedulesService.getAllEmployeeScheduleByDateRangeAsync(employeeId, startDate, endDate, page, pageSize);
 
     response.status(200).json(formatResponse(200, request.originalUrl, schedules));
   } catch (error) {
@@ -69,10 +77,12 @@ const fetchGetAllEmployeeScheduleByDateRange = async (request, response, next) =
   } 
 }
 
-const fetchGetAllEventSchedulesByDateRange = async (request, response, next) => {
+const fetchRegisteredHoursByEventTypeByDateRangeAsync = async (request, response, next) => {
   try {
+    let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
+    let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
     const {eventId, startDate, endDate} = request.body;
-    const schedules = await SchedulesService.getAllEventSchedulesByDateRange(eventId, startDate, endDate);
+    const schedules = await SchedulesService.getAllEventSchedulesAsyncByDateRangeAsync(eventId, startDate, endDate, page, pageSize);
 
     response.status(200).json(formatResponse(200, request.originalUrl, schedules));
   } catch (error) {
@@ -80,15 +90,14 @@ const fetchGetAllEventSchedulesByDateRange = async (request, response, next) => 
   }   
 }
 
-
 module.exports = {
-  fetchCreateSchedule,
-  fetchGetAllSchedules,
-  fetchGetAllEmployeeASchedules,
-  fetchGetAllEventSchedules,
-  fetchGetAllSchedulesByDateRange,
-  fetchGetAllEmployeeScheduleByDateRange,
-  fetchGetAllEventSchedulesByDateRange    
+  registerEmployeeHourAsync,
+  fetchAllRegisteredHoursAsync,
+  fetchEmployeeHourHistoryAsync,
+  fetchRegisteredHoursByEventTypeAsync,
+  fetchAllRegisteredHoursByDateRangeAsync,
+  fetchEmployeeHourHistoryByDateRangeAsync,
+  fetchRegisteredHoursByEventTypeByDateRangeAsync    
 };
 
 
