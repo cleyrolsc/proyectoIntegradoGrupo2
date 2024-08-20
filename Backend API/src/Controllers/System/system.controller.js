@@ -1,4 +1,4 @@
-const { isNotNullNorUndefined } = require("../../Core/Utils/null-checker.util");
+const { extractPaginationElements } = require("../../Core/Utils/request-element-extractor.util");
 const { formatResponse } = require("../../Core/Utils/response-formatter.util");
 
 const { SystemService } = require("../../Services");
@@ -17,9 +17,7 @@ const registerNewDepartmentAsync = async (request, response, next) => {
 
 const fetchDepartmentsAsync = async (request, response, next) => {
     try {
-        let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
-        let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 100;
-
+        let { page, pageSize } = extractPaginationElements(request, 100);
         let departments = await SystemService.getDepartmentsAsync(page, pageSize);
 
         response.status(200).json(formatResponse(200, request.originalUrl, departments));
@@ -42,9 +40,7 @@ const registerNewEventAsync = async (request, response, next) => {
 
 const fetchEventsAsync = async (request, response, next) => {
     try {
-        let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
-        let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
-
+        let { page, pageSize } = extractPaginationElements(request);
         let events = await SystemService.getEventsAsync(page, pageSize);
 
         response.status(200).json(formatResponse(200, request.originalUrl, events));
@@ -67,9 +63,7 @@ const registerNewPositionAsync = async (request, response, next) => {
 
 const fetchPositionsAsync = async (request, response, next) => {
     try {
-        let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
-        let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 100;
-
+        let { page, pageSize } = extractPaginationElements(request, 100);
         let positions = await SystemService.getPositionsAsync(page, pageSize);
 
         response.status(200).json(formatResponse(200, request.originalUrl, positions));
@@ -80,9 +74,7 @@ const fetchPositionsAsync = async (request, response, next) => {
 
 const fetchEmployeesAsync = async (request, response, next) => {
     try {
-        let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
-        let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 100;
-
+        let { page, pageSize } = extractPaginationElements(request, 100);
         let employees = await SystemService.getEmployeesAsync(page, pageSize);
 
         response.status(200).json(formatResponse(200, request.originalUrl, employees));
