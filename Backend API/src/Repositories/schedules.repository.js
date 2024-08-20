@@ -1,4 +1,5 @@
-const { isNullOrUndefined } = require("../Core/Utils/null-checker.util");
+const { isNullOrUndefined } = require('../Core/Utils/null-checker.util');
+const { Op } = require('sequelize');
 
 const Schedule = require("./Entities/schedule.class");
 
@@ -10,19 +11,29 @@ const createScheduleAsync = ({ eventId, employeeId, eventDate }) => {
     });
 }
 
-const getAllSchedules = async (skip = 0, limit = 10, orderBy = 'ASC') => Schedule.findAndCountAll({
+const getSchedulesAsync = (startDate = new Date(Date.now() - 86400000), endDate = new Date(), skip = 0, limit = 10, orderBy = 'ASC') => Schedule.findAndCountAll({
+    where: {
+        eventDate: {[Op.between]: [startDate, endDate]}
+    },
     order: [
+        ['eventDate', 'DESC'],
         ['employeeId', orderBy]
     ],
     offset: skip,
     limit
 });
 
-const getSchedulesByEmployeeId = async employeeId => {
-    let schedules = await Schedule.findAll({
+const getSchedulesByEmployeeIdAsync = async (employeeId, startDate = new Date(Date.now() - 86400000), endDate = new Date(), skip = 0, limit = 10, orderBy = 'ASC') => {
+    let schedules = await Schedule.findAndCountAll({
         where: {
             employeeId,
-        }
+            eventDate: {[Op.between]: [startDate, endDate]}
+        },
+        order: [
+            ['eventDate', 'DESC']
+        ],
+        offset: skip,
+        limit
     });
 
     if (isNullOrUndefined(schedules)) {
@@ -32,59 +43,17 @@ const getSchedulesByEmployeeId = async employeeId => {
     return schedules;
 }
 
-const getSchedulesByEventId = async eventId => {
-    let schedules = await Schedule.findAll({
+const getScheduleByEventIdAsync = async (eventId, startDate = new Date(Date.now() - 86400000), endDate = new Date(), skip = 0, limit = 10, orderBy = 'ASC') => {
+    let schedules = await Schedule.findAndCountAll({
         where: {
             eventId,
-        }
-    });
-
-
-    if (isNullOrUndefined(schedules)) {
-        return undefined;
-    }
-
-    return schedules;
-}
-
-const getScheduleByDateRange = async (startDate, endDate, skip = 0, limit = 10, orderBy = 'ASC') => await Schedule.findAndCountAll({
-    where: {
-        from: {
-            $between: [startDate, endDate]
-        }
-    },
-    order: [
-        'employeeId', orderBy
-    ],
-    offset: skip,
-    limit
-});
-
-const getEmployeeSchedulesByDateRange = async (employeeId, startDate, endDate) => {
-    let schedules = await Schedule.findAll({
-        where: {
-            employeeId,
-            from: {
-                $between: [startDate, endDate]
-            }
-        }
-    });
-
-    if (isNullOrUndefined(schedules)) {
-        return undefined;
-    }
-
-    return schedules;
-}
-
-const getEventsScheduleByDateRange = async (eventId, startDate, endDate) => {
-    let schedules = await Schedule.findAll({
-        where: {
-            eventId,
-            from: {
-                $between: [startDate, endDate]
-            }
-        }
+            eventDate: {[Op.between]: [startDate, endDate]}
+        },
+        order: [
+            ['eventDate', 'DESC']
+        ],
+        offset: skip,
+        limit
     });
 
     if (isNullOrUndefined(schedules)) {
@@ -96,12 +65,10 @@ const getEventsScheduleByDateRange = async (eventId, startDate, endDate) => {
 
 module.exports = {
     createScheduleAsync,
-    getAllSchedules,
-    getSchedulesByEmployeeId,
-    getSchedulesByEventId,
-    getScheduleByDateRange,
-    getEventsScheduleByDateRange,
-    getEmployeeSchedulesByDateRange
+    getSchedulesByEmployeeIdAsync,
+    getSchedulesAsync,
+    getScheduleByEventIdAsync,
+    getSchedulesByEmployeeIdAsync
 }
 
 

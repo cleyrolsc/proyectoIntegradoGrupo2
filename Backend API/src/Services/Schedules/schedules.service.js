@@ -1,100 +1,133 @@
 const { PaginatedResponse } = require("../../Core/Abstractions/Contracts/Responses");
 const { formatPaginatedResponse } = require("../../Core/Utils/response-formatter.util");
-const { BadRequestError } = require("../../Core/Abstractions/Exceptions");
+const { BadRequestError, NotFoundError, FatalError } = require("../../Core/Abstractions/Exceptions");
 const { isNullOrUndefined, isListEmpty } = require("../../Core/Utils/null-checker.util");
-const { SchedulesRepository, UsersRepository, EventsRepository } = require('../../Repositories/index');
 
-const reportEventTime = async (eventDetails) => {
+const { SchedulesRepository, EventsRepository, EmployeesRepository } = require('../../Repositories/index');
+
+const reportHoursAsync = async (eventDetails) => {
     const { eventId, employeeId } = eventDetails;
 
-    const employeeIdExist = await UsersRepository.getUserByEmployeeId(employeeId);
-    const eventIdExist = await EventsRepository.getEventByIdAsync(eventId);
+    const employee = await EmployeesRepository.getEmployeeByIdAsync(employeeId);
+    if (isNullOrUndefined(employee)) {
+        throw new NotFoundError(`Employee with id ${employeeId} does not exist.`);
+    }
 
-    if (isNullOrUndefined(employeeIdExist) || isNullOrUndefined(eventIdExist)) {
-        throw new BadRequestError("Either Employee Id or Event Id do not exist.");
+    const event = await EventsRepository.getEventByIdAsync(eventId);
+    if (isNullOrUndefined(event)) {
+        throw new BadRequestError(`Event with id ${eventId} is invalid.`);
     }
 
     const currentDate = new Date();
-
-    const newEvent = await SchedulesRepository.createScheduleAsync({eventId, employeeId, currentDate})
+    const newEvent = await SchedulesRepository.createScheduleAsync({eventId, employeeId, eventDate: currentDate})
 
     if (isNullOrUndefined(newEvent)) {
         throw new FatalError("New event was not created");
     }
 
-    return newEvent;
+    return {
+        id: newEvent.id,
+        eventDate: newEvent.eventDate,
+        eventId: event.id,
+        event: event.description,
+        employeeId: employee.id,
+        employee: `${employee.lastName} ${employee.firstName}`
+    };
 }
 
-const getAllSchedules = async (currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
+const getHoursAsync = async (startDate = new Date(Date.now() - 86400000), endDate = new Date(), currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
     let skip = (currentPage - 1) * itemsPerPage
-
-    const {count, rows: schedules} = await SchedulesRepository.getAllSchedules(skip, itemsPerPage, orderBy);
+    const {count, rows: schedules} = await SchedulesRepository.getSchedulesAsync(startDate, endDate, skip, itemsPerPage, orderBy);
 
     if (isListEmpty(schedules)) {
         throw new PaginatedResponse()
     }
 
-    return formatPaginatedResponse(currentPage, itemsPerPage, schedules, count);
+    let eventDescriptions = await getEventDescriptionsAsync();
+
+    let scheduleModels = [];
+    schedules.forEach((entity) => {
+        let { id, employeeId, eventDate, eventId} = entity;
+        scheduleModels.push({
+            id,
+            eventDate,
+            eventId,
+            event: eventDescriptions[eventId],
+            employeeId
+        });
+    });
+
+    return formatPaginatedResponse(currentPage, itemsPerPage, scheduleModels, count);
 }
 
-const getAllEmployeeSchedules = async (employeeId) => {
-    const schedules = await SchedulesRepository.getSchedulesByEmployeeId(employeeId);
+async function getEventDescriptionsAsync() {
+    let { rows: events } = await EventsRepository.getEventsAsync(0, 1000);
+    let eventDescriptions = Object.assign({}, ...events.map((x) => ({ [x.id]: x.description })));
+    return eventDescriptions;
+}
 
-    if (isNullOrUndefined(schedules)) {
-        throw new FatalError("New event was not created");
+const getEmployeeHoursAsync = async (employeeId, startDate = new Date(Date.now() - 86400000), endDate = new Date(), currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
+    const employee = await EmployeesRepository.getEmployeeByIdAsync(employeeId);
+    if (isNullOrUndefined(employee)) {
+        throw new NotFoundError(`Employee with id ${employeeId} does not exist.`);
     }
-
-    return schedules
-}
-
-const getAllEventSchedules = async (eventId) => {
-    const schedules = await SchedulesRepository.getSchedulesByEventId(eventId);
-
-    if (isNullOrUndefined(schedules)) {
-        throw new FatalError("New event was not created");
-    }
-
-    return schedules
-}
-
-const getAllSchedulesByDateRange = async (startDate, endDate, currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
+    
     let skip = (currentPage - 1) * itemsPerPage
+    const {count, rows: schedules} = await SchedulesRepository.getSchedulesByEmployeeIdAsync(employeeId, startDate, endDate, skip, itemsPerPage, orderBy);
 
-    const {count, rows: schedules} = await SchedulesRepository.getScheduleByDateRange(startDate, endDate, skip, itemsPerPage, orderBy);
-
-    if (isListEmpty(schedules)) {
+    if (isNullOrUndefined(schedules)) {
         throw new PaginatedResponse()
     }
 
-    return formatPaginatedResponse(currentPage, itemsPerPage, schedules, count);
+    let eventDescriptions = await getEventDescriptionsAsync();
+
+    let scheduleModels = [];
+    schedules.forEach((entity) => {
+        let { id, employeeId, eventDate, eventId} = entity;
+        scheduleModels.push({
+            id,
+            eventDate,
+            eventId,
+            event: eventDescriptions[eventId],
+            employeeId,
+            employee: `${employee.lastName} ${employee.firstName}`
+        });
+    });
+
+    return formatPaginatedResponse(currentPage, itemsPerPage, scheduleModels, count);
 }
 
-const getAllEmployeeScheduleByDateRange = async (employeeId, startDate, endDate) => {
-    const schedules = await SchedulesRepository.getEmployeeSchedulesByDateRange(employeeId, startDate, endDate);
+const getHoursByEventAsync = async (eventId, startDate = new Date(Date.now() - 86400000), endDate = new Date(), currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
+    const event = await EventsRepository.getEventByIdAsync(eventId);
+    if (isNullOrUndefined(event)) {
+        throw new BadRequestError(`Event with id ${eventId} is invalid.`);
+    }
+    
+    let skip = (currentPage - 1) * itemsPerPage
+    const {count, rows: schedules} = await SchedulesRepository.getScheduleByEventIdAsync(eventId, startDate, endDate, skip, itemsPerPage, orderBy);
 
     if (isNullOrUndefined(schedules)) {
-        throw new FatalError("New event was not created");
+        throw new PaginatedResponse()
     }
 
-    return schedules
-}
+    let scheduleModels = [];
+    schedules.forEach((entity) => {
+        let { id, employeeId, eventDate, eventId} = entity;
+        scheduleModels.push({
+            id,
+            eventDate,
+            eventId,
+            event: event.description,
+            employeeId
+        });
+    });
 
-const getAllEventSchedulesByDateRange = async (eventId, startDate, endDate) => {
-    const schedules = await SchedulesRepository.getEventsScheduleByDateRange(eventId, startDate, endDate);
-
-    if (isNullOrUndefined(schedules)) {
-        throw new FatalError("New event was not created");
-    }
-
-    return schedules
+    return formatPaginatedResponse(currentPage, itemsPerPage, scheduleModels, count);
 }
 
 module.exports = {
-    reportEventTime,
-    getAllSchedules,
-    getAllSchedulesByDateRange,
-    getAllEmployeeSchedules,
-    getAllEmployeeScheduleByDateRange,
-    getAllEventSchedules,
-    getAllEventSchedulesByDateRange
+    reportHoursAsync,
+    getHoursAsync,
+    getEmployeeHoursAsync,
+    getHoursByEventAsync
 }
