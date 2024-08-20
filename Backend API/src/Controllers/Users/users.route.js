@@ -1150,7 +1150,7 @@ usersRouter.patch('/:username/change-password', UsersController.changePasswordAs
 *  patch:
 *     tags:
 *     - Users Controller
-*     summary: Update user's password
+*     summary: Suspends a user's account
 *     parameters:
 *       - in: path
 *         name: username
@@ -1273,7 +1273,7 @@ usersRouter.patch('/:username/suspend', UsersController.suspendUserAsync);
 *  patch:
 *     tags:
 *     - Users Controller
-*     summary: Update user's password
+*     summary: Restore a user's account that has been suspended
 *     parameters:
 *       - in: path
 *         name: username
