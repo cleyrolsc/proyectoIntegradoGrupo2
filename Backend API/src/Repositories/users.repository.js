@@ -106,6 +106,7 @@ module.exports = {
     getUsersAsync,
     getUsersByPrivilegeLevelAsync,
     getUserByEmployeeIdAsync,
+    getUserByEmployeeId,
     updateUserAsync,
     updateUserPasswordAsync,
     deleteUserAsync

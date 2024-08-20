@@ -34,7 +34,6 @@ class Server {
             optionsSuccessStatus: 200  // Some legacy browsers (IE11, various SmartTVs) choke on 204
         };
         this.app.use(cors(corsOptions));
-        
         this.app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
     }
 
