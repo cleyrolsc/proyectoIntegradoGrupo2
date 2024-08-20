@@ -46,13 +46,6 @@ const registerEmployeeHourAsync = async (request, response, next) => {
   }
 }
 
-function extractPaginationElements(request) {
-  let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
-  let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
-
-  return { page, pageSize };
-}
-
 const fetchRegisteredHoursAsync = async (request, response, next) => {
   try {
     let { page, pageSize } = extractPaginationElements(request);
@@ -64,6 +57,13 @@ const fetchRegisteredHoursAsync = async (request, response, next) => {
   } catch (error) {
     next(error);
   } 
+}
+
+function extractPaginationElements(request) {
+  let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
+  let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
+
+  return { page, pageSize };
 }
 
 function extractDateRange(request) {
