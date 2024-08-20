@@ -27,6 +27,7 @@ const reportEventTimeAsync = async (eventDetails) => {
 
     return {
         id: newEvent.id,
+        eventDate: newEvent.eventDate,
         eventId: event.id,
         event: event.description,
         employeeId: employee.id,
@@ -75,7 +76,22 @@ const getAllSchedulesByDateRangeAsync = async (startDate = new Date(Date.now() -
         throw new PaginatedResponse()
     }
 
-    return formatPaginatedResponse(currentPage, itemsPerPage, schedules, count);
+    let { rows: events } = await EventsRepository.getEventsAsync(0, 1000);
+    let eventDescriptions = Object.assign({}, ...events.map((x) => ({[x.id]: x.description})));
+
+    let scheduleModels = [];
+    schedules.forEach((entity) => {
+        let { id, employeeId, eventDate, eventId} = entity;
+        scheduleModels.push({
+            id,
+            eventDate,
+            eventId,
+            event: eventDescriptions[eventId],
+            employeeId
+        });
+    });
+
+    return formatPaginatedResponse(currentPage, itemsPerPage, scheduleModels, count);
 }
 
 const getAllEmployeeScheduleByDateRangeAsync = async (employeeId, startDate = new Date(Date.now() - 86400000), endDate = new Date(), currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
@@ -101,7 +117,7 @@ const getAllEmployeeScheduleByDateRangeAsync = async (employeeId, startDate = ne
             id,
             eventDate,
             eventId,
-            event: eventDescriptions[id],
+            event: eventDescriptions[eventId],
             employeeId,
             employee: `${employee.lastName} ${employee.firstName}`
         });

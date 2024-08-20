@@ -57,7 +57,9 @@ const fetchAllRegisteredHoursByDateRangeAsync = async (request, response, next) 
   try {
     let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
     let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
-    const {startDate, endDate} = request.body;
+    let startDate = isNotNullUndefinedNorEmpty(request.query.startDate) ? new Date(request.query.startDate) : new Date(Date.now() - 86400000);
+    let endDate = isNotNullUndefinedNorEmpty(request.query.endDate) ? new Date(request.query.endDate) : new Date();
+    
     const schedules = await SchedulesService.getAllSchedulesByDateRangeAsync(startDate, endDate, page, pageSize);
 
     response.status(200).json(formatResponse(200, request.originalUrl, schedules));

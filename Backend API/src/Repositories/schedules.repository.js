@@ -13,7 +13,7 @@ const createScheduleAsync = ({ eventId, employeeId, eventDate }) => {
 
 const getAllSchedulesAsync = (skip = 0, limit = 10, orderBy = 'ASC') => Schedule.findAndCountAll({
     order: [
-        ['eventDate', orderBy]
+        ['eventDate', 'DESC']
         ['employeeId', orderBy]
     ],
     offset: skip,
@@ -26,7 +26,7 @@ const getSchedulesByEmployeeIdAsync = async (employeeId, skip = 0, limit = 10, o
             employeeId,
         },
         order: [
-            ['eventDate', orderBy]
+            ['eventDate', 'DESC']
         ],
         offset: skip,
         limit
@@ -45,7 +45,7 @@ const getSchedulesByEventIdAsync = async (eventId, skip = 0, limit = 10, orderBy
             eventId,
         },
         order: [
-            ['eventDate', orderBy]
+            ['eventDate', 'DESC']
             ['employeeId', orderBy]
         ],
         offset: skip,
@@ -59,12 +59,12 @@ const getSchedulesByEventIdAsync = async (eventId, skip = 0, limit = 10, orderBy
     return schedules;
 }
 
-const getScheduleByDateRangeAsync = (startDate, endDate, skip = 0, limit = 10, orderBy = 'ASC') => Schedule.findAndCountAll({
+const getScheduleByDateRangeAsync = (startDate = new Date(Date.now() - 86400000), endDate = new Date(), skip = 0, limit = 10, orderBy = 'ASC') => Schedule.findAndCountAll({
     where: {
         eventDate: {[Op.between]: [startDate, endDate]}
     },
     order: [
-        ['eventDate', orderBy]
+        ['eventDate', 'DESC'],
         ['employeeId', orderBy]
     ],
     offset: skip,
@@ -78,7 +78,7 @@ const getEmployeeSchedulesByDateRangeAsync = async (employeeId, startDate = new 
             eventDate: {[Op.between]: [startDate, endDate]}
         },
         order: [
-            ['eventDate', orderBy]
+            ['eventDate', 'DESC']
         ],
         offset: skip,
         limit
@@ -91,14 +91,14 @@ const getEmployeeSchedulesByDateRangeAsync = async (employeeId, startDate = new 
     return schedules;
 }
 
-const getEventsScheduleByDateRangeAsync = async (eventId, startDate, endDate, skip = 0, limit = 10, orderBy = 'ASC') => {
+const getEventsScheduleByDateRangeAsync = async (eventId, startDate = new Date(Date.now() - 86400000), endDate = new Date(), skip = 0, limit = 10, orderBy = 'ASC') => {
     let schedules = await Schedule.findAndCountAll({
         where: {
             eventId,
             eventDate: {[Op.between]: [startDate, endDate]}
         },
         order: [
-            ['eventDate', orderBy]
+            ['eventDate', 'DESC']
         ],
         offset: skip,
         limit
