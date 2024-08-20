@@ -1,8 +1,8 @@
 const { CreateUserRequest } = require("../../Core/Abstractions/Contracts/Requests");
 const { UserType } = require("../../Core/Abstractions/Enums");
-const { isNotNullNorUndefined } = require("../../Core/Utils/null-checker.util");
 const { formatResponse } = require("../../Core/Utils/response-formatter.util");
 const { ConflictError } = require("../../Core/Abstractions/Exceptions");
+const { extractPaginationElements } = require("../../Core/Utils/request-element-extractor.util");
 
 const UsersService = require("../../Services/Users/users.service");
 const PrivilegesService = require("../../Services/Privileges/privileges.service");
@@ -34,7 +34,7 @@ const registerAdminUserAsync = async (request, response, next) => {
 };
 
 async function isAdminPrivilege(privilege) {
-    let privileges = await PrivilegesService.getPrivilegesByLevelAsync(98);
+    let { items: privileges } = await PrivilegesService.getPrivilegesByLevelAsync(98);
 
     let adminPrivileges = [];
     privileges.forEach(privilege => {
@@ -72,8 +72,7 @@ const registerUserAsync = async (request, response, next) => {
 
 const getPrivilegesAsync = async (request, response, next) => {
     try {
-        let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
-        let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
+        let { page, pageSize } = extractPaginationElements(request);
         let privileges = await PrivilegesService.getPrivilegesAsync(page, pageSize);
 
         response.status(200).json(formatResponse(200, request.originalUrl, privileges));
