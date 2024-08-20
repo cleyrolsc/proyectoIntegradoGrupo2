@@ -15,7 +15,7 @@ const reportEventTimeAsync = async (eventDetails) => {
 
     const event = await EventsRepository.getEventByIdAsync(eventId);
     if (isNullOrUndefined(event)) {
-        throw new BadRequestError(`Event with id ${employeeId} is invalid.`);
+        throw new BadRequestError(`Event with id ${eventId} is invalid.`);
     }
 
     const currentDate = new Date();
@@ -67,7 +67,7 @@ const getAllEventSchedulesAsync = async (eventId, currentPage = 1, itemsPerPage 
     return formatPaginatedResponse(currentPage, itemsPerPage, schedules, count);
 }
 
-const getAllSchedulesByDateRangeAsync = async (startDate, endDate, currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
+const getAllSchedulesByDateRangeAsync = async (startDate = new Date(Date.now() - 86400000), endDate = new Date(), currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
     let skip = (currentPage - 1) * itemsPerPage
     const {count, rows: schedules} = await SchedulesRepository.getScheduleByDateRangeAsync(startDate, endDate, skip, itemsPerPage, orderBy);
 
@@ -110,7 +110,12 @@ const getAllEmployeeScheduleByDateRangeAsync = async (employeeId, startDate = ne
     return formatPaginatedResponse(currentPage, itemsPerPage, scheduleModels, count);
 }
 
-const getAllEventSchedulesAsyncByDateRangeAsync = async (eventId, startDate, endDate, currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
+const getAllEventSchedulesAsyncByDateRangeAsync = async (eventId, startDate = new Date(Date.now() - 86400000), endDate = new Date(), currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
+    const event = await EventsRepository.getEventByIdAsync(eventId);
+    if (isNullOrUndefined(event)) {
+        throw new BadRequestError(`Event with id ${eventId} is invalid.`);
+    }
+    
     let skip = (currentPage - 1) * itemsPerPage
     const {count, rows: schedules} = await SchedulesRepository.getEventsScheduleByDateRangeAsync(eventId, startDate, endDate, skip, itemsPerPage, orderBy);
 
@@ -118,7 +123,19 @@ const getAllEventSchedulesAsyncByDateRangeAsync = async (eventId, startDate, end
         throw new PaginatedResponse()
     }
 
-    return formatPaginatedResponse(currentPage, itemsPerPage, schedules, count);
+    let scheduleModels = [];
+    schedules.forEach((entity) => {
+        let { id, employeeId, eventDate, eventId} = entity;
+        scheduleModels.push({
+            id,
+            eventDate,
+            eventId,
+            event: event.description,
+            employeeId
+        });
+    });
+
+    return formatPaginatedResponse(currentPage, itemsPerPage, scheduleModels, count);
 }
 
 module.exports = {

@@ -1,5 +1,5 @@
 const { BadRequestError } = require('../../Core/Abstractions/Exceptions');
-const { isNullUndefinedOrEmpty, isNullOrUndefined, isNotNullUndefinedNorEmpty, isNotNullNorUndefined } = require('../../Core/Utils/null-checker.util');
+const { isNullOrUndefined, isNotNullUndefinedNorEmpty, isNotNullNorUndefined } = require('../../Core/Utils/null-checker.util');
 const { formatResponse } = require('../../Core/Utils/response-formatter.util');
 
 const SchedulesService = require('../../Services/Schedules/schedules.service');
@@ -88,9 +88,16 @@ const fetchEmployeeHourHistoryByDateRangeAsync = async (request, response, next)
 
 const fetchRegisteredHoursByEventTypeByDateRangeAsync = async (request, response, next) => {
   try {
+    let eventId = +request.params.eventId;
+    if (isNullOrUndefined(eventId)) {
+      throw new BadRequestError('Event id cannot be undefined');
+    }
+
     let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
     let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
-    const {eventId, startDate, endDate} = request.body;
+    let startDate = isNotNullUndefinedNorEmpty(request.query.startDate) ? new Date(request.query.startDate) : new Date(Date.now() - 86400000);
+    let endDate = isNotNullUndefinedNorEmpty(request.query.endDate) ? new Date(request.query.endDate) : new Date();
+    
     const schedules = await SchedulesService.getAllEventSchedulesAsyncByDateRangeAsync(eventId, startDate, endDate, page, pageSize);
 
     response.status(200).json(formatResponse(200, request.originalUrl, schedules));
