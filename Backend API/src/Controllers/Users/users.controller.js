@@ -49,7 +49,7 @@ async function getUseProfileAsync(username, response, request) {
     if (isNullOrUndefined(username)) {
         throw new BadRequestError('Username is undefined');
     }
-
+  
     let profile = await UserServices.getUserProfileAsync(username);
     response.status(200).json(formatResponse(200, request.originalUrl, profile));
 };
@@ -82,7 +82,7 @@ const changePasswordAsync = async (request, response, next) => {
         if (oldPassword === newPassword) {
             throw new BadRequestError("New password cannot be the same as old password.");
         }
-
+      
         await UserServices.updateUserPasswordAsync(username, oldPassword, newPassword);
 
         response.status(200).send(formatResponse(200, request.originalUrl, "Password successfully changed!"));

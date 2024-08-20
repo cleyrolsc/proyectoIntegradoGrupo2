@@ -27,7 +27,6 @@ const registerNewUserAsync = async (createUserRequest) =>{
         }
 
         let { payPerHour, department, supervisor, position } = createUserRequest;
-
         var newEmployee = await EmployeesRepository.createEmployeeAsync({
             firstName,
             lastName,
