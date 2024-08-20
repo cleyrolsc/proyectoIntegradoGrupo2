@@ -16,50 +16,17 @@ const registerEmployeeHourAsync = async (request, response, next) => {
   }
 }
 
-const fetchAllRegisteredHoursAsync = async (request, response, next) => {
-  try {
-    let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
-    let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
-    const schedules = await SchedulesService.getAllSchedulesAsync(page, pageSize);
+function extractPaginationElements(request) {
+  let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
+  let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
 
-    response.status(200).json(formatResponse(200, request.originalUrl, schedules));
-  } catch (error) {
-    next(error);
-  }   
+  return { page, pageSize };
 }
 
-const fetchEmployeeHourHistoryAsync = async (request, response, next) => {
+const fetchRegisteredHoursAsync = async (request, response, next) => {
   try {
-    let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
-    let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
-    const id = request.body.employeeId;
-    const schedules = await SchedulesService.getAllEmployeeSchedulesAsync(id, page, pageSize);
-
-    response.status(200).json(formatResponse(200, request.originalUrl, schedules));
-  } catch (error) {
-    next(error);
-  }
-};
-
-const fetchRegisteredHoursByEventTypeAsync = async (request, response, next) => {
-  try {
-    let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
-    let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
-    const id = request.body.eventId;
-    const schedules = await SchedulesService.getAllEventSchedulesAsync(id, page, pageSize);
-
-    response.status(200).json(formatResponse(200, request.originalUrl, schedules));
-  } catch (error) {
-    next(error);
-  }
-};
-
-const fetchAllRegisteredHoursByDateRangeAsync = async (request, response, next) => {
-  try {
-    let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
-    let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
-    let startDate = isNotNullUndefinedNorEmpty(request.query.startDate) ? new Date(request.query.startDate) : new Date(Date.now() - 86400000);
-    let endDate = isNotNullUndefinedNorEmpty(request.query.endDate) ? new Date(request.query.endDate) : new Date();
+    let { page, pageSize } = extractPaginationElements(request);
+    let { startDate, endDate } = extractDateRange(request);
     
     const schedules = await SchedulesService.getAllSchedulesByDateRangeAsync(startDate, endDate, page, pageSize);
 
@@ -69,17 +36,22 @@ const fetchAllRegisteredHoursByDateRangeAsync = async (request, response, next) 
   } 
 }
 
-const fetchEmployeeHourHistoryByDateRangeAsync = async (request, response, next) => {
+function extractDateRange(request) {
+  let startDate = isNotNullUndefinedNorEmpty(request.query.startDate) ? new Date(request.query.startDate) : new Date(Date.now() - 86400000);
+  let endDate = isNotNullUndefinedNorEmpty(request.query.endDate) ? new Date(request.query.endDate) : new Date();
+  
+  return { startDate, endDate };
+}
+
+const fetchEmployeeHoursAsync = async (request, response, next) => {
   try {
     let employeeId = +request.params.employeeId;
     if (isNullOrUndefined(employeeId)) {
       throw new BadRequestError('Employee id cannot be undefined');
     }
 
-    let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
-    let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
-    let startDate = isNotNullUndefinedNorEmpty(request.query.startDate) ? new Date(request.query.startDate) : new Date(Date.now() - 86400000);
-    let endDate = isNotNullUndefinedNorEmpty(request.query.endDate) ? new Date(request.query.endDate) : new Date();
+    let { page, pageSize } = extractPaginationElements(request);
+    let { startDate, endDate } = extractDateRange(request);
 
     const schedules = await SchedulesService.getAllEmployeeScheduleByDateRangeAsync(employeeId, startDate, endDate, page, pageSize);
 
@@ -89,18 +61,16 @@ const fetchEmployeeHourHistoryByDateRangeAsync = async (request, response, next)
   } 
 }
 
-const fetchRegisteredHoursByEventTypeByDateRangeAsync = async (request, response, next) => {
+const fetchRegisteredHoursByEventTypeAsync = async (request, response, next) => {
   try {
     let eventId = +request.params.eventId;
     if (isNullOrUndefined(eventId)) {
       throw new BadRequestError('Event id cannot be undefined');
     }
 
-    let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
-    let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
-    let startDate = isNotNullUndefinedNorEmpty(request.query.startDate) ? new Date(request.query.startDate) : new Date(Date.now() - 86400000);
-    let endDate = isNotNullUndefinedNorEmpty(request.query.endDate) ? new Date(request.query.endDate) : new Date();
-    
+    let { page, pageSize } = extractPaginationElements(request);
+    let { startDate, endDate } = extractDateRange(request);
+
     const schedules = await SchedulesService.getAllEventSchedulesAsyncByDateRangeAsync(eventId, startDate, endDate, page, pageSize);
 
     response.status(200).json(formatResponse(200, request.originalUrl, schedules));
@@ -111,13 +81,7 @@ const fetchRegisteredHoursByEventTypeByDateRangeAsync = async (request, response
 
 module.exports = {
   registerEmployeeHourAsync,
-  fetchAllRegisteredHoursAsync,
-  fetchEmployeeHourHistoryAsync,
-  fetchRegisteredHoursByEventTypeAsync,
-  fetchAllRegisteredHoursByDateRangeAsync,
-  fetchEmployeeHourHistoryByDateRangeAsync,
-  fetchRegisteredHoursByEventTypeByDateRangeAsync    
+  fetchRegisteredHoursAsync,
+  fetchEmployeeHoursAsync,
+  fetchRegisteredHoursByEventTypeAsync    
 };
-
-
-
