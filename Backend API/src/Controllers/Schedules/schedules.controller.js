@@ -20,20 +20,19 @@ const registerMyHourAsync = async (request, response, next) => {
 
 async function fetchEmployeeIdWithAuthTokenAsync(request) {
   const bearerHeader = request.header('authorization');
-    if (isNullUndefinedOrEmpty(bearerHeader)) {
-        throw new UnauthorizedError('No bearer authorization token was found');
-    }
+  if (isNullUndefinedOrEmpty(bearerHeader)) {
+    throw new UnauthorizedError('No bearer authorization token was found');
+  }
 
-    let token = bearerHeader.split(' ')[1];
-    if (isNullUndefinedOrEmpty(token)) {
-        throw new UnauthorizedError('No token was found');
-    }
+  let token = bearerHeader.split(' ')[1];
+  if (isNullUndefinedOrEmpty(token)) {
+    throw new UnauthorizedError('No token was found');
+  }
 
-    let { username } = await AuthService.validateTokenAsync(token);
-    let { employeeInfo } = await UsersService.getUserProfileAsync(username);
-    let { employeeId } = employeeInfo;
+  let { username } = await AuthService.validateTokenAsync(token);
+  let { employeeInfo } = await UsersService.getUserProfileAsync(username);
 
-  return employeeId;
+  return employeeInfo.employeeId;
 }
 
 const registerEmployeeHourAsync = async (request, response, next) => {
