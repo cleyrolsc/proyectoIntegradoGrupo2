@@ -20,6 +20,7 @@ const tableSection = document.querySelector('.table-section');
 const timerEl = document.querySelector('.timer');
 const departments = document.querySelector('.departments');
 const employeeInfo = document.getElementById('employee-info');
+const logoutConfirmation = document.querySelector('.logout-confirmation');
 
 //Initial States
 let intervalID;
@@ -138,6 +139,11 @@ logoutEl.addEventListener('click', () => {
     window.location = 'login.html';
   }
 });
+
+logoutConfirmation.addEventListener('click', function (e) {
+  localStorage.clear();
+  window.location = 'login.html';
+});
 btnBreak.addEventListener('click', function () {
   clearInterval(intervalID);
   stopWork();
@@ -237,13 +243,4 @@ departments.addEventListener('click', function (event) {
     .catch((error) => {
       console.error('Error:', error);
     });
-});
-
-//If not logged in, send user to login page
-
-document.addEventListener('DOMContentLoaded', (event) => {
-  event.preventDefault();
-  if (!localStorage.getItem('isLoggedIn')) {
-    window.location = 'login.html';
-  }
 });
