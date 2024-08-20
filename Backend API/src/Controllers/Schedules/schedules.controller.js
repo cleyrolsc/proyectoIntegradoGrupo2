@@ -8,7 +8,7 @@ const SchedulesService = require('../../Services/Schedules/schedules.service');
 const registerEmployeeHourAsync = async (request, response, next) => {
   try {
     let { eventId, employeeId } = request.body;
-    let schedule = await SchedulesService.reportEventTimeAsync({ eventId, employeeId });
+    let schedule = await SchedulesService.reportHoursAsync({ eventId, employeeId });
 
     response.status(201).json(formatResponse(201, request.originalUrl, schedule));
   } catch (error) {
@@ -28,7 +28,7 @@ const fetchRegisteredHoursAsync = async (request, response, next) => {
     let { page, pageSize } = extractPaginationElements(request);
     let { startDate, endDate } = extractDateRange(request);
     
-    const schedules = await SchedulesService.getAllSchedulesByDateRangeAsync(startDate, endDate, page, pageSize);
+    const schedules = await SchedulesService.getHoursAsync(startDate, endDate, page, pageSize);
 
     response.status(200).json(formatResponse(200, request.originalUrl, schedules));
   } catch (error) {
@@ -53,7 +53,7 @@ const fetchEmployeeHoursAsync = async (request, response, next) => {
     let { page, pageSize } = extractPaginationElements(request);
     let { startDate, endDate } = extractDateRange(request);
 
-    const schedules = await SchedulesService.getAllEmployeeScheduleByDateRangeAsync(employeeId, startDate, endDate, page, pageSize);
+    const schedules = await SchedulesService.getEmployeeHoursAsync(employeeId, startDate, endDate, page, pageSize);
 
     response.status(200).json(formatResponse(200, request.originalUrl, schedules));
   } catch (error) {
@@ -71,7 +71,7 @@ const fetchRegisteredHoursByEventTypeAsync = async (request, response, next) => 
     let { page, pageSize } = extractPaginationElements(request);
     let { startDate, endDate } = extractDateRange(request);
 
-    const schedules = await SchedulesService.getAllEventSchedulesAsyncByDateRangeAsync(eventId, startDate, endDate, page, pageSize);
+    const schedules = await SchedulesService.getHoursByEventAsync(eventId, startDate, endDate, page, pageSize);
 
     response.status(200).json(formatResponse(200, request.originalUrl, schedules));
   } catch (error) {

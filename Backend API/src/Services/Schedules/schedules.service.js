@@ -5,7 +5,7 @@ const { isNullOrUndefined, isListEmpty } = require("../../Core/Utils/null-checke
 
 const { SchedulesRepository, EventsRepository, EmployeesRepository } = require('../../Repositories/index');
 
-const reportEventTimeAsync = async (eventDetails) => {
+const reportHoursAsync = async (eventDetails) => {
     const { eventId, employeeId } = eventDetails;
 
     const employee = await EmployeesRepository.getEmployeeByIdAsync(employeeId);
@@ -35,49 +35,15 @@ const reportEventTimeAsync = async (eventDetails) => {
     };
 }
 
-const getAllSchedulesAsync = async (currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
+const getHoursAsync = async (startDate = new Date(Date.now() - 86400000), endDate = new Date(), currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
     let skip = (currentPage - 1) * itemsPerPage
-    const {count, rows: schedules} = await SchedulesRepository.getAllSchedulesAsync(skip, itemsPerPage, orderBy);
+    const {count, rows: schedules} = await SchedulesRepository.getSchedulesAsync(startDate, endDate, skip, itemsPerPage, orderBy);
 
     if (isListEmpty(schedules)) {
         throw new PaginatedResponse()
     }
 
-    return formatPaginatedResponse(currentPage, itemsPerPage, schedules, count);
-}
-
-const getAllEmployeeSchedulesAsync = async (employeeId, currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
-    let skip = (currentPage - 1) * itemsPerPage
-    const {count, rows: schedules} = await SchedulesRepository.getSchedulesByEmployeeIdAsync(employeeId, skip, itemsPerPage, orderBy);
-
-    if (isNullOrUndefined(schedules)) {
-        throw new PaginatedResponse();
-    }
-
-    return formatPaginatedResponse(currentPage, itemsPerPage, schedules, count);
-}
-
-const getAllEventSchedulesAsync = async (eventId, currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
-    let skip = (currentPage - 1) * itemsPerPage
-    const {count, rows: schedules} = await SchedulesRepository.getSchedulesByEventIdAsync(eventId, skip, itemsPerPage, orderBy);
-
-    if (isNullOrUndefined(schedules)) {
-        throw new PaginatedResponse();
-    }
-
-    return formatPaginatedResponse(currentPage, itemsPerPage, schedules, count);
-}
-
-const getAllSchedulesByDateRangeAsync = async (startDate = new Date(Date.now() - 86400000), endDate = new Date(), currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
-    let skip = (currentPage - 1) * itemsPerPage
-    const {count, rows: schedules} = await SchedulesRepository.getScheduleByDateRangeAsync(startDate, endDate, skip, itemsPerPage, orderBy);
-
-    if (isListEmpty(schedules)) {
-        throw new PaginatedResponse()
-    }
-
-    let { rows: events } = await EventsRepository.getEventsAsync(0, 1000);
-    let eventDescriptions = Object.assign({}, ...events.map((x) => ({[x.id]: x.description})));
+    let eventDescriptions = await getEventDescriptionsAsync();
 
     let scheduleModels = [];
     schedules.forEach((entity) => {
@@ -94,21 +60,26 @@ const getAllSchedulesByDateRangeAsync = async (startDate = new Date(Date.now() -
     return formatPaginatedResponse(currentPage, itemsPerPage, scheduleModels, count);
 }
 
-const getAllEmployeeScheduleByDateRangeAsync = async (employeeId, startDate = new Date(Date.now() - 86400000), endDate = new Date(), currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
+async function getEventDescriptionsAsync() {
+    let { rows: events } = await EventsRepository.getEventsAsync(0, 1000);
+    let eventDescriptions = Object.assign({}, ...events.map((x) => ({ [x.id]: x.description })));
+    return eventDescriptions;
+}
+
+const getEmployeeHoursAsync = async (employeeId, startDate = new Date(Date.now() - 86400000), endDate = new Date(), currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
     const employee = await EmployeesRepository.getEmployeeByIdAsync(employeeId);
     if (isNullOrUndefined(employee)) {
         throw new NotFoundError(`Employee with id ${employeeId} does not exist.`);
     }
     
     let skip = (currentPage - 1) * itemsPerPage
-    const {count, rows: schedules} = await SchedulesRepository.getEmployeeSchedulesByDateRangeAsync(employeeId, startDate, endDate, skip, itemsPerPage, orderBy);
+    const {count, rows: schedules} = await SchedulesRepository.getSchedulesByEmployeeIdAsync(employeeId, startDate, endDate, skip, itemsPerPage, orderBy);
 
     if (isNullOrUndefined(schedules)) {
         throw new PaginatedResponse()
     }
 
-    let { rows: events } = await EventsRepository.getEventsAsync(0, 1000);
-    let eventDescriptions = Object.assign({}, ...events.map((x) => ({[x.id]: x.description})));
+    let eventDescriptions = await getEventDescriptionsAsync();
 
     let scheduleModels = [];
     schedules.forEach((entity) => {
@@ -126,14 +97,14 @@ const getAllEmployeeScheduleByDateRangeAsync = async (employeeId, startDate = ne
     return formatPaginatedResponse(currentPage, itemsPerPage, scheduleModels, count);
 }
 
-const getAllEventSchedulesAsyncByDateRangeAsync = async (eventId, startDate = new Date(Date.now() - 86400000), endDate = new Date(), currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
+const getHoursByEventAsync = async (eventId, startDate = new Date(Date.now() - 86400000), endDate = new Date(), currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
     const event = await EventsRepository.getEventByIdAsync(eventId);
     if (isNullOrUndefined(event)) {
         throw new BadRequestError(`Event with id ${eventId} is invalid.`);
     }
     
     let skip = (currentPage - 1) * itemsPerPage
-    const {count, rows: schedules} = await SchedulesRepository.getEventsScheduleByDateRangeAsync(eventId, startDate, endDate, skip, itemsPerPage, orderBy);
+    const {count, rows: schedules} = await SchedulesRepository.getScheduleByEventIdAsync(eventId, startDate, endDate, skip, itemsPerPage, orderBy);
 
     if (isNullOrUndefined(schedules)) {
         throw new PaginatedResponse()
@@ -155,11 +126,8 @@ const getAllEventSchedulesAsyncByDateRangeAsync = async (eventId, startDate = ne
 }
 
 module.exports = {
-    reportEventTimeAsync,
-    getAllSchedulesAsync,
-    getAllSchedulesByDateRangeAsync,
-    getAllEmployeeSchedulesAsync,
-    getAllEmployeeScheduleByDateRangeAsync,
-    getAllEventSchedulesAsync,
-    getAllEventSchedulesAsyncByDateRangeAsync
+    reportHoursAsync,
+    getHoursAsync,
+    getEmployeeHoursAsync,
+    getHoursByEventAsync
 }
