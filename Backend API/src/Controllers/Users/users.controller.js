@@ -2,14 +2,14 @@ const { UpdateEmployeeInformationRequest } = require("../../Core/Abstractions/Co
 const { isNullOrUndefined, isNotNullNorUndefined, isNullUndefinedOrEmpty, isNotNullUndefinedNorEmpty } = require("../../Core/Utils/null-checker.util");
 const { BadRequestError } = require("../../Core/Abstractions/Exceptions");
 const { formatResponse } = require("../../Core/Utils/response-formatter.util");
+const { extractPaginationElements } = require("../../Core/Utils/request-element-extractor.util");
 
 const UserServices = require("../../Services/Users/users.service");
-const AuthService = require('../../Services/Auth/auth.service')
+const AuthService = require('../../Services/Auth/auth.service');
 
 const fetchAllUsersAsync = async (request, response, next) => {
     try {
-        let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
-        let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
+        let { page, pageSize } = extractPaginationElements(request);
         let users = await UserServices.getUsersAsync(page, pageSize);
         
         response.status(200).json(formatResponse(200, request.originalUrl, users));
@@ -20,8 +20,7 @@ const fetchAllUsersAsync = async (request, response, next) => {
 
 const fetchUsersByPrivilegeLevelAsync = async (request, response, next) => {
     try {
-        let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
-        let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
+        let { page, pageSize } = extractPaginationElements(request);
         
         let privilege = '';
         if (isNotNullUndefinedNorEmpty(request.query.privilegeLevel)) {
