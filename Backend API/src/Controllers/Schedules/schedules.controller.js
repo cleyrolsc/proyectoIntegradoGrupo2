@@ -1,9 +1,39 @@
-
-const { BadRequestError } = require('../../Core/Abstractions/Exceptions');
-const { isNullOrUndefined, isNotNullUndefinedNorEmpty, isNotNullNorUndefined } = require('../../Core/Utils/null-checker.util');
+const { BadRequestError, UnauthorizedError } = require('../../Core/Abstractions/Exceptions');
+const { isNullOrUndefined, isNotNullUndefinedNorEmpty, isNotNullNorUndefined, isNullUndefinedOrEmpty } = require('../../Core/Utils/null-checker.util');
 const { formatResponse } = require('../../Core/Utils/response-formatter.util');
 
+const AuthService = require('../../Services/Auth/auth.service');
+const UsersService = require('../../Services/Users/users.service');
 const SchedulesService = require('../../Services/Schedules/schedules.service');
+
+const registerMyHourAsync = async (request, response, next) => {
+  try {
+    let { eventId} = request.body;
+    let employeeId = await fetchEmployeeIdWithAuthTokenAsync(request);
+    let schedule = await SchedulesService.reportHoursAsync({ eventId, employeeId });
+
+    response.status(201).json(formatResponse(201, request.originalUrl, schedule));
+  } catch (error) {
+    next(error);
+  }
+}
+
+async function fetchEmployeeIdWithAuthTokenAsync(request) {
+  const bearerHeader = request.header('authorization');
+  if (isNullUndefinedOrEmpty(bearerHeader)) {
+    throw new UnauthorizedError('No bearer authorization token was found');
+  }
+
+  let token = bearerHeader.split(' ')[1];
+  if (isNullUndefinedOrEmpty(token)) {
+    throw new UnauthorizedError('No token was found');
+  }
+
+  let { username } = await AuthService.validateTokenAsync(token);
+  let { employeeInfo } = await UsersService.getUserProfileAsync(username);
+
+  return employeeInfo.employeeId;
+}
 
 const registerEmployeeHourAsync = async (request, response, next) => {
   try {
@@ -14,13 +44,6 @@ const registerEmployeeHourAsync = async (request, response, next) => {
   } catch (error) {
     next(error);
   }
-}
-
-function extractPaginationElements(request) {
-  let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
-  let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 10;
-
-  return { page, pageSize };
 }
 
 const fetchRegisteredHoursAsync = async (request, response, next) => {
@@ -34,6 +57,13 @@ const fetchRegisteredHoursAsync = async (request, response, next) => {
   } catch (error) {
     next(error);
   } 
+}
+
+function extractPaginationElements(request) {
+  let page = isNotNullNorUndefined(request.query.page) ? +request.query.page : 1;
+  let pageSize = isNotNullNorUndefined(request.query.pageSize) ? +request.query.pageSize : 100;
+
+  return { page, pageSize };
 }
 
 function extractDateRange(request) {
@@ -80,6 +110,7 @@ const fetchRegisteredHoursByEventTypeAsync = async (request, response, next) => 
 }
 
 module.exports = {
+  registerMyHourAsync,
   registerEmployeeHourAsync,
   fetchRegisteredHoursAsync,
   fetchEmployeeHoursAsync,
