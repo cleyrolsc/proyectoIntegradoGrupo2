@@ -42,7 +42,7 @@ const getUsersByPrivilegeIdAsync = (privilegeId, skip = 0, limit = 10, orderBy =
         limit
     });
 
-const getUserByEmployeeId = async (employeeId) => {
+const getUserByEmployeeIdAsync = async (employeeId) => {
     let user = await User.findOne({
         where: {
             employeeId
@@ -104,7 +104,7 @@ module.exports = {
     countUsersAsync,
     getUsersAsync,
     getUsersByPrivilegeIdAsync,
-    getUserByEmployeeId,
+    getUserByEmployeeIdAsync,
     updateUserAsync,
     updateUserPasswordAsync,
     deleteUserAsync

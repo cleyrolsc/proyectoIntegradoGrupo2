@@ -12,13 +12,20 @@
     <link rel="stylesheet" href="/styles/general.css" />
     <link rel="stylesheet" href="/styles/login.css" />
     <title>TMs</title>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+      defer
+    ></script>
+    <script defer type="module" src="/scripts/login.js" defer></script>
   </head>
   <body class="d-flex align-items-center justify-content-center">
-    <form action="/templates/index.html" class="d-flex flex-column">
+    <form class="d-flex flex-column">
       <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">Email address</label>
         <input
-          type="email"
+          type="text"
           class="form-control email"
           id="email"
           aria-describedby="emailHelp"
@@ -33,11 +40,5 @@
         Submit
       </button>
     </form>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-    ></script>
-    <script defer type="module" src="/scripts/login.js"></script>
   </body>
 </html>

@@ -27,7 +27,6 @@ const registerNewUserAsync = async (createUserRequest) =>{
         }
 
         let { payPerHour, department, supervisor, position } = createUserRequest;
-
         var newEmployee = await EmployeesRepository.createEmployeeAsync({
             firstName,
             lastName,
@@ -68,7 +67,7 @@ const registerNewUserAsync = async (createUserRequest) =>{
     }
 
     async function doesEmployeeAlreadyHaveAUserAccountAsync(employeeId) {
-        let existingUser = await UsersRepository.getUserByEmployeeId(employeeId);
+        let existingUser = await UsersRepository.getUserByEmployeeIdAsync(employeeId);
         if (isNotNullNorUndefined(existingUser)) {
             throw new ConflictError(`Employee, ${newEmployee.firstName} ${newEmployee.lastName}, already has a username: ${existingUser.username}`);
         }
@@ -80,6 +79,12 @@ const registerNewUserAsync = async (createUserRequest) =>{
             throw new ConflictError(`Username, ${username}, is not available`);
         }
     }
+};
+
+function encryptPassword(password) {
+    var salt = bcrypt.genSaltSync(10);
+    var hashPassword = bcrypt.hashSync(password, salt);
+    return hashPassword;
 };
 
 function encryptPassword(password) {
