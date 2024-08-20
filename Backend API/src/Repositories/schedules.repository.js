@@ -16,8 +16,8 @@ const getSchedulesAsync = (startDate = new Date(Date.now() - 86400000), endDate 
         eventDate: {[Op.between]: [startDate, endDate]}
     },
     order: [
-        ['eventDate', 'DESC'],
-        ['employeeId', orderBy]
+        ['employeeId', orderBy],
+        ['eventDate', 'DESC']
     ],
     offset: skip,
     limit
