@@ -7,13 +7,163 @@ const schedulesRouter = express.Router();
 
 /**
 * @openapi
+* '/api/schedules/register-my-hour':
+*  post:
+*     security:              
+*     - bearerAuth: []
+*     tags:
+*     - Schedules Controller
+*     summary: Register hours for specific activities for current logged in user.
+*     requestBody:
+*      required: true
+*      content:
+*        application/json:
+*           schema:
+*            type: object
+*            required:
+*              - eventId
+*            properties:
+*              eventId:
+*                type: integer
+*                default: 11
+*     responses:
+*      201:
+*        description: Created
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 201
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/register-my-hour'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: result of the request
+*                  properties:
+*                    id:
+*                      type: integer
+*                      default: 1
+*                    eventDate:
+*                      type: date
+*                      description: Timestamp of registered hour
+*                      example: '2024-07-19T02:25:38.000Z'
+*                    eventId:
+*                      type: integer
+*                      default: 1
+*                    event:
+*                      type: string
+*                      default: 'Working Starts'
+*                    employeeId:
+*                      type: integer
+*                      default: 1
+*                    employee:
+*                      type: string
+*                      default: 'Doe John'
+*      400:
+*        description: Bad Request
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 400
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/register-my-hour'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: error message
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
+*      401:
+*        description: Unauthorized
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 401
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/register-my-hour'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: error message
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
+*      500:
+*        description: Server Error
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 500
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/register-hour'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: error message
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
+*/
+schedulesRouter.post('/register-my-hour', SchedulesController.registerMyHourAsync);
+
+/**
+* @openapi
 * '/api/schedules/register-hour':
 *  post:
 *     security:              
 *     - bearerAuth: []
 *     tags:
 *     - Schedules Controller
-*     summary: Register hours for specific activities.
+*     summary: Register hours for specific activities for a different user.
 *     requestBody:
 *      required: true
 *      content:
@@ -157,7 +307,7 @@ const schedulesRouter = express.Router();
 *                      type: string
 *                      example: 'this is an example error message'
 */
-schedulesRouter.post('/register-hour', SchedulesController.registerEmployeeHourAsync);
+schedulesRouter.post('/register-hour', checkForAdminPrivileges, SchedulesController.registerEmployeeHourAsync);
 
 /**
 * @openapi
@@ -192,7 +342,7 @@ schedulesRouter.post('/register-hour', SchedulesController.registerEmployeeHourA
 *         description: Number of items each page should have
 *         schema:
 *           type: integer
-*           example: 10
+*           example: 100
 *     responses:
 *      200:
 *        description: Ok
@@ -223,11 +373,11 @@ schedulesRouter.post('/register-hour', SchedulesController.registerEmployeeHourA
 *                    itemsPerPage:
 *                      type: integer
 *                      description: Number of items included inside each page
-*                      example: 10
+*                      example: 100
 *                    totalPages:
 *                      type: integer
 *                      description: Total numbers of pages that exist to be viewed
-*                      example: 100
+*                      example: 1000
 *                    hasNext:
 *                      type: boolean
 *                      description: Indicate if there are more pages left to be viewed (currentPage > totalPages)
@@ -412,7 +562,7 @@ schedulesRouter.get('/hours', checkForAdminPrivileges, SchedulesController.fetch
 *         description: Number of items each page should have
 *         schema:
 *           type: integer
-*           example: 10
+*           example: 100
 *     responses:
 *      200:
 *        description: Ok
@@ -443,11 +593,11 @@ schedulesRouter.get('/hours', checkForAdminPrivileges, SchedulesController.fetch
 *                    itemsPerPage:
 *                      type: integer
 *                      description: Number of items included inside each page
-*                      example: 10
+*                      example: 100
 *                    totalPages:
 *                      type: integer
 *                      description: Total numbers of pages that exist to be viewed
-*                      example: 100
+*                      example: 1000
 *                    hasNext:
 *                      type: boolean
 *                      description: Indicate if there are more pages left to be viewed (currentPage > totalPages)
@@ -636,7 +786,7 @@ schedulesRouter.get('/hours/employee/:employeeId', checkForAdminPrivileges, Sche
 *         description: Number of items each page should have
 *         schema:
 *           type: integer
-*           example: 10
+*           example: 100
 *     responses:
 *      200:
 *        description: Ok
@@ -667,11 +817,11 @@ schedulesRouter.get('/hours/employee/:employeeId', checkForAdminPrivileges, Sche
 *                    itemsPerPage:
 *                      type: integer
 *                      description: Number of items included inside each page
-*                      example: 10
+*                      example: 100
 *                    totalPages:
 *                      type: integer
 *                      description: Total numbers of pages that exist to be viewed
-*                      example: 100
+*                      example: 1000
 *                    hasNext:
 *                      type: boolean
 *                      description: Indicate if there are more pages left to be viewed (currentPage > totalPages)
