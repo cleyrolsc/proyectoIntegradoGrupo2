@@ -1,6 +1,6 @@
 const IncidentStatus = {
     Pending: 0,
-    Approved: 1,
+    Resolved: 1,
     Rejected: 2
 };
 
