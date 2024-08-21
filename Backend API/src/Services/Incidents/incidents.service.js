@@ -17,6 +17,35 @@ const registerIncidentAsync = async (employeeId, comment) => {
     return IncidentsRepository.createIncidentAsync(employee.id, employee.supervisorId, comment);
 };
 
+const getIncidentByIdAsync = async (id) => {
+    if (isNullOrUndefined(id)) {
+        throw new BadRequestError('Incident id cannot be undefined');
+    }
+
+    let {employeeId, supervisorId, comment, status, createdAt } = await IncidentsRepository.getIncidentByIdAsync(id);
+
+    let employee = await EmployeesRepository.getEmployeeByIdAsync(employeeId);
+    let supervisor = await EmployeesRepository.getEmployeeByIdAsync(supervisorId);
+
+    return {
+        id,
+        submittedBy: {
+            id: employeeId,
+            firstName: employee.firstName,
+            lastName: employee.lastName
+        },
+        comment,
+        submittedTo: {
+            id: supervisorId,
+            firstName: supervisor.firstName,
+            lastName: supervisor.lastName
+        },
+        submittedOn: createdAt,
+        status: status
+    };
+};
+
 module.exports = {
-    registerIncidentAsync
+    registerIncidentAsync,
+    getIncidentByIdAsync
 };

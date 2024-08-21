@@ -1,4 +1,5 @@
-const { isNullUndefinedOrEmpty } = require('../../Core/Utils/null-checker.util');
+const { BadRequestError } = require('../../Core/Abstractions/Exceptions');
+const { isNullUndefinedOrEmpty, isNullOrUndefined } = require('../../Core/Utils/null-checker.util');
 const { fetchEmployeeIdWithAuthTokenAsync } = require('../../Core/Utils/request-element-extractor.util');
 const { formatResponse } = require('../../Core/Utils/response-formatter.util');
 
@@ -20,6 +21,22 @@ const registerIncidentAsync = async (request, response, next) => {
     }
 };
 
+const fetchIncidentAsync = async (request, response, next) => {
+    try {
+        let incidentId = request.params.incidentId;
+        if(isNullOrUndefined(incidentId)) {
+            throw new BadRequestError('Incident id cannot be undefined');
+        }
+
+        let incident = await IncidentsService.getIncidentByIdAsync(incidentId);
+        
+        response.status(200).json(formatResponse(200, request.originalUrl, incident));
+    } catch (error) {
+        next(error)
+    }
+};
+
 module.exports = {
-    registerIncidentAsync
+    registerIncidentAsync,
+    fetchIncidentAsync
 };
