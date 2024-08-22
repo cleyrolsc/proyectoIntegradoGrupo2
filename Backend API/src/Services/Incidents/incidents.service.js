@@ -3,6 +3,8 @@ const { BadRequestError } = require('../../Core/Abstractions/Exceptions');
 
 const IncidentsRepository = require('../../Repositories/incidents.repository');
 const EmployeesRepository = require('../../Repositories/employees.repository');
+const { PaginatedResponse } = require('../../Core/Abstractions/Contracts/Responses');
+const { formatPaginatedResponse } = require('../../Core/Utils/response-formatter.util');
 
 const registerIncidentAsync = async (employeeId, comment) => {
     let employee = await EmployeesRepository.getEmployeeByIdAsync(employeeId);
@@ -45,7 +47,31 @@ const getIncidentByIdAsync = async (id) => {
     };
 };
 
+const getIncidentsAsync = async (currentPage = 1, itemsPerPage = 10, order = 'DESC') => {
+    let skip = (currentPage - 1) * itemsPerPage;
+    let { count, rows:incidents } = await IncidentsRepository.getIncidentsAsync(skip, itemsPerPage, order);
+    if (count === 0) {
+        return new PaginatedResponse();
+    }
+
+    let incidentModels = [];
+    incidents.forEach(entity => {
+        let { id, employeeId, supervisorId, comment, status, createdAt } = entity;
+        incidentModels.push({
+            id,
+            employeeId,
+            comment,
+            supervisorId,
+            submittedOn: createdAt,
+            status
+        });
+    });
+
+    return formatPaginatedResponse(currentPage, itemsPerPage, incidentModels, count);
+}
+
 module.exports = {
     registerIncidentAsync,
-    getIncidentByIdAsync
+    getIncidentByIdAsync,
+    getIncidentsAsync
 };

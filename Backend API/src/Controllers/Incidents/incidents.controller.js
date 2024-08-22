@@ -1,6 +1,6 @@
 const { BadRequestError } = require('../../Core/Abstractions/Exceptions');
 const { isNullUndefinedOrEmpty, isNullOrUndefined } = require('../../Core/Utils/null-checker.util');
-const { fetchEmployeeIdWithAuthTokenAsync } = require('../../Core/Utils/request-element-extractor.util');
+const { fetchEmployeeIdWithAuthTokenAsync, extractPaginationElements } = require('../../Core/Utils/request-element-extractor.util');
 const { formatResponse } = require('../../Core/Utils/response-formatter.util');
 
 const IncidentsService = require('../../Services/Incidents/incidents.service');
@@ -16,6 +16,17 @@ const registerIncidentAsync = async (request, response, next) => {
         let incident = await IncidentsService.registerIncidentAsync(employeeId, comment);
         
         response.status(201).json(formatResponse(201, request.originalUrl, incident));
+    } catch (error) {
+        next(error)
+    }
+};
+
+const fetchIncidentsAsync = async (request, response, next) => {
+    try {
+        let { page, pageSize } = extractPaginationElements(request);
+        let incidents = await IncidentsService.getIncidentsAsync(page, pageSize);
+
+        response.status(200).json(formatResponse(200, request.originalUrl, incidents));
     } catch (error) {
         next(error)
     }
@@ -38,5 +49,6 @@ const fetchIncidentAsync = async (request, response, next) => {
 
 module.exports = {
     registerIncidentAsync,
-    fetchIncidentAsync
+    fetchIncidentsAsync,
+    fetchIncidentAsync,
 };
