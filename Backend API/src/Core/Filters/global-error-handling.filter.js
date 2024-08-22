@@ -18,6 +18,9 @@ const globalErrorHandlingFilter = (error, request, response, next) => {
         case "UnauthorizedError":
             status = 401;
             break;
+            case "ForbiddenError":
+                status = 403;
+                break;
         case "NotFoundError":
             status = 404;
             break;

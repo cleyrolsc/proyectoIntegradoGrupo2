@@ -1,4 +1,5 @@
-const { BadRequestError } = require('../../Core/Abstractions/Exceptions');
+const { IncidentStatus } = require('../../Core/Abstractions/Enums');
+const { BadRequestError, ForbiddenError } = require('../../Core/Abstractions/Exceptions');
 const { isNullUndefinedOrEmpty, isNullOrUndefined } = require('../../Core/Utils/null-checker.util');
 const { fetchEmployeeIdWithAuthTokenAsync, extractPaginationElements } = require('../../Core/Utils/request-element-extractor.util');
 const { formatResponse } = require('../../Core/Utils/response-formatter.util');
@@ -89,11 +90,60 @@ const fetchIncidentsAssignedToSupervisorAsync = async (request, response, next) 
     }
 };
 
+const markIncidentAsResolvedAsync = async (request, response, next) => {
+    try {
+        let incidentId = request.params.incidentId;
+        if(isNullOrUndefined(incidentId)) {
+            throw new BadRequestError('Incident id cannot be undefined');
+        }
+
+        let incident = await IncidentsService.getIncidentByIdAsync(incidentId);
+        if(incident.status === IncidentStatus.Resolved) {
+            return response.status(200).json(formatResponse(200, request.originalUrl, incident));
+        }
+
+        if(incident.status === IncidentStatus.Rejected) {
+            throw new ForbiddenError("You cannot resolve an incident that has been rejected");
+        }
+
+        incident = await IncidentsService.updateIncidentStatusAsync(incidentId, IncidentStatus.Resolved);
+    
+        response.status(200).json(formatResponse(200, request.originalUrl, incident));
+    } catch (error) {
+        next(error)
+    }
+};
+const markIncidentAsRejectedAsync = async (request, response, next) => {
+    try {
+        let incidentId = request.params.incidentId;
+        if(isNullOrUndefined(incidentId)) {
+            throw new BadRequestError('Incident id cannot be undefined');
+        }
+
+        let incident = await IncidentsService.getIncidentByIdAsync(incidentId);
+        if(incident.status === IncidentStatus.Rejected) {
+            return response.status(200).json(formatResponse(200, request.originalUrl, incident));
+        }
+
+        if(incident.status === IncidentStatus.Resolved) {
+            throw new ForbiddenError("You cannot reject an incident that has been resolved");
+        }
+
+        incident = await IncidentsService.updateIncidentStatusAsync(incidentId, IncidentStatus.Rejected);
+    
+        response.status(200).json(formatResponse(200, request.originalUrl, incident));
+    } catch (error) {
+        next(error)
+    }
+};
+
 module.exports = {
     registerIncidentAsync,
     fetchIncidentsAsync,
     fetchIncidentAsync,
     fetchMyIncidentsAsync,
     fetchEmployeeIncidentsAsync,
-    fetchIncidentsAssignedToSupervisorAsync
+    fetchIncidentsAssignedToSupervisorAsync,
+    markIncidentAsResolvedAsync,
+    markIncidentAsRejectedAsync
 };

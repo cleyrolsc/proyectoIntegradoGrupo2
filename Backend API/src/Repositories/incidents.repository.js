@@ -107,6 +107,27 @@ const updateIncidentAsync = async (id, newComment) => {
     return incident;
 };
 
+const updateIncidentStatusAsync = async (id, newStatus) => {
+    if(isNullOrUndefined(newStatus)){
+        throw new BadRequestError('Comment cannot be empty');
+    }
+
+    let incident = await getIncidentByIdAsync(id);
+    if (isNullOrUndefined(incident)) {
+        return undefined;
+    }
+
+    if (incident.status === newStatus) {
+        return incident;
+    }
+
+    await incident.update({
+        status: newStatus
+    });
+
+    return incident;
+};
+
 const deleteIncidentAsync = (id) => {
     throw new NotImplementedError();
 };
@@ -120,5 +141,6 @@ module.exports = {
     getIncidentsByStatusAsync,
     getIncidentsByDateRangeAsync,
     updateIncidentAsync,
+    updateIncidentStatusAsync,
     deleteIncidentAsync
 };
