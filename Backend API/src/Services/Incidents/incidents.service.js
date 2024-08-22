@@ -5,6 +5,7 @@ const { formatPaginatedResponse } = require('../../Core/Utils/response-formatter
 
 const IncidentsRepository = require('../../Repositories/incidents.repository');
 const EmployeesRepository = require('../../Repositories/employees.repository');
+const { IncidentStatus } = require('../../Core/Abstractions/Enums');
 
 const registerIncidentAsync = async (employeeId, comment) => {
     let employee = await checkIfEmployeeExistAsync(employeeId);
@@ -135,10 +136,57 @@ const getIncidentsBySupervisorIdAsync = async (supervisorId, currentPage = 1, it
     return formatPaginatedResponse(currentPage, itemsPerPage, incidentModels, count);
 };
 
+const updateIncidentStatusAsync = async (id, status) => {
+    if (isNullOrUndefined(id)) {
+        throw new BadRequestError('Incident id cannot be undefined');
+    }
+
+    IsStatusValid();
+
+    let incident = await IncidentsRepository.getIncidentByIdAsync(id);
+    if (isNullOrUndefined(incident)) {
+        throw new NotFoundError(`Incident with id (${id}) does not exist`);
+    }
+
+    let { employeeId, supervisorId, comment, createdAt } = await IncidentsRepository.updateIncidentStatusAsync(id, status);
+    
+    let employee = await EmployeesRepository.getEmployeeByIdAsync(employeeId);
+    let supervisor = await EmployeesRepository.getEmployeeByIdAsync(supervisorId);
+
+    return {
+        id,
+        submittedBy: {
+            id: employeeId,
+            firstName: employee.firstName,
+            lastName: employee.lastName
+        },
+        comment,
+        submittedTo: {
+            id: supervisorId,
+            firstName: supervisor.firstName,
+            lastName: supervisor.lastName
+        },
+        submittedOn: createdAt,
+        status: status
+    };
+
+    function IsStatusValid() {
+        if (isNullOrUndefined(status)) {
+            throw new BadRequestError('Status cannot be undefined');
+        }
+
+        let values = Object.values(IncidentStatus);
+        if (!values.includes(status)) {
+            throw new BadRequestError(`Invalid incident status: ${status}`);
+        }
+    }
+};
+
 module.exports = {
     registerIncidentAsync,
     getIncidentByIdAsync,
     getIncidentsAsync,
     getIncidentsByEmployeeIdAsync,
-    getIncidentsBySupervisorIdAsync
+    getIncidentsBySupervisorIdAsync,
+    updateIncidentStatusAsync
 };
