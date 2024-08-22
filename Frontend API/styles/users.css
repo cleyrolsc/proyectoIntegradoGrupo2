@@ -1,0 +1,49 @@
+body {
+  padding-top: 60px;
+}
+
+/* Ensure this section is added to reports.css */
+.table-container {
+  max-height: 400px; /* Adjust based on your design */
+  overflow-y: auto;
+  width: 100%;
+  max-width: 1500px; /* Adjust based on your design */
+}
+
+.tableFixHead thead th,
+.tableFixHead tfoot th,
+.tableFixHead tfoot td {
+  position: sticky;
+  top: 0;
+  background-color: #fff; /* Ensure the background color is consistent */
+  z-index: 1;
+  padding: 10px; /* Add padding for better visibility */
+}
+
+.table th,
+.table td {
+  text-align: center; /* Center align all table text */
+  padding: 10px; /* Add padding for better visibility */
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse; /* Ensure borders are collapsed */
+}
+
+.table th {
+  background-color: #f8f9fa; /* Light grey background for headers */
+  border-bottom: 2px solid #dee2e6; /* Border for header row */
+}
+
+.modal-body {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+input, select {
+  padding: 5px;
+  font-size: 16px;
+  width: 100%;
+}
