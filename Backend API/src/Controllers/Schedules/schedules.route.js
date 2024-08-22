@@ -137,7 +137,7 @@ const schedulesRouter = express.Router();
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/register-hour'
+*                  example: '/register-my-hour'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned

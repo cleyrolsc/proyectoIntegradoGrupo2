@@ -5,7 +5,7 @@ const { urlencoded } = require("express");
 const swaggerUI = require('swagger-ui-express');
 const swaggerSpec = require('./swagger');
 
-const { adminRouter, usersRouter, authRouter, systemRouter, schedulesRouter } = require("./Controllers");
+const { adminRouter, usersRouter, authRouter, systemRouter, schedulesRouter, incidentsRouter } = require("./Controllers");
 //const testConnection = require('./Database/db-config');
 const { globalErrorHandlingFilter, sessionAuthenticationFilter } = require("./Core/Filters");
 
@@ -16,9 +16,10 @@ class Server {
 
         this.adminEndpoint = '/api/admin';
         this.authEndpoint = '/api/auth';
+        this.incidentsEndpoint = '/api/incidents';
+        this.schedulesEndpoint = '/api/schedules';
         this.systemEndpoint = '/api/system';
         this.usersEndpoint = '/api/users';
-        this.scheduleEndpoint = '/api/schedules'
 
         this.middlewares();
         this.routes();
@@ -44,9 +45,10 @@ class Server {
         this.app.use(sessionAuthenticationFilter);
         // Authenticated endpoints
         this.app.use(this.adminEndpoint, adminRouter);
+        this.app.use(this.incidentsEndpoint, incidentsRouter);
+        this.app.use(this.schedulesEndpoint, schedulesRouter);
         this.app.use(this.systemEndpoint, systemRouter);
         this.app.use(this.usersEndpoint, usersRouter);
-        this.app.use(this.scheduleEndpoint, schedulesRouter)
     }
 
     filters(){
