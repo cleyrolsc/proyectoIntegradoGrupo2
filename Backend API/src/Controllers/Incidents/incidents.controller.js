@@ -47,6 +47,20 @@ const fetchIncidentAsync = async (request, response, next) => {
     }
 };
 
+const fetchMyIncidentsAsync = async (request, response, next) => {
+    try {
+        let { page, pageSize } = extractPaginationElements(request);
+        let employeeId = await fetchEmployeeIdWithAuthTokenAsync(request);
+
+        let incidents = await IncidentsService.getIncidentByEmployeeIdAsync(employeeId, page, pageSize);
+        
+        response.status(200).json(formatResponse(200, request.originalUrl, incidents));
+        
+    } catch (error) {
+        next(error)
+    }
+};
+
 const fetchEmployeeIncidentsAsync = async (request, response, next) => {
     try {
         let { page, pageSize } = extractPaginationElements(request);
@@ -65,5 +79,6 @@ module.exports = {
     registerIncidentAsync,
     fetchIncidentsAsync,
     fetchIncidentAsync,
+    fetchMyIncidentsAsync,
     fetchEmployeeIncidentsAsync,
 };
