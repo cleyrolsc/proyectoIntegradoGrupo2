@@ -101,9 +101,15 @@ systemRoute.use('/', checkForAdminPrivileges);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      401:
 *        description: Unauthorized
 *        content:
@@ -123,9 +129,15 @@ systemRoute.use('/', checkForAdminPrivileges);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      403:
 *        description: Forbidden
 *        content:
@@ -145,9 +157,15 @@ systemRoute.use('/', checkForAdminPrivileges);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      500:
 *        description: Server Error
 *        content:
@@ -167,9 +185,15 @@ systemRoute.use('/', checkForAdminPrivileges);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 */
 systemRoute.get('/departments', SystemController.fetchDepartmentsAsync);
 
@@ -242,9 +266,15 @@ systemRoute.get('/departments', SystemController.fetchDepartmentsAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      401:
 *        description: Unauthorized
 *        content:
@@ -264,9 +294,15 @@ systemRoute.get('/departments', SystemController.fetchDepartmentsAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      403:
 *        description: Forbidden
 *        content:
@@ -286,9 +322,15 @@ systemRoute.get('/departments', SystemController.fetchDepartmentsAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      500:
 *        description: Server Error
 *        content:
@@ -308,9 +350,15 @@ systemRoute.get('/departments', SystemController.fetchDepartmentsAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 */
 systemRoute.post('/departments', SystemController.registerNewDepartmentAsync);
 
@@ -408,9 +456,15 @@ systemRoute.post('/departments', SystemController.registerNewDepartmentAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      401:
 *        description: Unauthorized
 *        content:
@@ -430,9 +484,15 @@ systemRoute.post('/departments', SystemController.registerNewDepartmentAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      403:
 *        description: Forbidden
 *        content:
@@ -452,9 +512,15 @@ systemRoute.post('/departments', SystemController.registerNewDepartmentAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      500:
 *        description: Server Error
 *        content:
@@ -474,9 +540,15 @@ systemRoute.post('/departments', SystemController.registerNewDepartmentAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 */
 systemRoute.get('/events', SystemController.fetchEventsAsync);
 
@@ -549,9 +621,15 @@ systemRoute.get('/events', SystemController.fetchEventsAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      401:
 *        description: Unauthorized
 *        content:
@@ -571,9 +649,15 @@ systemRoute.get('/events', SystemController.fetchEventsAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      403:
 *        description: Forbidden
 *        content:
@@ -593,9 +677,15 @@ systemRoute.get('/events', SystemController.fetchEventsAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      500:
 *        description: Server Error
 *        content:
@@ -615,9 +705,15 @@ systemRoute.get('/events', SystemController.fetchEventsAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 */
 systemRoute.post('/events', SystemController.registerNewEventAsync);
 
@@ -715,9 +811,15 @@ systemRoute.post('/events', SystemController.registerNewEventAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      401:
 *        description: Unauthorized
 *        content:
@@ -737,9 +839,15 @@ systemRoute.post('/events', SystemController.registerNewEventAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      403:
 *        description: Forbidden
 *        content:
@@ -759,9 +867,15 @@ systemRoute.post('/events', SystemController.registerNewEventAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      500:
 *        description: Server Error
 *        content:
@@ -781,9 +895,15 @@ systemRoute.post('/events', SystemController.registerNewEventAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 */
 systemRoute.get('/positions', SystemController.fetchPositionsAsync);
 
@@ -856,9 +976,15 @@ systemRoute.get('/positions', SystemController.fetchPositionsAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      401:
 *        description: Unauthorized
 *        content:
@@ -878,9 +1004,15 @@ systemRoute.get('/positions', SystemController.fetchPositionsAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      403:
 *        description: Forbidden
 *        content:
@@ -900,9 +1032,15 @@ systemRoute.get('/positions', SystemController.fetchPositionsAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      500:
 *        description: Server Error
 *        content:
@@ -922,9 +1060,15 @@ systemRoute.get('/positions', SystemController.fetchPositionsAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 */
 systemRoute.post('/positions', SystemController.registerNewPositionAsync);
 
@@ -1044,9 +1188,15 @@ systemRoute.post('/positions', SystemController.registerNewPositionAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      401:
 *        description: Unauthorized
 *        content:
@@ -1066,9 +1216,15 @@ systemRoute.post('/positions', SystemController.registerNewPositionAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      403:
 *        description: Forbidden
 *        content:
@@ -1088,9 +1244,15 @@ systemRoute.post('/positions', SystemController.registerNewPositionAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      500:
 *        description: Server Error
 *        content:
@@ -1110,9 +1272,15 @@ systemRoute.post('/positions', SystemController.registerNewPositionAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 */
 systemRoute.get('/employees', SystemController.fetchEmployeesAsync);
 

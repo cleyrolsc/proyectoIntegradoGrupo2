@@ -106,9 +106,15 @@ const usersRouter = express.Router();
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      401:
 *        description: Unauthorized
 *        content:
@@ -128,9 +134,15 @@ const usersRouter = express.Router();
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      403:
 *        description: Forbidden
 *        content:
@@ -150,9 +162,15 @@ const usersRouter = express.Router();
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      500:
 *        description: Server Error
 *        content:
@@ -172,9 +190,15 @@ const usersRouter = express.Router();
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 */
 usersRouter.get('/', checkForAdminPrivileges, UsersController.fetchAllUsersAsync);
 
@@ -290,9 +314,15 @@ usersRouter.get('/', checkForAdminPrivileges, UsersController.fetchAllUsersAsync
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      401:
 *        description: Unauthorized
 *        content:
@@ -312,9 +342,15 @@ usersRouter.get('/', checkForAdminPrivileges, UsersController.fetchAllUsersAsync
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      404:
 *        description: Not Found
 *        content:
@@ -334,9 +370,15 @@ usersRouter.get('/', checkForAdminPrivileges, UsersController.fetchAllUsersAsync
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      500:
 *        description: Server Error
 *        content:
@@ -356,9 +398,15 @@ usersRouter.get('/', checkForAdminPrivileges, UsersController.fetchAllUsersAsync
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 */
 usersRouter.get('/:username/profile', UsersController.viewProfileAsync);
 
@@ -487,9 +535,15 @@ usersRouter.get('/:username/profile', UsersController.viewProfileAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      404:
 *        description: Not Found
 *        content:
@@ -509,9 +563,15 @@ usersRouter.get('/:username/profile', UsersController.viewProfileAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      500:
 *        description: Server Error
 *        content:
@@ -531,9 +591,15 @@ usersRouter.get('/:username/profile', UsersController.viewProfileAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 */
 usersRouter.put('/:username', UsersController.updateEmployeeInformationAsync);
 
@@ -605,9 +671,15 @@ usersRouter.put('/:username', UsersController.updateEmployeeInformationAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      404:
 *        description: Not Found
 *        content:
@@ -627,9 +699,15 @@ usersRouter.put('/:username', UsersController.updateEmployeeInformationAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      500:
 *        description: Server Error
 *        content:
@@ -649,9 +727,15 @@ usersRouter.put('/:username', UsersController.updateEmployeeInformationAsync);
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 */
 usersRouter.patch('/:username/change-password', UsersController.changePasswordAsync);
 
@@ -761,9 +845,15 @@ usersRouter.patch('/:username/change-password', UsersController.changePasswordAs
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      401:
 *        description: Unauthorized
 *        content:
@@ -783,9 +873,15 @@ usersRouter.patch('/:username/change-password', UsersController.changePasswordAs
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      404:
 *        description: Not Found
 *        content:
@@ -805,9 +901,15 @@ usersRouter.patch('/:username/change-password', UsersController.changePasswordAs
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      500:
 *        description: Server Error
 *        content:
@@ -827,9 +929,15 @@ usersRouter.patch('/:username/change-password', UsersController.changePasswordAs
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: error message
-*                  example: 'this is an example error message'
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 */
 usersRouter.get('/my-profile', UsersController.viewMyProfileAsync);
 
