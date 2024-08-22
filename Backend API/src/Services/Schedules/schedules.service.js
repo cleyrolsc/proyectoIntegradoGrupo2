@@ -36,6 +36,10 @@ const reportHoursAsync = async (eventDetails) => {
 }
 
 const getHoursAsync = async (startDate = new Date(Date.now() - 86400000), endDate = new Date(), currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
+    if (startDate > endDate){
+        throw new BadRequestError('Start date cannot be at a later date than end date');
+    }
+    
     let skip = (currentPage - 1) * itemsPerPage
     const {count, rows: schedules} = await SchedulesRepository.getSchedulesAsync(startDate, endDate, skip, itemsPerPage, orderBy);
 
@@ -71,6 +75,10 @@ const getEmployeeHoursAsync = async (employeeId, startDate = new Date(Date.now()
     if (isNullOrUndefined(employee)) {
         throw new NotFoundError(`Employee with id ${employeeId} does not exist.`);
     }
+
+    if (startDate > endDate){
+        throw new BadRequestError('Start date cannot be at a later date than end date');
+    }
     
     let skip = (currentPage - 1) * itemsPerPage
     const {count, rows: schedules} = await SchedulesRepository.getSchedulesByEmployeeIdAsync(employeeId, startDate, endDate, skip, itemsPerPage, orderBy);
@@ -101,6 +109,10 @@ const getHoursByEventAsync = async (eventId, startDate = new Date(Date.now() - 8
     const event = await EventsRepository.getEventByIdAsync(eventId);
     if (isNullOrUndefined(event)) {
         throw new BadRequestError(`Event with id ${eventId} is invalid.`);
+    }
+
+    if (startDate > endDate){
+        throw new BadRequestError('Start date cannot be at a later date than end date');
     }
     
     let skip = (currentPage - 1) * itemsPerPage

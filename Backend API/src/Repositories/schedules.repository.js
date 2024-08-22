@@ -1,5 +1,6 @@
 const { isNullOrUndefined } = require('../Core/Utils/null-checker.util');
 const { Op } = require('sequelize');
+const { BadRequestError } = require('../Core/Abstractions/Exceptions');
 
 const Schedule = require("./Entities/schedule.class");
 
@@ -11,19 +12,29 @@ const createScheduleAsync = ({ eventId, employeeId, eventDate }) => {
     });
 }
 
-const getSchedulesAsync = (startDate = new Date(Date.now() - 86400000), endDate = new Date(), skip = 0, limit = 100, orderBy = 'ASC') => Schedule.findAndCountAll({
-    where: {
-        eventDate: {[Op.between]: [startDate, endDate]}
-    },
-    order: [
-        ['employeeId', orderBy],
-        ['eventDate', 'DESC']
-    ],
-    offset: skip,
-    limit
-});
+const getSchedulesAsync = (startDate = new Date(Date.now() - 86400000), endDate = new Date(), skip = 0, limit = 100, orderBy = 'ASC') => {
+    if (startDate > endDate){
+        throw new BadRequestError('Start date cannot be at a later date than end date');
+    }
+
+    return Schedule.findAndCountAll({
+        where: {
+            eventDate: {[Op.between]: [startDate, endDate]}
+        },
+        order: [
+            ['employeeId', orderBy],
+            ['eventDate', 'DESC']
+        ],
+        offset: skip,
+        limit
+    });
+}
 
 const getSchedulesByEmployeeIdAsync = async (employeeId, startDate = new Date(Date.now() - 86400000), endDate = new Date(), skip = 0, limit = 100, orderBy = 'ASC') => {
+    if (startDate > endDate){
+        throw new BadRequestError('Start date cannot be at a later date than end date');
+    }
+    
     let schedules = await Schedule.findAndCountAll({
         where: {
             employeeId,
@@ -44,6 +55,10 @@ const getSchedulesByEmployeeIdAsync = async (employeeId, startDate = new Date(Da
 }
 
 const getScheduleByEventIdAsync = async (eventId, startDate = new Date(Date.now() - 86400000), endDate = new Date(), skip = 0, limit = 100, orderBy = 'ASC') => {
+    if (startDate > endDate){
+        throw new BadRequestError('Start date cannot be at a later date than end date');
+    }
+    
     let schedules = await Schedule.findAndCountAll({
         where: {
             eventId,

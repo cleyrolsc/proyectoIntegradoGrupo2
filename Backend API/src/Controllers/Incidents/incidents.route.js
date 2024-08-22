@@ -1,19 +1,166 @@
 const express = require('express');
 const { checkForAdminPrivileges } = require('../../Core/Filters/privilege-checks.filter');
 
-const UsersController = require('./users.controller');
+const IncidentController = require('./incidents.controller');
 
-const usersRouter = express.Router();
+const incidentsRouter = express.Router();
 
 /**
 * @openapi
-* '/api/users':
+* '/api/incidents/':
+*  post:
+*     security:              
+*     - bearerAuth: []
+*     tags:
+*     - Incidents Controller
+*     summary: User can submit an incident to a supervisor
+*     requestBody:
+*      required: true
+*      content:
+*        application/json:
+*           schema:
+*            type: object
+*            required:
+*              - comment
+*            properties:
+*              comment:
+*                type: string
+*                default: 'I have a complaint to make'
+*     responses:
+*      201:
+*        description: Created
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 201
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: result of the request
+*                  properties:
+*                    id:
+*                      type: integer
+*                      default: 1
+*                    employeeId:
+*                      type: integer
+*                      description: Id of employee who submitted the incident
+*                      default: 3
+*                    supervisorId:
+*                      type: integer
+*                      default: 1
+*                    status:
+*                      type: integer
+*                      default: 0
+*                    createAt:
+*                      type: date
+*                      default: '2024-07-25T23:05:50.161Z'
+*      400:
+*        description: Bad Request
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 400
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: error message
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
+*      401:
+*        description: Unauthorized
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 401
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: error message
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
+*      500:
+*        description: Server Error
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 500
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: error message
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
+*/
+incidentsRouter.post('/', IncidentController.registerIncidentAsync);
+
+/**
+* @openapi
+* '/api/incidents/':
 *  get:
 *     security:              
 *     - bearerAuth: []
 *     tags:
-*     - Users Controller
-*     summary: Get list of users.
+*     - Incidents Controller
+*     summary: Get all submitted incidents.
 *     parameters:
 *       - in: query
 *         name: page
@@ -57,11 +204,11 @@ const usersRouter = express.Router();
 *                    itemsPerPage:
 *                      type: integer
 *                      description: Number of items included inside each page
-*                      example: 10
+*                      example: 100
 *                    totalPages:
 *                      type: integer
 *                      description: Total numbers of pages that exist to be viewed
-*                      example: 100
+*                      example: 1000
 *                    hasNext:
 *                      type: boolean
 *                      description: Indicate if there are more pages left to be viewed (currentPage > totalPages)
@@ -72,21 +219,24 @@ const usersRouter = express.Router();
 *                      items:
 *                        type: object
 *                        properties:
-*                          username:
-*                            type: string
-*                            example: 'johndoe'
+*                          id:
+*                            type: integer
+*                            example: 1
 *                          employeeId:
 *                            type: integer
-*                            description: Identifier that links the employee with their username
-*                            example: 50
-*                          type:
+*                            example: 1
+*                          comment:
+*                            type: string
+*                            example: 'This is my complaint'
+*                          supervisorId:
 *                            type: integer
-*                            description: Type of the user
-*                            example: 2
+*                            example: 1
+*                          submittedOn:
+*                            type: date
+*                            example: '2024-07-25T23:05:50.161Z'
 *                          status:
 *                            type: integer
-*                            description: Status of the user
-*                            example: 2
+*                            example: 1
 *      400:
 *        description: Bad Request
 *        content:
@@ -171,6 +321,34 @@ const usersRouter = express.Router();
 *                    message:
 *                      type: string
 *                      example: 'this is an example error message'
+*      404:
+*        description: Not Found
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 404
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: error message
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
 *      500:
 *        description: Server Error
 *        content:
@@ -200,36 +378,23 @@ const usersRouter = express.Router();
 *                      type: string
 *                      example: 'this is an example error message'
 */
-usersRouter.get('/', checkForAdminPrivileges, UsersController.fetchAllUsersAsync);
+incidentsRouter.get('/', checkForAdminPrivileges, IncidentController.fetchIncidentsAsync);
 
 /**
 * @openapi
-* '/api/users/by-privilege':
+* '/api/incidents/{incidentId}':
 *  get:
 *     security:              
 *     - bearerAuth: []
 *     tags:
-*     - Users Controller
-*     summary: Get list of users.
+*     - Incidents Controller
+*     summary: Get submitted incident.
 *     parameters:
-*       - in: query
-*         name: privilegeLevel
-*         description: Name (id) of the privilege level
-*         schema:
-*           type: string
-*           example: 'user-agent'
-*       - in: query
-*         name: page
-*         description: Current page the user wishes to view from 1 to N
+*       - in: path
+*         name: incidentId
 *         schema:
 *           type: integer
 *           example: 1
-*       - in: query
-*         name: pageSize
-*         description: Number of items each page should have
-*         schema:
-*           type: integer
-*           example: 10
 *     responses:
 *      200:
 *        description: Ok
@@ -244,7 +409,7 @@ usersRouter.get('/', checkForAdminPrivileges, UsersController.fetchAllUsersAsync
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/by-privilege'
+*                  example: '/{incidentId}'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -253,43 +418,44 @@ usersRouter.get('/', checkForAdminPrivileges, UsersController.fetchAllUsersAsync
 *                  type: object
 *                  description: result of the request
 *                  properties:
-*                    currentPage:
+*                    id:
 *                      type: integer
-*                      description: Current page that is being viewed
-*                      example: 1
-*                    itemsPerPage:
+*                      default: 1
+*                    submittedBy:
+*                      type: object
+*                      description: Employee that submitted the incident
+*                      properties:
+*                        id:
+*                          type: integer
+*                          example: 1
+*                        firstName:
+*                          type: string
+*                          example: 'John'
+*                        lastName:
+*                          type: string
+*                          example: 'Doe'
+*                    comment:
+*                      type: string
+*                      default: 'I want to complain about something'
+*                    submittedTo:
+*                      type: object
+*                      description: Supervisor responsible to resolve the incident
+*                      properties:
+*                        id:
+*                          type: integer
+*                          example: 1
+*                        firstName:
+*                          type: string
+*                          example: 'John'
+*                        lastName:
+*                          type: string
+*                          example: 'Doe'
+*                    submittedOn:
+*                      type: date
+*                      default: '2024-07-25T23:05:50.161Z'
+*                    status:
 *                      type: integer
-*                      description: Number of items included inside each page
-*                      example: 10
-*                    totalPages:
-*                      type: integer
-*                      description: Total numbers of pages that exist to be viewed
-*                      example: 100
-*                    hasNext:
-*                      type: boolean
-*                      description: Indicate if there are more pages left to be viewed (currentPage > totalPages)
-*                      example: true
-*                    items:
-*                      type: array
-*                      description: all items displayed on the page
-*                      items:
-*                        type: object
-*                        properties:
-*                          username:
-*                            type: string
-*                            example: 'johndoe'
-*                          employeeId:
-*                            type: integer
-*                            description: Identifier that links the employee with their username
-*                            example: 50
-*                          type:
-*                            type: integer
-*                            description: Type of the user
-*                            example: 2
-*                          status:
-*                            type: integer
-*                            description: Status of the user
-*                            example: 2
+*                      default: 1
 *      400:
 *        description: Bad Request
 *        content:
@@ -303,7 +469,7 @@ usersRouter.get('/', checkForAdminPrivileges, UsersController.fetchAllUsersAsync
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/by-privilege'
+*                  example: '/{incidentId}'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -331,7 +497,204 @@ usersRouter.get('/', checkForAdminPrivileges, UsersController.fetchAllUsersAsync
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/by-privilege'
+*                  example: '/{incidentId}'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: error message
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
+*      404:
+*        description: Not Found
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 404
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/{incidentId}'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: error message
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
+*      500:
+*        description: Server Error
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 500
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/{incidentId}'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: error message
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
+*/
+incidentsRouter.get('/:incidentId', IncidentController.fetchIncidentAsync);
+
+/**
+* @openapi
+* '/api/incidents/admin/my-incidents':
+*  get:
+*     security:              
+*     - bearerAuth: []
+*     tags:
+*     - Incidents Controller
+*     summary: Get list of incidents submitted by employee currently logged in.
+*     parameters:
+*       - in: query
+*         name: page
+*         description: Current page the user wishes to view from 1 to N
+*         schema:
+*           type: integer
+*           example: 1
+*       - in: query
+*         name: pageSize
+*         description: Number of items each page should have
+*         schema:
+*           type: integer
+*           example: 10
+*     responses:
+*      200:
+*        description: Ok
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 200
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/admin/my-incidents'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: result of the request
+*                  properties:
+*                    currentPage:
+*                      type: integer
+*                      description: Current page that is being viewed
+*                      example: 1
+*                    itemsPerPage:
+*                      type: integer
+*                      description: Number of items included inside each page
+*                      example: 100
+*                    totalPages:
+*                      type: integer
+*                      description: Total numbers of pages that exist to be viewed
+*                      example: 1000
+*                    hasNext:
+*                      type: boolean
+*                      description: Indicate if there are more pages left to be viewed (currentPage > totalPages)
+*                      example: true
+*                    items:
+*                      type: array
+*                      description: all items displayed on the page
+*                      items:
+*                        type: object
+*                        properties:
+*                          id:
+*                            type: integer
+*                            example: 1
+*                          employeeId:
+*                            type: integer
+*                            example: 1
+*                          comment:
+*                            type: string
+*                            example: 'This is my complaint'
+*                          submittedOn:
+*                            type: date
+*                            example: '2024-07-25T23:05:50.161Z'
+*                          status:
+*                            type: integer
+*                            example: 1
+*      400:
+*        description: Bad Request
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 400
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/admin/my-incidents'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: error message
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
+*      401:
+*        description: Unauthorized
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 401
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/admin/my-incidents'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -359,7 +722,35 @@ usersRouter.get('/', checkForAdminPrivileges, UsersController.fetchAllUsersAsync
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/by-privilege'
+*                  example: '/admin/my-incidents'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: error message
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
+*      404:
+*        description: Not Found
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 404
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/admin/my-incidents'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -387,7 +778,7 @@ usersRouter.get('/', checkForAdminPrivileges, UsersController.fetchAllUsersAsync
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/by-privilege'
+*                  example: '/admin/my-incidents'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -403,17 +794,30 @@ usersRouter.get('/', checkForAdminPrivileges, UsersController.fetchAllUsersAsync
 *                      type: string
 *                      example: 'this is an example error message'
 */
-usersRouter.get('/by-privilege', checkForAdminPrivileges, UsersController.fetchUsersByPrivilegeLevelAsync);
+incidentsRouter.get('/admin/my-incidents', checkForAdminPrivileges, IncidentController.fetchIncidentsAssignedToSupervisorAsync);
 
 /**
 * @openapi
-* '/api/users/my-profile':
+* '/api/incidents/employee/my-incidents':
 *  get:
 *     security:              
 *     - bearerAuth: []
 *     tags:
-*     - Users Controller
-*     summary: Get user profile.
+*     - Incidents Controller
+*     summary: Get list of incidents submitted by employee currently logged in.
+*     parameters:
+*       - in: query
+*         name: page
+*         description: Current page the user wishes to view from 1 to N
+*         schema:
+*           type: integer
+*           example: 1
+*       - in: query
+*         name: pageSize
+*         description: Number of items each page should have
+*         schema:
+*           type: integer
+*           example: 10
 *     responses:
 *      200:
 *        description: Ok
@@ -428,7 +832,7 @@ usersRouter.get('/by-privilege', checkForAdminPrivileges, UsersController.fetchU
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/my-profile'
+*                  example: '/employee/my-incidents'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -437,61 +841,66 @@ usersRouter.get('/by-privilege', checkForAdminPrivileges, UsersController.fetchU
 *                  type: object
 *                  description: result of the request
 *                  properties:
-*                    userInfo:
-*                      type: object
-*                      description: User information
-*                      properties:
-*                        username:
-*                          type: string
-*                          example: 'johndoe'
-*                        type:
-*                          type: integer
-*                          example: 1
-*                        status:
-*                          type: integer
-*                          example: 1
-*                    employeeInfo:
-*                      type: object
-*                      description: Employee information for the user
-*                      properties:
-*                        employeeId:
-*                          type: integer
-*                          example: 1
-*                        firstName:
-*                          type: string
-*                          example: 'John'
-*                        lastName:
-*                          type: string
-*                          example: 'Doe'
-*                        identificationNumber:
-*                          type: string
-*                          example: 'ABC-123'
-*                        position:
-*                          type: string
-*                          example: 'Senior Accountant'
-*                        commissionPerHour:
-*                          type: number
-*                          example: 165.89
-*                        department:
-*                          type: object
-*                          description: Department information
-*                          properties:
-*                            departmentName:
-*                              type: string
-*                              example: 'Accounting'
-*                    supervisorInfo:
-*                      type: object
-*                      description: Employee information for the user
-*                      properties:
-*                        id:
-*                          type: integer
-*                          example: 41
-*                        firstName:
-*                          type: string
-*                          example: 'Maria'
-*                        lastName:
-*                          type: string
-*                          example: 'Fernandez'
+*                    currentPage:
+*                      type: integer
+*                      description: Current page that is being viewed
+*                      example: 1
+*                    itemsPerPage:
+*                      type: integer
+*                      description: Number of items included inside each page
+*                      example: 100
+*                    totalPages:
+*                      type: integer
+*                      description: Total numbers of pages that exist to be viewed
+*                      example: 1000
+*                    hasNext:
+*                      type: boolean
+*                      description: Indicate if there are more pages left to be viewed (currentPage > totalPages)
+*                      example: true
+*                    items:
+*                      type: array
+*                      description: all items displayed on the page
+*                      items:
+*                        type: object
+*                        properties:
+*                          id:
+*                            type: integer
+*                            example: 1
+*                          submittedBy:
+*                            type: object
+*                            description: Employee that submitted the incident
+*                            properties:
+*                              id:
+*                                type: integer
+*                                example: 1
+*                              firstName:
+*                                type: string
+*                                example: 'John'
+*                              lastName:
+*                                type: string
+*                                example: 'Doe'
+*                          comment:
+*                            type: string
+*                            default: 'I want to complain about something'
+*                          submittedTo:
+*                            type: object
+*                            description: Supervisor responsible to resolve the incident
+*                            properties:
+*                              id:
+*                                type: integer
+*                                example: 1
+*                              firstName:
+*                                type: string
+*                                example: 'John'
+*                              lastName:
+*                                type: string
+*                                example: 'Doe'
+*                          submittedOn:
+*                            type: date
+*                            default: '2024-07-25T23:05:50.161Z'
+*                          status:
+*                            type: integer
+*                            default: 1
 *      400:
 *        description: Bad Request
 *        content:
@@ -505,7 +914,7 @@ usersRouter.get('/by-privilege', checkForAdminPrivileges, UsersController.fetchU
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/my-profile'
+*                  example: '/employee/my-incidents'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -533,7 +942,35 @@ usersRouter.get('/by-privilege', checkForAdminPrivileges, UsersController.fetchU
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/my-profile'
+*                  example: '/employee/my-incidents'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: error message
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
+*      403:
+*        description: Forbidden
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 403
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/employee/my-incidents'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -561,7 +998,7 @@ usersRouter.get('/by-privilege', checkForAdminPrivileges, UsersController.fetchU
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/my-profile'
+*                  example: '/employee/my-incidents'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -589,7 +1026,7 @@ usersRouter.get('/by-privilege', checkForAdminPrivileges, UsersController.fetchU
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/my-profile'
+*                  example: '/employee/my-incidents'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -605,23 +1042,35 @@ usersRouter.get('/by-privilege', checkForAdminPrivileges, UsersController.fetchU
 *                      type: string
 *                      example: 'this is an example error message'
 */
-usersRouter.get('/my-profile', UsersController.viewMyProfileAsync);
+incidentsRouter.get('/employee/my-incidents', IncidentController.fetchMyIncidentsAsync);
 
 /**
 * @openapi
-* '/api/users/{username}/profile':
+* '/api/incidents/employee/{employeeId}':
 *  get:
 *     security:              
 *     - bearerAuth: []
 *     tags:
-*     - Users Controller
-*     summary: Get user profile.
+*     - Incidents Controller
+*     summary: Get list of incidents submitted by an employee.
 *     parameters:
 *       - in: path
-*         name: username
+*         name: employeeId
 *         schema:
-*           type: string
-*           example: 'johndoe'
+*           type: integer
+*           example: 1
+*       - in: query
+*         name: page
+*         description: Current page the user wishes to view from 1 to N
+*         schema:
+*           type: integer
+*           example: 1
+*       - in: query
+*         name: pageSize
+*         description: Number of items each page should have
+*         schema:
+*           type: integer
+*           example: 10
 *     responses:
 *      200:
 *        description: Ok
@@ -636,7 +1085,7 @@ usersRouter.get('/my-profile', UsersController.viewMyProfileAsync);
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}/profile'
+*                  example: '/employee/{employeeId}'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -645,24 +1094,14 @@ usersRouter.get('/my-profile', UsersController.viewMyProfileAsync);
 *                  type: object
 *                  description: result of the request
 *                  properties:
-*                    userInfo:
+*                    id:
+*                      type: integer
+*                      default: 1
+*                    submittedBy:
 *                      type: object
-*                      description: User information
+*                      description: Employee that submitted the incident
 *                      properties:
-*                        username:
-*                          type: string
-*                          example: 'johndoe'
-*                        type:
-*                          type: integer
-*                          example: 1
-*                        status:
-*                          type: integer
-*                          example: 1
-*                    employeeInfo:
-*                      type: object
-*                      description: Employee information for the user
-*                      properties:
-*                        employeeId:
+*                        id:
 *                          type: integer
 *                          example: 1
 *                        firstName:
@@ -671,35 +1110,28 @@ usersRouter.get('/my-profile', UsersController.viewMyProfileAsync);
 *                        lastName:
 *                          type: string
 *                          example: 'Doe'
-*                        identificationNumber:
-*                          type: string
-*                          example: 'ABC-123'
-*                        position:
-*                          type: string
-*                          example: 'Senior Accountant'
-*                        commissionPerHour:
-*                          type: number
-*                          example: 165.89
-*                        department:
-*                          type: object
-*                          description: Department information
-*                          properties:
-*                            departmentName:
-*                              type: string
-*                              example: 'Accounting'
-*                    supervisorInfo:
+*                    comment:
+*                      type: string
+*                      default: 'I want to complain about something'
+*                    submittedTo:
 *                      type: object
-*                      description: Employee information for the user
+*                      description: Supervisor responsible to resolve the incident
 *                      properties:
 *                        id:
 *                          type: integer
-*                          example: 41
+*                          example: 1
 *                        firstName:
 *                          type: string
-*                          example: 'Maria'
+*                          example: 'John'
 *                        lastName:
 *                          type: string
-*                          example: 'Fernandez'
+*                          example: 'Doe'
+*                    submittedOn:
+*                      type: date
+*                      default: '2024-07-25T23:05:50.161Z'
+*                    status:
+*                      type: integer
+*                      default: 1
 *      400:
 *        description: Bad Request
 *        content:
@@ -713,7 +1145,7 @@ usersRouter.get('/my-profile', UsersController.viewMyProfileAsync);
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}/profile'
+*                  example: '/employee/{employeeId}'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -741,7 +1173,35 @@ usersRouter.get('/my-profile', UsersController.viewMyProfileAsync);
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}/profile'
+*                  example: '/employee/{employeeId}'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: error message
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
+*      403:
+*        description: Forbidden
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 403
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/employee/{employeeId}'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -769,7 +1229,7 @@ usersRouter.get('/my-profile', UsersController.viewMyProfileAsync);
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}/profile'
+*                  example: '/employee/{employeeId}'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -797,7 +1257,7 @@ usersRouter.get('/my-profile', UsersController.viewMyProfileAsync);
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}/profile'
+*                  example: '/employee/{employeeId}'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -813,49 +1273,23 @@ usersRouter.get('/my-profile', UsersController.viewMyProfileAsync);
 *                      type: string
 *                      example: 'this is an example error message'
 */
-usersRouter.get('/:username/profile', UsersController.viewProfileAsync);
+incidentsRouter.get('/employee/:employeeId', checkForAdminPrivileges, IncidentController.fetchEmployeeIncidentsAsync);
 
 /**
 * @openapi
-* '/api/users/{username}':
-*  put:
+* '/api/incidents/{incidentId}/resolve':
+*  patch:
+*     security:              
+*     - bearerAuth: []
 *     tags:
-*     - Users Controller
-*     summary: Update user's employee information
+*     - Incidents Controller
+*     summary: Get submitted incident.
 *     parameters:
 *       - in: path
-*         name: username
+*         name: incidentId
 *         schema:
-*           type: string
-*           example: 'johndoe'
-*     requestBody:
-*      required: true
-*      content:
-*        application/json:
-*           schema:
-*            type: object
-*            properties:
-*              firstName:
-*                type: string
-*                default: 'John'
-*              lastName:
-*                type: string
-*                default: 'Doe'
-*              identificationNumber:
-*                type: string
-*                default: 'ABC-123'
-*              payPerHour:
-*                type: number
-*                default: 189.02
-*              departmentId:
-*                type: integer
-*                default: 1
-*              supervisorId:
-*                type: integer
-*                default: 1
-*              positionId:
-*                type: integer
-*                default: 1
+*           type: integer
+*           example: 1
 *     responses:
 *      200:
 *        description: Ok
@@ -870,7 +1304,7 @@ usersRouter.get('/:username/profile', UsersController.viewProfileAsync);
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}'
+*                  example: '/{incidentId}/resolve'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -879,11 +1313,14 @@ usersRouter.get('/:username/profile', UsersController.viewProfileAsync);
 *                  type: object
 *                  description: result of the request
 *                  properties:
-*                    employeeInfo:
+*                    id:
+*                      type: integer
+*                      default: 1
+*                    submittedBy:
 *                      type: object
-*                      description: Employee information for the user
+*                      description: Employee that submitted the incident
 *                      properties:
-*                        employeeId:
+*                        id:
 *                          type: integer
 *                          example: 1
 *                        firstName:
@@ -892,35 +1329,28 @@ usersRouter.get('/:username/profile', UsersController.viewProfileAsync);
 *                        lastName:
 *                          type: string
 *                          example: 'Doe'
-*                        identificationNumber:
-*                          type: string
-*                          example: 'ABC-123'
-*                        position:
-*                          type: string
-*                          example: 'Senior Accountant'
-*                        commissionPerHour:
-*                          type: number
-*                          example: 165.89
-*                        department:
-*                          type: object
-*                          description: Department information
-*                          properties:
-*                            departmentName:
-*                              type: string
-*                              example: 'Accounting'
-*                    supervisorInfo:
+*                    comment:
+*                      type: string
+*                      default: 'I want to complain about something'
+*                    submittedTo:
 *                      type: object
-*                      description: Employee information for the user
+*                      description: Supervisor responsible to resolve the incident
 *                      properties:
 *                        id:
 *                          type: integer
-*                          example: 41
+*                          example: 1
 *                        firstName:
 *                          type: string
-*                          example: 'Maria'
+*                          example: 'John'
 *                        lastName:
 *                          type: string
-*                          example: 'Fernandez'
+*                          example: 'Doe'
+*                    submittedOn:
+*                      type: date
+*                      default: '2024-07-25T23:05:50.161Z'
+*                    status:
+*                      type: integer
+*                      default: 2
 *      400:
 *        description: Bad Request
 *        content:
@@ -934,7 +1364,35 @@ usersRouter.get('/:username/profile', UsersController.viewProfileAsync);
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}'
+*                  example: '/{incidentId}/resolve'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: error message
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
+*      401:
+*        description: Unauthorized
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 401
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/{incidentId}/resolve'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -962,7 +1420,7 @@ usersRouter.get('/:username/profile', UsersController.viewProfileAsync);
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}'
+*                  example: '/{incidentId}/resolve'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -990,7 +1448,7 @@ usersRouter.get('/:username/profile', UsersController.viewProfileAsync);
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}'
+*                  example: '/{incidentId}/resolve'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -1006,34 +1464,23 @@ usersRouter.get('/:username/profile', UsersController.viewProfileAsync);
 *                      type: string
 *                      example: 'this is an example error message'
 */
-usersRouter.put('/:username', UsersController.updateEmployeeInformationAsync);
+incidentsRouter.patch('/:incidentId/resolve', checkForAdminPrivileges, IncidentController.markIncidentAsResolvedAsync);
 
 /**
 * @openapi
-* '/api/users/{username}/change-password':
+* '/api/incidents/{incidentId}/rejected':
 *  patch:
+*     security:              
+*     - bearerAuth: []
 *     tags:
-*     - Users Controller
-*     summary: Update user's password
+*     - Incidents Controller
+*     summary: Get submitted incident.
 *     parameters:
 *       - in: path
-*         name: username
+*         name: incidentId
 *         schema:
-*           type: string
-*           example: 'johndoe'
-*     requestBody:
-*      required: true
-*      content:
-*        application/json:
-*           schema:
-*            type: object
-*            properties:
-*              oldPassword:
-*                type: string
-*                default: '1234gberb!'
-*              newPassword:
-*                type: string
-*                default: 'niubi24232?'
+*           type: integer
+*           example: 1
 *     responses:
 *      200:
 *        description: Ok
@@ -1048,15 +1495,53 @@ usersRouter.put('/:username', UsersController.updateEmployeeInformationAsync);
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}/change-password'
+*                  example: '/{incidentId}/rejected'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: string
+*                  type: object
 *                  description: result of the request
-*                  example: 'Password successfully changed!'
+*                  properties:
+*                    id:
+*                      type: integer
+*                      default: 1
+*                    submittedBy:
+*                      type: object
+*                      description: Employee that submitted the incident
+*                      properties:
+*                        id:
+*                          type: integer
+*                          example: 1
+*                        firstName:
+*                          type: string
+*                          example: 'John'
+*                        lastName:
+*                          type: string
+*                          example: 'Doe'
+*                    comment:
+*                      type: string
+*                      default: 'I want to complain about something'
+*                    submittedTo:
+*                      type: object
+*                      description: Supervisor responsible to resolve the incident
+*                      properties:
+*                        id:
+*                          type: integer
+*                          example: 1
+*                        firstName:
+*                          type: string
+*                          example: 'John'
+*                        lastName:
+*                          type: string
+*                          example: 'Doe'
+*                    submittedOn:
+*                      type: date
+*                      default: '2024-07-25T23:05:50.161Z'
+*                    status:
+*                      type: integer
+*                      default: 3
 *      400:
 *        description: Bad Request
 *        content:
@@ -1070,7 +1555,35 @@ usersRouter.put('/:username', UsersController.updateEmployeeInformationAsync);
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}/change-password'
+*                  example: '/{incidentId}/rejected'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: error message
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
+*      401:
+*        description: Unauthorized
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 401
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/{incidentId}/rejected'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -1098,7 +1611,7 @@ usersRouter.put('/:username', UsersController.updateEmployeeInformationAsync);
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}/change-password'
+*                  example: '/{incidentId}/rejected'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -1126,7 +1639,7 @@ usersRouter.put('/:username', UsersController.updateEmployeeInformationAsync);
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/{username}/change-password'
+*                  example: '/{incidentId}/rejected'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -1142,252 +1655,6 @@ usersRouter.put('/:username', UsersController.updateEmployeeInformationAsync);
 *                      type: string
 *                      example: 'this is an example error message'
 */
-usersRouter.patch('/:username/change-password', UsersController.changePasswordAsync);
+incidentsRouter.patch('/:incidentId/rejected', checkForAdminPrivileges, IncidentController.markIncidentAsRejectedAsync);
 
-/**
-* @openapi
-* '/api/users/{username}/suspend':
-*  patch:
-*     tags:
-*     - Users Controller
-*     summary: Suspends a user's account
-*     parameters:
-*       - in: path
-*         name: username
-*         schema:
-*           type: string
-*           example: 'johndoe'
-*     responses:
-*      200:
-*        description: Ok
-*        content:
-*          application/json:
-*            schema:
-*              type: object
-*              properties:
-*                statusCode:
-*                  type: integer
-*                  example: 200
-*                path:
-*                  type: string
-*                  description: Url path of request
-*                  example: '/{username}/suspend'
-*                timestamp:
-*                  type: string
-*                  description: Timestamp the request was returned
-*                  example: '2024-07-25T23:05:50.161Z'
-*                content:
-*                  type: string
-*                  description: result of the request
-*                  example: 'User has been suspended'
-*      400:
-*        description: Bad Request
-*        content:
-*          application/json:
-*            schema:
-*              type: object
-*              properties:
-*                statusCode:
-*                  type: integer
-*                  example: 400
-*                path:
-*                  type: string
-*                  description: Url path of request
-*                  example: '/{username}/suspend'
-*                timestamp:
-*                  type: string
-*                  description: Timestamp the request was returned
-*                  example: '2024-07-25T23:05:50.161Z'
-*                content:
-*                  type: object
-*                  description: error message
-*                  properties:
-*                    errorType:
-*                      type: string
-*                      example: 'Error'
-*                    message:
-*                      type: string
-*                      example: 'this is an example error message'
-*      404:
-*        description: Not Found
-*        content:
-*          application/json:
-*            schema:
-*              type: object
-*              properties:
-*                statusCode:
-*                  type: integer
-*                  example: 404
-*                path:
-*                  type: string
-*                  description: Url path of request
-*                  example: '/{username}/suspend'
-*                timestamp:
-*                  type: string
-*                  description: Timestamp the request was returned
-*                  example: '2024-07-25T23:05:50.161Z'
-*                content:
-*                  type: object
-*                  description: error message
-*                  properties:
-*                    errorType:
-*                      type: string
-*                      example: 'Error'
-*                    message:
-*                      type: string
-*                      example: 'this is an example error message'
-*      500:
-*        description: Server Error
-*        content:
-*          application/json:
-*            schema:
-*              type: object
-*              properties:
-*                statusCode:
-*                  type: integer
-*                  example: 500
-*                path:
-*                  type: string
-*                  description: Url path of request
-*                  example: '/{username}/suspend'
-*                timestamp:
-*                  type: string
-*                  description: Timestamp the request was returned
-*                  example: '2024-07-25T23:05:50.161Z'
-*                content:
-*                  type: object
-*                  description: error message
-*                  properties:
-*                    errorType:
-*                      type: string
-*                      example: 'Error'
-*                    message:
-*                      type: string
-*                      example: 'this is an example error message'
-*/
-usersRouter.patch('/:username/suspend', UsersController.suspendUserAsync);
-
-/**
-* @openapi
-* '/api/users/{username}/restore':
-*  patch:
-*     tags:
-*     - Users Controller
-*     summary: Restore a user's account that has been suspended
-*     parameters:
-*       - in: path
-*         name: username
-*         schema:
-*           type: string
-*           example: 'johndoe'
-*     responses:
-*      200:
-*        description: Ok
-*        content:
-*          application/json:
-*            schema:
-*              type: object
-*              properties:
-*                statusCode:
-*                  type: integer
-*                  example: 200
-*                path:
-*                  type: string
-*                  description: Url path of request
-*                  example: '/{username}/restore'
-*                timestamp:
-*                  type: string
-*                  description: Timestamp the request was returned
-*                  example: '2024-07-25T23:05:50.161Z'
-*                content:
-*                  type: string
-*                  description: result of the request
-*                  example: 'User has been restored'
-*      400:
-*        description: Bad Request
-*        content:
-*          application/json:
-*            schema:
-*              type: object
-*              properties:
-*                statusCode:
-*                  type: integer
-*                  example: 400
-*                path:
-*                  type: string
-*                  description: Url path of request
-*                  example: '/{username}/restore'
-*                timestamp:
-*                  type: string
-*                  description: Timestamp the request was returned
-*                  example: '2024-07-25T23:05:50.161Z'
-*                content:
-*                  type: object
-*                  description: error message
-*                  properties:
-*                    errorType:
-*                      type: string
-*                      example: 'Error'
-*                    message:
-*                      type: string
-*                      example: 'this is an example error message'
-*      404:
-*        description: Not Found
-*        content:
-*          application/json:
-*            schema:
-*              type: object
-*              properties:
-*                statusCode:
-*                  type: integer
-*                  example: 404
-*                path:
-*                  type: string
-*                  description: Url path of request
-*                  example: '/{username}/restore'
-*                timestamp:
-*                  type: string
-*                  description: Timestamp the request was returned
-*                  example: '2024-07-25T23:05:50.161Z'
-*                content:
-*                  type: object
-*                  description: error message
-*                  properties:
-*                    errorType:
-*                      type: string
-*                      example: 'Error'
-*                    message:
-*                      type: string
-*                      example: 'this is an example error message'
-*      500:
-*        description: Server Error
-*        content:
-*          application/json:
-*            schema:
-*              type: object
-*              properties:
-*                statusCode:
-*                  type: integer
-*                  example: 500
-*                path:
-*                  type: string
-*                  description: Url path of request
-*                  example: '/{username}/restore'
-*                timestamp:
-*                  type: string
-*                  description: Timestamp the request was returned
-*                  example: '2024-07-25T23:05:50.161Z'
-*                content:
-*                  type: object
-*                  description: error message
-*                  properties:
-*                    errorType:
-*                      type: string
-*                      example: 'Error'
-*                    message:
-*                      type: string
-*                      example: 'this is an example error message'
-*/
-usersRouter.patch('/:username/restore', UsersController.restoreUserAsync);
-
-module.exports = usersRouter;
+module.exports = incidentsRouter;
