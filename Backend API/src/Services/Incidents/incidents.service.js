@@ -75,7 +75,7 @@ const getIncidentsAsync = async (currentPage = 1, itemsPerPage = 10, order = 'DE
     return formatPaginatedResponse(currentPage, itemsPerPage, incidentModels, count);
 };
 
-const getIncidentByEmployeeIdAsync = async (employeeId, currentPage = 1, itemsPerPage = 10, order = 'DESC') => {
+const getIncidentsByEmployeeIdAsync = async (employeeId, currentPage = 1, itemsPerPage = 10, order = 'DESC') => {
     let employee = await checkIfEmployeeExistAsync(employeeId);
 
     let skip = (currentPage - 1) * itemsPerPage;
@@ -88,7 +88,7 @@ const getIncidentByEmployeeIdAsync = async (employeeId, currentPage = 1, itemsPe
     
     let incidentModels = [];
     incidents.forEach(entity => {
-        let { id, employeeId, supervisorId, comment, status, createdAt } = entity;
+        let { id, supervisorId, comment, status, createdAt } = entity;
         incidentModels.push({
             id,
             submittedBy: {
@@ -110,9 +110,35 @@ const getIncidentByEmployeeIdAsync = async (employeeId, currentPage = 1, itemsPe
     return formatPaginatedResponse(currentPage, itemsPerPage, incidentModels, count);
 };
 
+const getIncidentsBySupervisorIdAsync = async (supervisorId, currentPage = 1, itemsPerPage = 10, order = 'DESC') => {
+    await checkIfEmployeeExistAsync(supervisorId);
+
+    let skip = (currentPage - 1) * itemsPerPage;
+    let { count, rows:incidents } = await IncidentsRepository.getIncidentsBySupervisorIdAsync(supervisorId, skip, itemsPerPage, order);
+    if (count === 0) {
+        return new PaginatedResponse();
+    }
+    
+    let incidentModels = [];
+    incidents.forEach(entity => {
+        let { id, employeeId, comment, status, createdAt } = entity;
+        incidentModels.push({
+            id,
+            employeeId,
+            comment,
+            supervisorId,
+            submittedOn: createdAt,
+            status
+        });
+    });
+
+    return formatPaginatedResponse(currentPage, itemsPerPage, incidentModels, count);
+};
+
 module.exports = {
     registerIncidentAsync,
     getIncidentByIdAsync,
     getIncidentsAsync,
-    getIncidentByEmployeeIdAsync
+    getIncidentsByEmployeeIdAsync,
+    getIncidentsBySupervisorIdAsync
 };
