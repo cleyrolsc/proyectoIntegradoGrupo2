@@ -9,7 +9,7 @@ const formatResponse = (statusCode = 200, path, content) => {
     };
 };
 
-const formatErrorResponse = (statusCode = 200, path, error) => {
+const formatErrorResponse = (statusCode = 500, path, error) => {
     console.log(error.stack)
     return {
         statusCode,
