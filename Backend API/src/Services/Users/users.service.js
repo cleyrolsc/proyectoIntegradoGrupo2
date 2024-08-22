@@ -67,7 +67,7 @@ const registerNewUserAsync = async (createUserRequest) =>{
     }
 
     async function doesEmployeeAlreadyHaveAUserAccountAsync(employeeId) {
-        let existingUser = await UsersRepository.getUserByEmployeeId(employeeId);
+        let existingUser = await UsersRepository.getUserByEmployeeIdAsync(employeeId);
         if (isNotNullNorUndefined(existingUser)) {
             throw new ConflictError(`Employee, ${newEmployee.firstName} ${newEmployee.lastName}, already has a username: ${existingUser.username}`);
         }
@@ -134,13 +134,13 @@ function formatUserModels(users) {
 }
 
 const getUsersByPrivilegeAsync = async (privilegeName, currentPage = 1, itemsPerPage = 10, order = 'ASC') => {
-    let privilege = await PrivilegesRepository.getPrivilegeByNameAsync(privilegeName);
+    let privilege = await PrivilegesRepository.getPrivilegeByNameAsync(privilegeName.toLocaleLowerCase());
     if (isNullOrUndefined(privilege)) {
-        throw new NotFoundError(`Privilege '${privilegeName}' does not exist.`);
+        throw new NotFoundError(`Privilege '${privilegeName.toLocaleLowerCase()}' does not exist.`);
     }
 
     let skip = (currentPage - 1) * itemsPerPage;
-    let {count, rows: users} = UsersRepository.getUsersByPrivilegeLevelAsync(privilege.name, skip, itemsPerPage, order);
+    let {count, rows: users} = await UsersRepository.getUsersByPrivilegeIdAsync(privilege.name, skip, itemsPerPage, order);
     if (isListEmpty(users)) {
         return new PaginatedResponse();
     }
