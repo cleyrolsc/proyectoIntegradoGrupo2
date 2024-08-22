@@ -1,5 +1,5 @@
 const { UserType } = require("../Core/Abstractions/Enums");
-const { isNotNullNorUndefined, isNullOrUndefined, isNullUndefinedOrEmpty } = require("../Core/Utils/null-checker.util");
+const { isNullOrUndefined, isNullUndefinedOrEmpty } = require("../Core/Utils/null-checker.util");
 const { NotImplementedError } = require("../Core/Abstractions/Exceptions");
 
 const User = require('./Entities/user.class');
@@ -32,18 +32,17 @@ const getUsersAsync = (skip = 0, limit = 10, orderBy = 'ASC') => User.findAndCou
         limit
     });
 
-const getUsersByPrivilegeLevelAsync = (privilegeLevel, skip = 0, limit = 10, orderBy = 'ASC') => User.findAndCountAll({
-        attributes: ['username', 'type', 'privilegeSuspended', 'status', 'employeeId', 'privilegeId']
-    }, {
+const getUsersByPrivilegeIdAsync = (privilegeId, skip = 0, limit = 10, orderBy = 'ASC') => User.findAndCountAll({
+        attributes: ['username', 'type', 'privilegeSuspended', 'status', 'employeeId', 'privilegeId'],
         where: {
-            privilegeLevel
+            privilegeId
         },
         order: [['username', orderBy]],
         offset: skip,
         limit
     });
 
-const getUserByEmployeeId = async (employeeId) => {
+const getUserByEmployeeIdAsync = async (employeeId) => {
     let user = await User.findOne({
         where: {
             employeeId
@@ -78,7 +77,7 @@ const updateUserAsync = async (username, { type = undefined, privilegeLevel = un
 
     function areAllParametersEmpty(){
         return isNullOrUndefined(type) && isNullUndefinedOrEmpty(privilegeLevel) && 
-        isNullOrUndefined(suspendPrivilege) &&isNotNullNorUndefined(status);
+        isNullOrUndefined(suspendPrivilege) && isNullUndefinedOrEmpty(status);
     }
 };
 
@@ -104,8 +103,8 @@ module.exports = {
     getUserByUsernameAsync,
     countUsersAsync,
     getUsersAsync,
-    getUsersByPrivilegeLevelAsync,
-    getUserByEmployeeId,
+    getUsersByPrivilegeIdAsync,
+    getUserByEmployeeIdAsync,
     updateUserAsync,
     updateUserPasswordAsync,
     deleteUserAsync

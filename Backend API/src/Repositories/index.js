@@ -5,6 +5,7 @@ const IncidentsRepository = require("./incidents.repository");
 const PositionsRepository = require("./positions.repository");
 const PrivilegesRepository = require("./privileges.repository");
 const UsersRepository = require("./users.repository");
+const SchedulesRepository = require("./schedules.repository");
 
 module.exports = {
     DepartmentRepository,
@@ -13,5 +14,6 @@ module.exports = {
     IncidentsRepository,
     PositionsRepository,
     PrivilegesRepository,
-    UsersRepository
+    UsersRepository,
+    SchedulesRepository
 };
