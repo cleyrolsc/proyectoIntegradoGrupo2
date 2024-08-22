@@ -2,13 +2,15 @@ const { BadRequestError, NotImplementedError } = require("../Core/Abstractions/E
 const { isNullUndefinedOrEmpty, isNullOrUndefined } = require("../Core/Utils/null-checker.util");
 
 const Incident = require('./Entities/incident.class');
-const createIncidentAsync = (employeeId, comment) => {
+
+const createIncidentAsync = (employeeId, supervisorId, comment) => {
     if(isNullUndefinedOrEmpty(comment)){
         throw new BadRequestError('Comment cannot be empty');
     }
 
     return Incident.create({
         employeeId,
+        supervisorId,
         comment
     });
 };
@@ -22,18 +24,18 @@ const getIncidentByIdAsync = async (id) => {
     return incident;
 };
 
-const getIncidentsAsync = (skip = 0, limit = 10, orderBy = 'ASC') => Incident.findAll({
+const getIncidentsAsync = (skip = 0, limit = 10, orderBy = 'DESC') => Incident.findAndCountAll({
     order: [['createdAt', orderBy]],
     offset: skip,
     limit
 });
 
-const getIncidentsByEmployeeIdAsync = (employeeId, skip = 0, limit = 10, orderBy = 'ASC') => {
+const getIncidentsByEmployeeIdAsync = (employeeId, skip = 0, limit = 10, orderBy = 'DESC') => {
     if(isNullOrUndefined(employeeId)){
         throw new BadRequestError('Employee id cannot be undefined');
     }
 
-    return Incident.findAll({
+    return Incident.findAndCountAll({
         where: {
             employeeId
         },
@@ -43,7 +45,31 @@ const getIncidentsByEmployeeIdAsync = (employeeId, skip = 0, limit = 10, orderBy
     });
 };
 
-const getIncidentsBetweenAsync = (startDate, endDate = new Date(), skip = 0, limit = 10, orderBy = 'ASC') => {
+const getIncidentsBySupervisorIdAsync = (supervisorId, skip = 0, limit = 10, orderBy = 'DESC') => {
+    if(isNullOrUndefined(supervisorId)){
+        throw new BadRequestError('Supervisor id cannot be undefined');
+    }
+
+    return Incident.findAndCountAll({
+        where: {
+            supervisorId
+        },
+        order: [['createdAt', orderBy]],
+        offset: skip,
+        limit
+    });
+};
+
+const getIncidentsByStatusAsync = (status, skip = 0, limit = 10, orderBy = 'DESC') => Incident.findAll({
+    where: {
+        status
+    },
+    order: [['createdAt', orderBy]],
+    offset: skip,
+    limit
+});
+
+const getIncidentsByDateRangeAsync = (startDate, endDate = new Date(), skip = 0, limit = 10, orderBy = 'DESC') => {
     if (startDate > endDate){
         throw new BadRequestError('Start date cannot be at a later date than end date');
     }
@@ -81,6 +107,27 @@ const updateIncidentAsync = async (id, newComment) => {
     return incident;
 };
 
+const updateIncidentStatusAsync = async (id, newStatus) => {
+    if(isNullOrUndefined(newStatus)){
+        throw new BadRequestError('Comment cannot be empty');
+    }
+
+    let incident = await getIncidentByIdAsync(id);
+    if (isNullOrUndefined(incident)) {
+        return undefined;
+    }
+
+    if (incident.status === newStatus) {
+        return incident;
+    }
+
+    await incident.update({
+        status: newStatus
+    });
+
+    return incident;
+};
+
 const deleteIncidentAsync = (id) => {
     throw new NotImplementedError();
 };
@@ -90,7 +137,10 @@ module.exports = {
     getIncidentByIdAsync,
     getIncidentsAsync,
     getIncidentsByEmployeeIdAsync,
-    getIncidentsBetweenAsync,
+    getIncidentsBySupervisorIdAsync,
+    getIncidentsByStatusAsync,
+    getIncidentsByDateRangeAsync,
     updateIncidentAsync,
+    updateIncidentStatusAsync,
     deleteIncidentAsync
 };

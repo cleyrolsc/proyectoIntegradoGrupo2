@@ -1,5 +1,6 @@
-const { isNullOrUndefined } = require("../Core/Utils/null-checker.util");
-// const { NotImplementedError } = require("../Core/Abstractions/Exceptions");
+const { isNullOrUndefined } = require('../Core/Utils/null-checker.util');
+const { Op } = require('sequelize');
+const { BadRequestError } = require('../Core/Abstractions/Exceptions');
 
 const Schedule = require("./Entities/schedule.class");
 
@@ -11,11 +12,39 @@ const createScheduleAsync = ({ eventId, employeeId, eventDate }) => {
     });
 }
 
-const getSchedulesByEmployeeId = async employeeId => {
-    let schedules = await Schedule.findAll({
+const getSchedulesAsync = (startDate = new Date(Date.now() - 86400000), endDate = new Date(), skip = 0, limit = 100, orderBy = 'ASC') => {
+    if (startDate > endDate){
+        throw new BadRequestError('Start date cannot be at a later date than end date');
+    }
+
+    return Schedule.findAndCountAll({
+        where: {
+            eventDate: {[Op.between]: [startDate, endDate]}
+        },
+        order: [
+            ['employeeId', orderBy],
+            ['eventDate', 'DESC']
+        ],
+        offset: skip,
+        limit
+    });
+}
+
+const getSchedulesByEmployeeIdAsync = async (employeeId, startDate = new Date(Date.now() - 86400000), endDate = new Date(), skip = 0, limit = 100, orderBy = 'ASC') => {
+    if (startDate > endDate){
+        throw new BadRequestError('Start date cannot be at a later date than end date');
+    }
+    
+    let schedules = await Schedule.findAndCountAll({
         where: {
             employeeId,
-        }
+            eventDate: {[Op.between]: [startDate, endDate]}
+        },
+        order: [
+            ['eventDate', 'DESC']
+        ],
+        offset: skip,
+        limit
     });
 
     if (isNullOrUndefined(schedules)) {
@@ -25,28 +54,21 @@ const getSchedulesByEmployeeId = async employeeId => {
     return schedules;
 }
 
-const getSchedulesByEventId = async eventId => {
-    let schedules = await Schedule.findAll({
+const getScheduleByEventIdAsync = async (eventId, startDate = new Date(Date.now() - 86400000), endDate = new Date(), skip = 0, limit = 100, orderBy = 'ASC') => {
+    if (startDate > endDate){
+        throw new BadRequestError('Start date cannot be at a later date than end date');
+    }
+    
+    let schedules = await Schedule.findAndCountAll({
         where: {
             eventId,
-        }
-    });
-
-
-    if (isNullOrUndefined(schedules)) {
-        return undefined;
-    }
-
-    return schedules;
-}
-
-const getScheduleByDateRange = async (startDate, endDate) => {
-    let schedules = await Schedule.findAll({
-        where: {
-            from: {
-                $between: [startDate, endDate]
-            }
-        }
+            eventDate: {[Op.between]: [startDate, endDate]}
+        },
+        order: [
+            ['eventDate', 'DESC']
+        ],
+        offset: skip,
+        limit
     });
 
     if (isNullOrUndefined(schedules)) {
@@ -58,9 +80,10 @@ const getScheduleByDateRange = async (startDate, endDate) => {
 
 module.exports = {
     createScheduleAsync,
-    getSchedulesByEmployeeId,
-    getSchedulesByEventId,
-    getScheduleByDateRange
+    getSchedulesByEmployeeIdAsync,
+    getSchedulesAsync,
+    getScheduleByEventIdAsync,
+    getSchedulesByEmployeeIdAsync
 }
 
 
