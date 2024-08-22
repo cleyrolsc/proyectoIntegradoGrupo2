@@ -47,8 +47,23 @@ const fetchIncidentAsync = async (request, response, next) => {
     }
 };
 
+const fetchEmployeeIncidentsAsync = async (request, response, next) => {
+    try {
+        let { page, pageSize } = extractPaginationElements(request);
+        let employeeId = request.params.employeeId;
+
+        let incidents = await IncidentsService.getIncidentByEmployeeIdAsync(employeeId, page, pageSize);
+        
+        response.status(200).json(formatResponse(200, request.originalUrl, incidents));
+        
+    } catch (error) {
+        next(error)
+    }
+};
+
 module.exports = {
     registerIncidentAsync,
     fetchIncidentsAsync,
     fetchIncidentAsync,
+    fetchEmployeeIncidentsAsync,
 };
