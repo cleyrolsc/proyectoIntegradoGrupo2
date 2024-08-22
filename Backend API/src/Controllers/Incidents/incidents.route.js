@@ -1283,7 +1283,7 @@ incidentsRouter.get('/employee/:employeeId', checkForAdminPrivileges, IncidentCo
 *     - bearerAuth: []
 *     tags:
 *     - Incidents Controller
-*     summary: Get submitted incident.
+*     summary: Approve and mark an incident as resolved.
 *     parameters:
 *       - in: path
 *         name: incidentId
@@ -1474,7 +1474,7 @@ incidentsRouter.patch('/:incidentId/resolve', checkForAdminPrivileges, IncidentC
 *     - bearerAuth: []
 *     tags:
 *     - Incidents Controller
-*     summary: Get submitted incident.
+*     summary: Mark an incident as rejected.
 *     parameters:
 *       - in: path
 *         name: incidentId
