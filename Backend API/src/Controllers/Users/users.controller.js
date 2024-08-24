@@ -1,9 +1,9 @@
 const { UpdateEmployeeInformationRequest, UpdateUserRequest } = require("../../Core/Abstractions/Contracts/Requests");
-const { isNullOrUndefined, isNotNullNorUndefined, isNullUndefinedOrEmpty, isNotNullUndefinedNorEmpty } = require("../../Core/Utils/null-checker.util");
+const { isNullOrUndefined, isNullUndefinedOrEmpty, isNotNullUndefinedNorEmpty } = require("../../Core/Utils/null-checker.util");
 const { BadRequestError } = require("../../Core/Abstractions/Exceptions");
-const { formatResponse } = require("../../Core/Utils/response-formatter.util");
 const { extractPaginationElements } = require("../../Core/Utils/request-element-extractor.util");
 const { UserStatus } = require("../../Core/Abstractions/Enums");
+const { ok } = require("../../Core/Abstractions/Contracts/HttpResponses/http-responses");
 
 const UserServices = require("../../Services/Users/users.service");
 const AuthService = require('../../Services/Auth/auth.service');
@@ -13,7 +13,7 @@ const fetchAllUsersAsync = async (request, response, next) => {
         let { page, pageSize } = extractPaginationElements(request);
         let users = await UserServices.getUsersAsync(page, pageSize);
         
-        response.status(200).json(formatResponse(200, request.originalUrl, users));
+        ok(response, request.originalUrl, users);
     } catch (error) {
         next(error);
     }
@@ -33,7 +33,7 @@ const fetchUsersByPrivilegeLevelAsync = async (request, response, next) => {
 
         let users = await UserServices.getUsersByPrivilegeAsync(privilege, page, pageSize);
 
-        response.status(200).json(formatResponse(200, request.originalUrl, users));
+        ok(response, request.originalUrl, users);
     } catch (error) {
         next(error);
     }
@@ -72,7 +72,8 @@ async function getUserProfileAsync(username, response, request) {
     }
   
     let profile = await UserServices.getUserProfileAsync(username);
-    response.status(200).json(formatResponse(200, request.originalUrl, profile));
+    
+    ok(response, request.originalUrl, profile);
 };
 
 const updateEmployeeInformationAsync = async (request, response, next) => {
@@ -85,7 +86,7 @@ const updateEmployeeInformationAsync = async (request, response, next) => {
         let { employeeInfo } = await UserServices.getUserProfileAsync(username);
         let updatedInfo = await UserServices.updateEmployeeInformationAsync(employeeInfo.employeeId, new UpdateEmployeeInformationRequest(request.body));
 
-        response.status(200).json(formatResponse(200, request.originalUrl, updatedInfo));
+        ok(response, request.originalUrl, updatedInfo);
     } catch (error) {
         next(error);
     }
@@ -106,7 +107,7 @@ const changePasswordAsync = async (request, response, next) => {
       
         await UserServices.updateUserPasswordAsync(username, oldPassword, newPassword);
 
-        response.status(200).send(formatResponse(200, request.originalUrl, "Password successfully changed!"));
+        ok(response, request.originalUrl, "Password successfully changed!");
     } catch (error) {
         next(error);
     }
@@ -121,13 +122,13 @@ const suspendUserAsync = async(request, response, next) => {
 
     let { userInfo } = await UserServices.getUserProfileAsync(username);
     if (userInfo.status === UserStatus.Suspended) {
-        return response.status(200).send(formatResponse(200, request.originalUrl, `User, ${username}, has already been suspended`));
+        return ok(response, request.originalUrl, `User, ${username}, has already been suspended`);
     }
 
     let updateUserRequest = new UpdateUserRequest({ status: UserStatus.Suspended});
     await UserServices.updateUserAsync(username, updateUserRequest)
 
-    response.status(200).send(formatResponse(200, request.originalUrl, `User, ${username}, has been suspended`));
+    ok(response, request.originalUrl, `User, ${username}, has been suspended`);
   } catch (error) {
     next(error);
   }
@@ -142,13 +143,13 @@ const restoreUserAsync = async(request, response, next) => {
 
     let { userInfo } = await UserServices.getUserProfileAsync(username);
     if (userInfo.status === UserStatus.Active) {
-        return response.status(200).send(formatResponse(200, request.originalUrl, `User, ${username}, is already active`));
+        return ok(response, request.originalUrl, `User, ${username}, is already active`);
     }
 
     let updateUserRequest = new UpdateUserRequest({ status: UserStatus.Active});
     await UserServices.updateUserAsync(username, updateUserRequest)
 
-    response.status(200).send(formatResponse(200, request.originalUrl, `User, ${username}, has been restored`));
+    ok(response, request.originalUrl, `User, ${username}, has been restored`);
   } catch (error) {
     next(error);
   }
