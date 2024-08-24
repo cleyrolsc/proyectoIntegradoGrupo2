@@ -1,5 +1,6 @@
 const { BadRequestError, NotImplementedError } = require("../Core/Abstractions/Exceptions");
 const { isNullUndefinedOrEmpty, isNullOrUndefined } = require("../Core/Utils/null-checker.util");
+const { Op } = require('sequelize');
 
 const Incident = require('./Entities/incident.class');
 

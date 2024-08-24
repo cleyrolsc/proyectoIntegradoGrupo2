@@ -23,7 +23,7 @@ const sessionAuthenticationFilter = async (request, response, next) => {
         switch (error.constructor.name) {
             case "UnauthorizedError":
             case "TokenExpiredError":
-                return unauthorized(response, request.originalUrl, error);
+                return unauthorized(response, request.originalUrl, error, true);
             default:
                 break;
         };

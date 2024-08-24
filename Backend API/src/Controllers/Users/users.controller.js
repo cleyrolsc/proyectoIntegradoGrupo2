@@ -1,5 +1,5 @@
 const { UpdateEmployeeInformationRequest, UpdateUserRequest } = require("../../Core/Abstractions/Contracts/Requests");
-const { isNullOrUndefined, isNullUndefinedOrEmpty, isNotNullUndefinedNorEmpty } = require("../../Core/Utils/null-checker.util");
+const { isNullOrUndefined, isNullUndefinedOrEmpty, isNotNullUndefinedNorEmpty, isArrayNullUndefinedOrEmpty } = require("../../Core/Utils/null-checker.util");
 const { BadRequestError } = require("../../Core/Abstractions/Exceptions");
 const { extractPaginationElements } = require("../../Core/Utils/request-element-extractor.util");
 const { UserStatus } = require("../../Core/Abstractions/Enums");
@@ -7,6 +7,7 @@ const { ok } = require("../../Core/Abstractions/Contracts/HttpResponses/http-res
 
 const UserServices = require("../../Services/Users/users.service");
 const AuthService = require('../../Services/Auth/auth.service');
+const { SystemService } = require("../../Services");
 
 const fetchAllUsersAsync = async (request, response, next) => {
     try {
@@ -14,6 +15,37 @@ const fetchAllUsersAsync = async (request, response, next) => {
         let users = await UserServices.getUsersAsync(page, pageSize);
         
         ok(response, request.originalUrl, users);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const fetchAllAdminsAsync = async (request, response, next) => {
+    try {
+        let { page, pageSize } = extractPaginationElements(request, 100);
+        let admins = await UserServices.getUsersByPrivilegeAsync('admin-manager', page, pageSize);
+        if (isArrayNullUndefinedOrEmpty(admins.items)) {
+            return ok(response, request.originalUrl, admins);
+        }
+
+        let employeeIds = [];
+        admins.items.forEach(admin => {
+            employeeIds.push(admin.employeeId);
+        });
+
+        let { items: employeeInfo} = await SystemService.getEmployeesByIdArrayAsync(employeeIds, 1, admins.items.length);
+        let employeeIdentificationNumbers = Object.assign({}, ...employeeInfo.map((info) => ({[info.id]: {identificationNumber: info.identificationNumber, name: `${info.firstName} ${info.lastName}`}})));
+        let users = [];
+        admins.items.forEach(admin => {
+            users.push({
+                identificationNumber: employeeIdentificationNumbers[admin.employeeId].identificationNumber,
+                name: employeeIdentificationNumbers[admin.employeeId].name,
+                ...admin
+            });
+        });
+        admins.items = users;
+
+        ok(response, request.originalUrl, admins);
     } catch (error) {
         next(error);
     }
@@ -157,6 +189,7 @@ const restoreUserAsync = async(request, response, next) => {
 
 module.exports = {
     fetchAllUsersAsync,
+    fetchAllAdminsAsync,
     fetchUsersByPrivilegeLevelAsync,
     viewMyProfileAsync,
     viewProfileAsync,

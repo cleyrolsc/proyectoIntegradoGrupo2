@@ -96,6 +96,16 @@ const getEmployeesAsync = async (currentPage = 1, itemsPerPage = 100, orderBy = 
     return formatPaginatedResponse(currentPage, itemsPerPage, employees, count);
 };
 
+const getEmployeesByIdArrayAsync = async (ids = [], currentPage = 1, itemsPerPage = 100, orderBy = 'ASC') => {
+    let skip = (currentPage - 1) * itemsPerPage;
+    let {count, rows: employees} = await EmployeesRepository.getEmployeesByIdArrayAsync(ids, skip, itemsPerPage, orderBy);
+    if (isListEmpty(employees)) {
+        return new PaginatedResponse();
+    }
+
+    return formatPaginatedResponse(currentPage, itemsPerPage, employees, count);
+};
+
 module.exports = {
     registerDepartmentAsync,
     getDepartmentsAsync,
@@ -103,5 +113,6 @@ module.exports = {
     getEventsAsync,
     registerPositionAsync,
     getPositionsAsync,
-    getEmployeesAsync
+    getEmployeesAsync,
+    getEmployeesByIdArrayAsync
 };
