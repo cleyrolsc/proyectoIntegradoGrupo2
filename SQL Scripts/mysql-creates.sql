@@ -16,7 +16,7 @@ identificationNumber VARCHAR(20) NOT NULL,
 departmentId INTEGER NOT NULL,
 supervisorId INTEGER,
 positionId INTEGER NOT NULL,
-payPerHour INTEGER NOT NULL,
+payPerHour DECIMAL(7,2) NOT NULL DEFAULT 0.0,
 createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
 updatedAt DATETIME,
 
@@ -39,7 +39,7 @@ password VARCHAR(255) NOT NULL,
 employeeId INTEGER NOT NULL UNIQUE,
 type INTEGER DEFAULT 2, /* agent */
 privilegeId VARCHAR(30) NOT NULL,
-privilegeSuspended boolean DEFAULT 0,
+privilegeSuspended BOOLEAN DEFAULT 0,
 status INTEGER DEFAULT 2, /* active */
 createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
 updatedAt DATETIME,
