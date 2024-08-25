@@ -10,6 +10,7 @@ payForWorkingHours DECIMAL(7,2) NOT NULL,
 totalTrainingHours DECIMAL(7,2) NOT NULL,
 payForTrainingHours DECIMAL(7,2) NOT NULL,
 totalBreakHours DECIMAL(7,2) NOT NULL,
+paymentStatus INTEGER DEFAULT 0,
 createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
 
 FOREIGN KEY (employeeId) REFERENCES employees(id)

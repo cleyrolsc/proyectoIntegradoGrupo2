@@ -1,8 +1,8 @@
 const { DataTypes, Model } = require('sequelize');
-
-const Employee = require('./employee.class');
+const { PaymentStatus } = require('../../Core/Abstractions/Enums');
 
 const dbContext = require('../../Database/db-config');
+const Employee = require('./employee.class');
 
 class ComputedHour extends Model{};
 
@@ -48,6 +48,11 @@ ComputedHour.init({
         type: DataTypes.DOUBLE,
         defaultValue: 0.0,
     },
+    paymentStatus: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: PaymentStatus.Pending
+    },
 
     // Foreign Keys
     employeeId: {
@@ -62,7 +67,7 @@ ComputedHour.init({
 }, {
     sequelize: dbContext,
     modelName: 'ComputedHour',
-    tableName: 'computedHours',
+    tableName: 'computedhours',
     timestamps: true,
 });
 
