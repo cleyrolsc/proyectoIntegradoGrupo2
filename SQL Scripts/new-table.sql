@@ -1,0 +1,15 @@
+CREATE TABLE IF NOT EXISTS computedHours(
+id INTEGER PRIMARY KEY AUTO_INCREMENT,
+startDate DATETIME NOT NULL,
+endDate DATETIME NOT NULL,
+employeeId INTEGER NOT NULL,
+employeeIdentificationNumber VARCHAR NOT NULL,
+totalWorkingHours NUMBER NOT NULL,
+payForWorkingHours NUMBER NOT NULL,
+totalTrainingHours NUMBER NOT NULL,
+payForTrainingHours NUMBER NOT NULL,
+totalBreakHours NUMBER NOT NULL,
+createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+FOREIGN KEY (employeeId) REFERENCES employees(id)
+);
