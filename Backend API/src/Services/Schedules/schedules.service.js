@@ -1,37 +1,45 @@
 const { PaginatedResponse } = require("../../Core/Abstractions/Contracts/Responses");
 const { formatPaginatedResponse } = require("../../Core/Utils/response-formatter.util");
-const { BadRequestError, NotFoundError, FatalError } = require("../../Core/Abstractions/Exceptions");
+const { BadRequestError, NotFoundError } = require("../../Core/Abstractions/Exceptions");
 const { isNullOrUndefined, isListEmpty } = require("../../Core/Utils/null-checker.util");
 
 const { SchedulesRepository, EventsRepository, EmployeesRepository } = require('../../Repositories/index');
 
 const reportHoursAsync = async (eventDetails) => {
-    const { eventId, employeeId } = eventDetails;
+    const { eventIds, employeeId } = eventDetails;
+    areEventIdsValid();
 
     const employee = await EmployeesRepository.getEmployeeByIdAsync(employeeId);
     if (isNullOrUndefined(employee)) {
         throw new NotFoundError(`Employee with id ${employeeId} does not exist.`);
     }
 
-    const event = await EventsRepository.getEventByIdAsync(eventId);
-    if (isNullOrUndefined(event)) {
-        throw new BadRequestError(`Event with id ${eventId} is invalid.`);
+    let schedules = [];
+    for (var i = 0; i < eventIds.length; i++) {
+        const event = await EventsRepository.getEventByIdAsync(eventIds[i]);
+    
+        const currentDate = new Date();
+        const newSchedule = await SchedulesRepository.createScheduleAsync({eventId: eventIds[i], employeeId, eventDate: currentDate});
+        
+        schedules.push({
+            id: newSchedule.id,
+            eventDate: newSchedule.eventDate,
+            eventId: event.id,
+            event: event.description,
+            employeeId: employee.id,
+            employee: `${employee.lastName} ${employee.firstName}`
+        });
     }
 
-    const currentDate = new Date();
-    const newEvent = await SchedulesRepository.createScheduleAsync({eventId, employeeId, eventDate: currentDate})
+    return  schedules;
 
-    if (isNullOrUndefined(newEvent)) {
-        throw new FatalError("New event was not created");
-    }
-
-    return {
-        id: newEvent.id,
-        eventDate: newEvent.eventDate,
-        eventId: event.id,
-        event: event.description,
-        employeeId: employee.id,
-        employee: `${employee.lastName} ${employee.firstName}`
+    function areEventIdsValid() {
+        eventIds.forEach(async (eventId) => {
+            const event = await EventsRepository.getEventByIdAsync(eventId);
+            if (isNullOrUndefined(event)) {
+                throw new BadRequestError(`Event with id ${eventId} is invalid.`);
+            }
+        });
     };
 }
 
