@@ -37,7 +37,7 @@ console.log(JSON.stringify(data))
     .then(data => {
         console.log('Success:', data);
         console.log('User registered successfully!');
-        console.log(data.content.items)
+        // console.log(data.content.items)
     })
     .catch((error) => {
         console.error('Error:', error);
