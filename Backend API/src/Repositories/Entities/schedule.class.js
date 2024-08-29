@@ -14,7 +14,7 @@ Schedule.init({
         autoIncrement: true
     },
     eventDate: {
-        type: DataTypes.DATE,
+        type: DataTypes.BIGINT,
         allowNull: false
     },
 

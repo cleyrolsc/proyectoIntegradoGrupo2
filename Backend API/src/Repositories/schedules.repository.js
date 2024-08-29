@@ -12,7 +12,7 @@ const createScheduleAsync = ({ eventId, employeeId, eventDate }) => {
     });
 }
 
-const getSchedulesAsync = (startDate = new Date(Date.now() - 86400000), endDate = new Date(), skip = 0, limit = 100, orderBy = 'ASC') => {
+const getSchedulesAsync = (startDate = new Date(Date.now() - 86400000).getTime(), endDate = new Date().getTime(), skip = 0, limit = 100, orderBy = 'ASC') => {
     if (startDate > endDate){
         throw new BadRequestError('Start date cannot be at a later date than end date');
     }
@@ -30,7 +30,7 @@ const getSchedulesAsync = (startDate = new Date(Date.now() - 86400000), endDate 
     });
 }
 
-const getSchedulesByEmployeeIdAsync = async (employeeId, startDate = new Date(Date.now() - 86400000), endDate = new Date(), skip = 0, limit = 100, orderBy = 'ASC') => {
+const getSchedulesByEmployeeIdAsync = async (employeeId, startDate = new Date(Date.now() - 86400000).getTime(), endDate = new Date().getTime(), skip = 0, limit = 100, orderBy = 'DESC') => {
     if (startDate > endDate){
         throw new BadRequestError('Start date cannot be at a later date than end date');
     }
@@ -41,7 +41,7 @@ const getSchedulesByEmployeeIdAsync = async (employeeId, startDate = new Date(Da
             eventDate: {[Op.between]: [startDate, endDate]}
         },
         order: [
-            ['eventDate', 'DESC']
+            ['eventDate', orderBy]
         ],
         offset: skip,
         limit
@@ -54,7 +54,7 @@ const getSchedulesByEmployeeIdAsync = async (employeeId, startDate = new Date(Da
     return schedules;
 }
 
-const getScheduleByEventIdAsync = async (eventId, startDate = new Date(Date.now() - 86400000), endDate = new Date(), skip = 0, limit = 100, orderBy = 'ASC') => {
+const getScheduleByEventIdAsync = async (eventId, startDate = new Date(Date.now() - 86400000).getTime(), endDate = new Date().getTime(), skip = 0, limit = 100, orderBy = 'ASC') => {
     if (startDate > endDate){
         throw new BadRequestError('Start date cannot be at a later date than end date');
     }

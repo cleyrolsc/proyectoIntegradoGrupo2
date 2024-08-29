@@ -10,8 +10,8 @@ const extractPaginationElements = (request, defaultPageSize = 10) => {
 };
 
 const extractDateRange = (request) => {
-  let startDate = isNotNullUndefinedNorEmpty(request.query.startDate) ? new Date(request.query.startDate) : new Date(Date.now() - 86400000);
-  let endDate = isNotNullUndefinedNorEmpty(request.query.endDate) ? new Date(request.query.endDate) : new Date();
+  let startDate = isNotNullUndefinedNorEmpty(request.query.startDate) ? new Date(request.query.startDate).getTime() : new Date(Date.now() - 86400000).getTime();
+  let endDate = isNotNullUndefinedNorEmpty(request.query.endDate) ? new Date(request.query.endDate).getTime() : new Date().getTime();
   if (startDate > endDate) {
     throw new BadRequestError('Start date cannot be at a later date than end date');
   }

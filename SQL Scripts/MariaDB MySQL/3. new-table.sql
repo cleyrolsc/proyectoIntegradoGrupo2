@@ -33,3 +33,6 @@ ADD FOREIGN KEY (computedHourId) REFERENCES computedhours(id);
 
 ALTER TABLE employees
 MODIFY COLUMN payPerHour DECIMAL(7,2) NOT NULL;
+
+ALTER TABLE schedules
+MODIFY COLUMN eventDate BIGINT NOT NULL;
