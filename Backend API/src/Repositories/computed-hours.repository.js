@@ -50,6 +50,26 @@ const getComputedHoursAsync = (startDate, endDate = new Date(), skip = 0, limit 
     limit
 });
 
+const getComputedHoursByEmployeeIdAsync = (employeeId, startDate, endDate = new Date(), paymentStatus = undefined, skip = 0, limit = 10, orderBy = 'DESC') => {
+    let where = {
+        employeeId,
+        createdAt: {
+            [Op.between]: [startDate, endDate]
+        }
+    };
+
+    if(isNotNullNorUndefined(paymentStatus)) {
+        where.paymentStatus = paymentStatus
+    }
+    
+    return ComputedHour.findAndCountAll({
+        where,
+        order: [['id', orderBy]],
+        skip,
+        limit
+    });
+};
+
 const updateComputedHourAsync = async (id, totalWorkingHours = undefined, totalTrainingHours = undefined, totalBreakHours = undefined, paymentStatus = undefined) => {
     let computedHour = await ComputedHour.findByPk(id);
     if(isNullOrUndefined(computedHour)){
@@ -76,11 +96,12 @@ const updateComputedHourAsync = async (id, totalWorkingHours = undefined, totalT
     await computedHour.save();
 
     return computedHour;
-}
+};
 
 module.exports = {
     createComputedHourAsync,
     getComputedHourByIdAsync,
     getComputedHoursAsync,
+    getComputedHoursByEmployeeIdAsync,
     updateComputedHourAsync
 };
