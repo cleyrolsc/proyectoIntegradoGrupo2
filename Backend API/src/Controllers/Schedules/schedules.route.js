@@ -7,7 +7,7 @@ const schedulesRouter = express.Router();
 
 /**
 * @openapi
-* '/api/schedules/register-my-hour':
+* '/api/schedules/register-my-hours':
 *  post:
 *     security:              
 *     - bearerAuth: []
@@ -21,11 +21,11 @@ const schedulesRouter = express.Router();
 *           schema:
 *            type: object
 *            required:
-*              - eventId
+*              - eventIds
 *            properties:
-*              eventId:
-*                type: integer
-*                default: 11
+*              eventIds:
+*                type: array
+*                default: [1, 2]
 *     responses:
 *      201:
 *        description: Created
@@ -40,34 +40,36 @@ const schedulesRouter = express.Router();
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/register-my-hour'
+*                  example: '/register-my-hours'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
 *                  example: '2024-07-25T23:05:50.161Z'
 *                content:
-*                  type: object
-*                  description: result of the request
-*                  properties:
-*                    id:
-*                      type: integer
-*                      default: 1
-*                    eventDate:
-*                      type: date
-*                      description: Timestamp of registered hour
-*                      example: '2024-07-19T02:25:38.000Z'
-*                    eventId:
-*                      type: integer
-*                      default: 1
-*                    event:
-*                      type: string
-*                      default: 'Working Starts'
-*                    employeeId:
-*                      type: integer
-*                      default: 1
-*                    employee:
-*                      type: string
-*                      default: 'Doe John'
+*                  type: array
+*                  description: all items displayed on the page
+*                  items:
+*                    type: object
+*                    properties:
+*                      id:
+*                        type: integer
+*                        default: 1
+*                      eventDate:
+*                        type: date
+*                        description: Timestamp of registered hour
+*                        example: '2024-07-19T02:25:38.000Z'
+*                      eventId:
+*                        type: integer
+*                        default: 1
+*                      event:
+*                        type: string
+*                        default: 'Working Starts'
+*                      employeeId:
+*                        type: integer
+*                        default: 1
+*                      employee:
+*                        type: string
+*                        default: 'Doe John'
 *      400:
 *        description: Bad Request
 *        content:
@@ -81,7 +83,7 @@ const schedulesRouter = express.Router();
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/register-my-hour'
+*                  example: '/register-my-hours'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -109,7 +111,7 @@ const schedulesRouter = express.Router();
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/register-my-hour'
+*                  example: '/register-my-hours'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -137,7 +139,7 @@ const schedulesRouter = express.Router();
 *                path:
 *                  type: string
 *                  description: Url path of request
-*                  example: '/register-my-hour'
+*                  example: '/register-my-hours'
 *                timestamp:
 *                  type: string
 *                  description: Timestamp the request was returned
@@ -153,7 +155,7 @@ const schedulesRouter = express.Router();
 *                      type: string
 *                      example: 'this is an example error message'
 */
-schedulesRouter.post('/register-my-hour', SchedulesController.registerMyHourAsync);
+schedulesRouter.post('/register-my-hours', SchedulesController.registerMyHoursAsync);
 
 /**
 * @openapi

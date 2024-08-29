@@ -5,13 +5,13 @@ const { created, ok } = require('../../Core/Abstractions/Contracts/HttpResponses
 
 const SchedulesService = require('../../Services/Schedules/schedules.service');
 
-const registerMyHourAsync = async (request, response, next) => {
+const registerMyHoursAsync = async (request, response, next) => {
   try {
-    let { eventId } = request.body;
+    let { eventIds } = request.body;
     let employeeId = await fetchEmployeeIdWithAuthTokenAsync(request);
-    let schedule = await SchedulesService.reportHoursAsync({ eventId, employeeId });
+    let schedules = await SchedulesService.reportHoursAsync({ eventIds, employeeId });
 
-    created(response, request.originalUrl, schedule);
+    created(response, request.originalUrl, schedules);
   } catch (error) {
     next(error);
   }
@@ -78,7 +78,7 @@ const fetchRegisteredHoursByEventTypeAsync = async (request, response, next) => 
 }
 
 module.exports = {
-  registerMyHourAsync,
+  registerMyHoursAsync,
   registerEmployeeHourAsync,
   fetchRegisteredHoursAsync,
   fetchEmployeeHoursAsync,
