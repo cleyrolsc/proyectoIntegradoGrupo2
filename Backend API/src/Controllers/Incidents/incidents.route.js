@@ -1657,4 +1657,166 @@ incidentsRouter.patch('/:incidentId/resolve', checkForAdminPrivileges, IncidentC
 */
 incidentsRouter.patch('/:incidentId/rejected', checkForAdminPrivileges, IncidentController.markIncidentAsRejectedAsync);
 
+
+/**
+* @openapi
+* '/api/incidents/compute-my-hours':
+*  post:
+*     security:              
+*     - bearerAuth: []
+*     tags:
+*     - Incidents Controller
+*     summary: User can submit an incident to a supervisor
+*     requestBody:
+*      required: true
+*      content:
+*        application/json:
+*           schema:
+*            type: object
+*            required:
+*              - comment
+*            properties:
+*              comment:
+*                type: string
+*                default: 'I have a complaint to make'
+*     responses:
+*      201:
+*        description: Created
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 201
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/compute-my-hours'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: result of the request
+*                  properties:
+*                    employeeId:
+*                      type: integer
+*                      default: 3
+*                    fullName:
+*                      type: string
+*                      default: 'John Doe'
+*                    identificationNumber:
+*                      type: string
+*                      default: 'ABCD-1234'
+*                    payPerHour:
+*                      type: number
+*                      default: 90.52
+*                    totalWorkHours:
+*                      type: number
+*                      default: 5.6
+*                    totalWorkPay:
+*                      type: number
+*                      default: 506.92
+*                    totalBreakHours:
+*                      type: number
+*                      default: 1.4
+*                    totalTrainingHours:
+*                      type: number
+*                      default: 1.0
+*                    totalTrainingPay:
+*                      type: number
+*                      default: 90.52
+*                    grossPay:
+*                      type: number
+*                      default: 597.44
+*      400:
+*        description: Bad Request
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 400
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/compute-my-hours'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: error message
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
+*      401:
+*        description: Unauthorized
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 401
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/compute-my-hours'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: error message
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
+*      500:
+*        description: Server Error
+*        content:
+*          application/json:
+*            schema:
+*              type: object
+*              properties:
+*                statusCode:
+*                  type: integer
+*                  example: 500
+*                path:
+*                  type: string
+*                  description: Url path of request
+*                  example: '/compute-my-hours'
+*                timestamp:
+*                  type: string
+*                  description: Timestamp the request was returned
+*                  example: '2024-07-25T23:05:50.161Z'
+*                content:
+*                  type: object
+*                  description: error message
+*                  properties:
+*                    errorType:
+*                      type: string
+*                      example: 'Error'
+*                    message:
+*                      type: string
+*                      example: 'this is an example error message'
+*/
+incidentsRouter.post('/compute-my-hours', IncidentController.generateComputedHourForDayAsync);
+
 module.exports = incidentsRouter;
