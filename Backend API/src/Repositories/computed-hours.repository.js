@@ -39,16 +39,33 @@ const getComputedHourByIdAsync = async (id) => {
     return computedHour;
 };
 
-const getComputedHoursAsync = (startDate, endDate = new Date(), skip = 0, limit = 10, orderBy = 'DESC') => ComputedHour.findAndCountAll({
-    where: {
-        createdAt: {
-            [Op.between]: [startDate, endDate]
+const getComputedHoursAsync = (paymentStatus = undefined, startDate = undefined, endDate = undefined, skip = 0, limit = 10, orderBy = 'DESC') => {
+    let where = {};
+    if(isNotNullNorUndefined(startDate) && isNotNullNorUndefined(endDate)) {
+        where = {
+            createdAt: {
+                [Op.between]: [startDate, endDate]
+            }
         }
-    },
-    order: [['id', orderBy]],
-    skip,
-    limit
-});
+    }
+    else if(isNotNullNorUndefined(startDate)) {
+        where.createdAt = startDate
+    }
+    else if(isNotNullNorUndefined(endDate)) {
+        where.createdAt = endDate
+    }
+    
+    if(isNotNullNorUndefined(paymentStatus)) {
+        where.paymentStatus = paymentStatus
+    }
+
+    return ComputedHour.findAndCountAll({
+        where,
+        order: [['id', orderBy]],
+        skip,
+        limit
+    });
+};
 
 const getComputedHoursByEmployeeIdAsync = (employeeId, startDate = undefined, endDate = undefined, paymentStatus = undefined, skip = 0, limit = 10, orderBy = 'DESC') => {
     let where = {
