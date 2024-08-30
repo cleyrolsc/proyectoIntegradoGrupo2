@@ -3,9 +3,8 @@ const { IncidentStatus } = require('../../Core/Abstractions/Enums');
 const { BadRequestError, ForbiddenError } = require('../../Core/Abstractions/Exceptions');
 const { isNullUndefinedOrEmpty, isNullOrUndefined } = require('../../Core/Utils/null-checker.util');
 const { fetchEmployeeIdWithAuthTokenAsync, extractPaginationElements } = require('../../Core/Utils/request-element-extractor.util');
-const { ComputedHoursService } = require('../../Services');
 
-const IncidentsService = require('../../Services/Incidents/incidents.service');
+const { ComputedHoursService, IncidentsService } = require('../../Services');
 
 const registerIncidentAsync = async (request, response, next) => {
     try {
@@ -111,6 +110,7 @@ const markIncidentAsResolvedAsync = async (request, response, next) => {
         next(error)
     }
 };
+
 const markIncidentAsRejectedAsync = async (request, response, next) => {
     try {
         let incidentId = request.params.incidentId;
@@ -146,6 +146,31 @@ const generateComputedHourForDayAsync = async (request, response, next) => {
     }
 };
 
+const fetchEmployeeComputedHoursForTodayAsync = async (request, response, next) => {
+    try {
+        let employeeId = await fetchEmployeeIdWithAuthTokenAsync(request);
+        let computedHour = await ComputedHoursService.getTodaysComputedHourByEmployeeIdAsync(employeeId);
+        
+        created(response, request.originalUrl, computedHour);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const fetchEmployeeComputedHoursAsync = async (request, response, next) => {
+    try {
+        let { page, pageSize } = extractPaginationElements(request);
+        let employeeId = await fetchEmployeeIdWithAuthTokenAsync(request);
+        let paymentStatus = +request.query.paymentStatus;
+
+        let computedHour = await ComputedHoursService.getComputedHoursByEmployeeIdAsync(employeeId, paymentStatus, page, pageSize);
+        
+        ok(response, request.originalUrl, computedHour);
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     registerIncidentAsync,
     fetchIncidentsAsync,
@@ -157,5 +182,7 @@ module.exports = {
     markIncidentAsRejectedAsync,
 
     // Computed Hours Endpoints
-    generateComputedHourForDayAsync
+    generateComputedHourForDayAsync,
+    fetchEmployeeComputedHoursForTodayAsync,
+    fetchEmployeeComputedHoursAsync,
 };

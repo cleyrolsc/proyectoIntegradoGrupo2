@@ -50,12 +50,18 @@ const getComputedHoursAsync = (startDate, endDate = new Date(), skip = 0, limit 
     limit
 });
 
-const getComputedHoursByEmployeeIdAsync = (employeeId, startDate, endDate, paymentStatus = undefined, skip = 0, limit = 10, orderBy = 'DESC') => {
+const getComputedHoursByEmployeeIdAsync = (employeeId, startDate = undefined, endDate = undefined, paymentStatus = undefined, skip = 0, limit = 10, orderBy = 'DESC') => {
     let where = {
-        employeeId,
-        startDate,
-        endDate
+        employeeId
     };
+
+    if(isNotNullNorUndefined(startDate)) {
+        where.startDate = startDate
+    }
+
+    if(isNotNullNorUndefined(endDate)) {
+        where.endDate = endDate
+    }
 
     if(isNotNullNorUndefined(paymentStatus)) {
         where.paymentStatus = paymentStatus
