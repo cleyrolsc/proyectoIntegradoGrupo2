@@ -138,9 +138,9 @@ const markIncidentAsRejectedAsync = async (request, response, next) => {
 const generateComputedHourForDayAsync = async (request, response, next) => {
     try {
         let employeeId = await fetchEmployeeIdWithAuthTokenAsync(request);
-        let result = await ComputedHoursService.registerComputedHourForTodayAsync(employeeId);
+        let computedHour = await ComputedHoursService.registerComputedHourForTodayAsync(employeeId);
         
-        created(response, request.originalUrl, result);
+        created(response, request.originalUrl, computedHour);
     } catch (error) {
         next(error);
     }

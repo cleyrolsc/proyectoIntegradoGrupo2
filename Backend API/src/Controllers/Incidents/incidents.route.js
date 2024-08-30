@@ -1702,22 +1702,36 @@ incidentsRouter.patch('/:incidentId/rejected', checkForAdminPrivileges, Incident
 *                  type: object
 *                  description: result of the request
 *                  properties:
-*                    id:
-*                      type: integer
-*                      default: 1
 *                    employeeId:
 *                      type: integer
-*                      description: Id of employee who submitted the incident
 *                      default: 3
-*                    supervisorId:
-*                      type: integer
-*                      default: 1
-*                    status:
-*                      type: integer
-*                      default: 0
-*                    createAt:
-*                      type: date
-*                      default: '2024-07-25T23:05:50.161Z'
+*                    fullName:
+*                      type: string
+*                      default: 'John Doe'
+*                    identificationNumber:
+*                      type: string
+*                      default: 'ABCD-1234'
+*                    payPerHour:
+*                      type: number
+*                      default: 90.52
+*                    totalWorkHours:
+*                      type: number
+*                      default: 5.6
+*                    totalWorkPay:
+*                      type: number
+*                      default: 506.92
+*                    totalBreakHours:
+*                      type: number
+*                      default: 1.4
+*                    totalTrainingHours:
+*                      type: number
+*                      default: 1.0
+*                    totalTrainingPay:
+*                      type: number
+*                      default: 90.52
+*                    grossPay:
+*                      type: number
+*                      default: 597.44
 *      400:
 *        description: Bad Request
 *        content:

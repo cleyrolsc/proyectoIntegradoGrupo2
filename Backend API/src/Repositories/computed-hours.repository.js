@@ -1,19 +1,19 @@
 
 
 const { BadRequestError } = require('../Core/Abstractions/Exceptions');
-const { isNotNullNorUndefined, isNotNullUndefinedNorEmpty, isNullOrUndefined } = require('../Core/Utils/null-checker.util');
+const { isNotNullNorUndefined, isNotNullUndefinedNorEmpty, isNullOrUndefined, isNullUndefinedOrEmpty } = require('../Core/Utils/null-checker.util');
 const { Op } = require('sequelize');
 
 const ComputedHour = require('./Entities/computed-hour.class');
 
 const createComputedHourAsync = (employeeId, employeeIdentificationNumber, payPerHour, startDate, endDate,
     totalWorkingHours, totalTrainingHours, totalBreakHours) => {
-    if (isNotNullNorUndefined(employeeId)) {
-        throw BadRequestError('Employee id cannot be undefined');
+    if (isNullOrUndefined(employeeId)) {
+        throw new BadRequestError('Employee id cannot be undefined');
     }
 
-    if (isNotNullUndefinedNorEmpty(employeeIdentificationNumber)) {
-        throw BadRequestError('Employee identification number cannot be undefined');
+    if (isNullUndefinedOrEmpty(employeeIdentificationNumber)) {
+        throw new BadRequestError('Employee identification number cannot be undefined');
     }
 
     return ComputedHour.create({
@@ -50,12 +50,11 @@ const getComputedHoursAsync = (startDate, endDate = new Date(), skip = 0, limit 
     limit
 });
 
-const getComputedHoursByEmployeeIdAsync = (employeeId, startDate, endDate = new Date(), paymentStatus = undefined, skip = 0, limit = 10, orderBy = 'DESC') => {
+const getComputedHoursByEmployeeIdAsync = (employeeId, startDate, endDate, paymentStatus = undefined, skip = 0, limit = 10, orderBy = 'DESC') => {
     let where = {
         employeeId,
-        createdAt: {
-            [Op.between]: [startDate, endDate]
-        }
+        startDate,
+        endDate
     };
 
     if(isNotNullNorUndefined(paymentStatus)) {
@@ -92,6 +91,7 @@ const updateComputedHourAsync = async (id, totalWorkingHours = undefined, totalT
 
     computedHour.totalTrainingHours = totalTrainingHours ?? computedHour.totalTrainingHours;
     computedHour.paymentStatus = paymentStatus ?? computedHour.paymentStatus;
+    computedHour.updatedAt = new Date();
 
     await computedHour.save();
 
