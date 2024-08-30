@@ -1,3 +1,4 @@
+const ComputedHoursRepository = require("./computed-hours.repository");
 const DepartmentRepository = require("./departments.repository");
 const EmployeesRepository = require("./employees.repository");
 const EventsRepository = require("./events.repository");
@@ -8,6 +9,7 @@ const UsersRepository = require("./users.repository");
 const SchedulesRepository = require("./schedules.repository");
 
 module.exports = {
+    ComputedHoursRepository,
     DepartmentRepository,
     EmployeesRepository,
     EventsRepository,

@@ -3,6 +3,7 @@ const { IncidentStatus } = require('../../Core/Abstractions/Enums');
 const { BadRequestError, ForbiddenError } = require('../../Core/Abstractions/Exceptions');
 const { isNullUndefinedOrEmpty, isNullOrUndefined } = require('../../Core/Utils/null-checker.util');
 const { fetchEmployeeIdWithAuthTokenAsync, extractPaginationElements } = require('../../Core/Utils/request-element-extractor.util');
+const { ComputedHoursService } = require('../../Services');
 
 const IncidentsService = require('../../Services/Incidents/incidents.service');
 
@@ -134,6 +135,17 @@ const markIncidentAsRejectedAsync = async (request, response, next) => {
     }
 };
 
+const generateComputedHourForDayAsync = async (request, response, next) => {
+    try {
+        let employeeId = await fetchEmployeeIdWithAuthTokenAsync(request);
+        let computedHour = await ComputedHoursService.registerComputedHourForTodayAsync(employeeId);
+        
+        created(response, request.originalUrl, computedHour);
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     registerIncidentAsync,
     fetchIncidentsAsync,
@@ -142,5 +154,8 @@ module.exports = {
     fetchEmployeeIncidentsAsync,
     fetchIncidentsAssignedToSupervisorAsync,
     markIncidentAsResolvedAsync,
-    markIncidentAsRejectedAsync
+    markIncidentAsRejectedAsync,
+
+    // Computed Hours Endpoints
+    generateComputedHourForDayAsync
 };
