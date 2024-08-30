@@ -1,5 +1,5 @@
 const express = require('express');
-const { checkForAdminPrivileges } = require('../../Core/Filters/privilege-checks.filter');
+const { checkForAdminPrivileges, checkForAccountingPrivileges } = require('../../Core/Filters/privilege-checks.filter');
 
 const IncidentController = require('./incidents.controller');
 
@@ -2084,7 +2084,7 @@ incidentsRouter.post('/hours/compute-my-hours', IncidentController.generateCompu
 *                      type: string
 *                      example: 'this is an example error message'
 */
-incidentsRouter.get('/hours/all', IncidentController.fetchComputedHoursAsync);
+incidentsRouter.get('/hours/all', checkForAccountingPrivileges, IncidentController.fetchComputedHoursAsync);
 
 /**
 * @openapi
