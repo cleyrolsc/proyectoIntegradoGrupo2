@@ -1,11 +1,10 @@
 const { created, ok } = require('../../Core/Abstractions/Contracts/HttpResponses/http-responses');
 const { IncidentStatus } = require('../../Core/Abstractions/Enums');
 const { BadRequestError, ForbiddenError } = require('../../Core/Abstractions/Exceptions');
-const { isNullUndefinedOrEmpty, isNullOrUndefined } = require('../../Core/Utils/null-checker.util');
-const { fetchEmployeeIdWithAuthTokenAsync, extractPaginationElements } = require('../../Core/Utils/request-element-extractor.util');
-const { ComputedHoursService } = require('../../Services');
+const { isNullUndefinedOrEmpty, isNullOrUndefined, isNotNullNorUndefined } = require('../../Core/Utils/null-checker.util');
+const { fetchEmployeeIdWithAuthTokenAsync, extractPaginationElements, extractDateRange } = require('../../Core/Utils/request-element-extractor.util');
 
-const IncidentsService = require('../../Services/Incidents/incidents.service');
+const { ComputedHoursService, IncidentsService } = require('../../Services');
 
 const registerIncidentAsync = async (request, response, next) => {
     try {
@@ -111,6 +110,7 @@ const markIncidentAsResolvedAsync = async (request, response, next) => {
         next(error)
     }
 };
+
 const markIncidentAsRejectedAsync = async (request, response, next) => {
     try {
         let incidentId = request.params.incidentId;
@@ -135,12 +135,51 @@ const markIncidentAsRejectedAsync = async (request, response, next) => {
     }
 };
 
-const generateComputedHourForDayAsync = async (request, response, next) => {
+const generateComputedHoursForDayAsync = async (request, response, next) => {
     try {
         let employeeId = await fetchEmployeeIdWithAuthTokenAsync(request);
-        let computedHour = await ComputedHoursService.registerComputedHourForTodayAsync(employeeId);
+        let computedHours = await ComputedHoursService.registerComputedHourForTodayAsync(employeeId);
         
-        created(response, request.originalUrl, computedHour);
+        created(response, request.originalUrl, computedHours);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const fetchEmployeeComputedHoursForTodayAsync = async (request, response, next) => {
+    try {
+        let employeeId = await fetchEmployeeIdWithAuthTokenAsync(request);
+        let computedHours = await ComputedHoursService.getTodaysComputedHourByEmployeeIdAsync(employeeId);
+        
+        created(response, request.originalUrl, computedHours);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const fetchEmployeeComputedHoursAsync = async (request, response, next) => {
+    try {
+        let { page, pageSize } = extractPaginationElements(request);
+        let employeeId = await fetchEmployeeIdWithAuthTokenAsync(request);
+        let paymentStatus = isNotNullNorUndefined(request.query.paymentStatus) ? +request.query.paymentStatus : undefined;
+
+        let computedHours = await ComputedHoursService.getComputedHoursByEmployeeIdAsync(employeeId, paymentStatus, page, pageSize);
+        
+        ok(response, request.originalUrl, computedHours);
+    } catch (error) {
+        next(error);
+    }
+};
+
+const fetchComputedHoursAsync = async (request, response, next) => {
+    try {
+        let { page, pageSize } = extractPaginationElements(request);
+        let { startDate, endDate } = extractDateRange(request);
+        let paymentStatus = isNotNullNorUndefined(request.query.paymentStatus) ? +request.query.paymentStatus : undefined;
+        
+        let computedHours = await ComputedHoursService.getComputedHoursAsync(paymentStatus, startDate, endDate, page, pageSize);
+        
+        ok(response, request.originalUrl, computedHours);
     } catch (error) {
         next(error);
     }
@@ -157,5 +196,8 @@ module.exports = {
     markIncidentAsRejectedAsync,
 
     // Computed Hours Endpoints
-    generateComputedHourForDayAsync
+    generateComputedHoursForDayAsync,
+    fetchEmployeeComputedHoursForTodayAsync,
+    fetchEmployeeComputedHoursAsync,
+    fetchComputedHoursAsync
 };
