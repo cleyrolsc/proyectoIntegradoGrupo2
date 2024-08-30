@@ -418,7 +418,7 @@ usersRouter.get('/supervisors', checkForAdminPrivileges, UsersController.fetchAl
 *         description: Name (id) of the privilege level
 *         schema:
 *           type: string
-*           example: 'user-agent'
+*           enum: ['user-agent', 'user-accountant', 'admin-manager', 'admin-super']
 *       - in: query
 *         name: page
 *         description: Current page the user wishes to view from 1 to N

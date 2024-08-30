@@ -9,6 +9,9 @@ const ACCOUNTANT = 'user-accountant';
 const AGENT = 'user-agent';
 const MANAGER = 'admin-manager';
 
+const checkForAdminPrivileges = (res, req, next) => privilegeCheck(res, req, next, [ADMIN, MANAGER]);
+const checkForAccountingPrivileges = (res, req, next) => privilegeCheck(res, req, next, [ADMIN, MANAGER, ACCOUNTANT]);
+
 const privilegeCheck = async (request, response, next, privileges = []) => {
     try {
         const bearerHeader = request.headers['authorization'];
@@ -32,8 +35,7 @@ const privilegeCheck = async (request, response, next, privileges = []) => {
     }
 };
 
-const checkForAdminPrivileges = (res, req, next) => privilegeCheck(res, req, next, [ADMIN, MANAGER])
-
 module.exports = {
-    checkForAdminPrivileges
+    checkForAdminPrivileges,
+    checkForAccountingPrivileges
 };
