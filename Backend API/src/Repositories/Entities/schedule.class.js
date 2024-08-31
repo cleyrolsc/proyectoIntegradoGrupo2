@@ -28,7 +28,7 @@ Schedule.init({
         }
     },
     employeeId: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
         references: {
             model: Employee,
