@@ -1,5 +1,5 @@
 const { BadRequestError } = require('../../Core/Abstractions/Exceptions');
-const { isNullOrUndefined } = require('../../Core/Utils/null-checker.util');
+const { isNullOrUndefined, isNullUndefinedOrEmpty, isNotNullNorUndefined } = require('../../Core/Utils/null-checker.util');
 const { extractPaginationElements, extractDateRange, fetchEmployeeIdWithAuthTokenAsync } = require('../../Core/Utils/request-element-extractor.util');
 const { created, ok } = require('../../Core/Abstractions/Contracts/HttpResponses/http-responses');
 
@@ -20,7 +20,7 @@ const registerMyHoursAsync = async (request, response, next) => {
 const registerEmployeeHourAsync = async (request, response, next) => {
   try {
     let { eventId, employeeId } = request.body;
-    let schedule = await SchedulesService.reportHoursAsync({ eventId, employeeId });
+    let schedule = await SchedulesService.reportHoursAsync({ eventIds: [eventId], employeeId });
 
     created(response, request.originalUrl, schedule);
   } catch (error) {
@@ -43,8 +43,8 @@ const fetchRegisteredHoursAsync = async (request, response, next) => {
 
 const fetchEmployeeHoursAsync = async (request, response, next) => {
   try {
-    let employeeId = +request.params.employeeId;
-    if (isNullOrUndefined(employeeId)) {
+    let employeeId = request.params.employeeId;
+    if (isNullUndefinedOrEmpty(employeeId)) {
       throw new BadRequestError('Employee id cannot be undefined');
     }
 
@@ -61,7 +61,7 @@ const fetchEmployeeHoursAsync = async (request, response, next) => {
 
 const fetchRegisteredHoursByEventTypeAsync = async (request, response, next) => {
   try {
-    let eventId = +request.params.eventId;
+    let eventId = request.params.eventId !== '{eventId}' && isNotNullNorUndefined(request.params.eventId) ? +request.params.eventId : undefined;
     if (isNullOrUndefined(eventId)) {
       throw new BadRequestError('Event id cannot be undefined');
     }

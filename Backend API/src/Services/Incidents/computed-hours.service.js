@@ -34,9 +34,7 @@ const registerComputedHourForTodayAsync = async (employeeId) => {
         let { totalTrainingHours, totalTrainingPay } = calculateTotalTrainingHoursAndPay(employee.payPerHour);
         let grossPay = totalWorkPay + totalTrainingPay;
 
-        todaysComputedHours = await ComputedHoursRepository.createComputedHourAsync(
-            employeeId, employee.identificationNumber, employee.payPerHour,
-            todayStart, todayEnd, totalWorkHours, totalTrainingHours, totalBreakHours);
+        todaysComputedHours = await ComputedHoursRepository.createComputedHourAsync(employeeId, employee.payPerHour,todayStart, todayEnd, totalWorkHours, totalTrainingHours, totalBreakHours);
 
         return formatResponse(todaysComputedHours.id, +employee.payPerHour, +totalWorkHours.toFixed(7), 
         totalWorkPay, +totalBreakHours.toFixed(7), +totalTrainingHours.toFixed(7), 
@@ -87,7 +85,6 @@ const registerComputedHourForTodayAsync = async (employeeId) => {
             endDate: new Date(todayEnd),
             employeeId,
             fullName: `${employee.firstName} ${employee.lastName}`,
-            identificationNumber: employee.identificationNumber,
             payPerHour,
             totalWorkHours,
             totalWorkPay,
@@ -135,7 +132,6 @@ const getTodaysComputedHourByEmployeeIdAsync = async (employeeId) => {
         endDate,
         employeeId,
         fullName: `${employee.firstName} ${employee.lastName}`,
-        identificationNumber: employee.identificationNumber,
         payPerHour,
         totalWorkHours,
         totalWorkPay,
@@ -171,7 +167,6 @@ const getComputedHoursByEmployeeIdAsync = async (employeeId, paymentStatus = und
             endDate,
             employeeId,
             fullName: `${employee.firstName} ${employee.lastName}`,
-            identificationNumber: employee.identificationNumber,
             payPerHour,
             totalWorkHours,
             totalWorkPay,
@@ -195,7 +190,7 @@ const getComputedHoursAsync = async (paymentStatus = undefined, startDate = new 
 
     let computedHourModels = [];
     computedHours.forEach(computedHour => {
-        let { id, startDate, endDate, employeeId, identificationNumber, payPerHour, 
+        let { id, startDate, endDate, employeeId, payPerHour, 
             totalWorkingHours: totalWorkHours, payForWorkingHours: totalWorkPay, 
             totalBreakHours: totalBreakHours, totalTrainingHours, 
             payForTrainingHours: totalTrainingPay, paymentStatus } = computedHour;
@@ -205,7 +200,6 @@ const getComputedHoursAsync = async (paymentStatus = undefined, startDate = new 
             startDate,
             endDate,
             employeeId,
-            identificationNumber,
             payPerHour,
             totalWorkHours,
             totalWorkPay,

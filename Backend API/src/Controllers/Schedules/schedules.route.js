@@ -24,7 +24,7 @@ const schedulesRouter = express.Router();
 *              - eventIds
 *            properties:
 *              eventIds:
-*                type: array
+*                type: enum
 *                default: [1, 2]
 *     responses:
 *      201:
@@ -65,8 +65,8 @@ const schedulesRouter = express.Router();
 *                        type: string
 *                        default: 'Working Starts'
 *                      employeeId:
-*                        type: integer
-*                        default: 1
+*                        type: string
+*                        default: 'E-0001'
 *                      employee:
 *                        type: string
 *                        default: 'Doe John'
@@ -178,10 +178,10 @@ schedulesRouter.post('/register-my-hours', SchedulesController.registerMyHoursAs
 *            properties:
 *              eventId:
 *                type: integer
-*                default: 11
+*                default: 1
 *              employeeId:
-*                type: integer
-*                default: 23
+*                type: string
+*                default: 'E-0003'
 *     responses:
 *      201:
 *        description: Created
@@ -219,8 +219,8 @@ schedulesRouter.post('/register-my-hours', SchedulesController.registerMyHoursAs
 *                      type: string
 *                      default: 'Working Starts'
 *                    employeeId:
-*                      type: integer
-*                      default: 1
+*                      type: string
+*                      default: 'E-0003'
 *                    employee:
 *                      type: string
 *                      default: 'Doe John'
@@ -407,9 +407,9 @@ schedulesRouter.post('/register-hour', checkForAdminPrivileges, SchedulesControl
 *                            description: type of event that was registered
 *                            example: 'Working Starts'
 *                          employeeId:
-*                            type: integer
+*                            type: string
 *                            description: Id of employee that registered the hour
-*                            example: 1
+*                            example: 'E-0001'
 *      400:
 *        description: Bad Request
 *        content:
@@ -539,8 +539,8 @@ schedulesRouter.get('/hours', checkForAdminPrivileges, SchedulesController.fetch
 *         name: employeeId
 *         description: Id on the employee that registered the hours
 *         schema:
-*           type: integer
-*           example: '1'
+*           type: string
+*           example: 'E-0001'
 *       - in: query
 *         name: startDate
 *         description: Start date to filter registered hours
@@ -627,9 +627,9 @@ schedulesRouter.get('/hours', checkForAdminPrivileges, SchedulesController.fetch
 *                            description: type of event that was registered
 *                            example: 'Working Starts'
 *                          employeeId:
-*                            type: integer
+*                            type: string
 *                            description: Id of employee that registered the hour
-*                            example: 1
+*                            example: 'E-0001'
 *                          employee:
 *                            type: string
 *                            description: Name of employee that registered the hour
@@ -761,10 +761,9 @@ schedulesRouter.get('/hours/employee/:employeeId', checkForAdminPrivileges, Sche
 *     parameters:
 *       - in: path
 *         name: eventId
-*         description: Id on the event type
+*         description: Id on the event type (1 = Working Starts, 2 = working Ends, 3 = Break Starts, 4 = Break Ends, 5 = Training Starts, 6 = Training Ends)
 *         schema:
-*           type: integer
-*           example: '1'
+*           enum: [1, 2, 3, 4, 5, 6]
 *       - in: query
 *         name: startDate
 *         description: Start date to filter registered hours
@@ -851,9 +850,9 @@ schedulesRouter.get('/hours/employee/:employeeId', checkForAdminPrivileges, Sche
 *                            description: type of event that was registered
 *                            example: 'Working Starts'
 *                          employeeId:
-*                            type: integer
+*                            type: string
 *                            description: Id of employee that registered the hour
-*                            example: 1
+*                            example: 'E-0001'
 *      400:
 *        description: Bad Request
 *        content:
