@@ -151,7 +151,7 @@ const fetchEmployeeComputedHoursForTodayAsync = async (request, response, next) 
         let employeeId = await fetchEmployeeIdWithAuthTokenAsync(request);
         let computedHours = await ComputedHoursService.getTodaysComputedHourByEmployeeIdAsync(employeeId);
         
-        created(response, request.originalUrl, computedHours);
+        ok(response, request.originalUrl, computedHours);
     } catch (error) {
         next(error);
     }
@@ -176,7 +176,7 @@ const fetchComputedHoursAsync = async (request, response, next) => {
         let { page, pageSize } = extractPaginationElements(request);
         let { startDate, endDate } = extractDateRange(request);
         let paymentStatus = isNotNullNorUndefined(request.query.paymentStatus) ? +request.query.paymentStatus : undefined;
-        
+
         let computedHours = await ComputedHoursService.getComputedHoursAsync(paymentStatus, startDate, endDate, page, pageSize);
         
         ok(response, request.originalUrl, computedHours);
