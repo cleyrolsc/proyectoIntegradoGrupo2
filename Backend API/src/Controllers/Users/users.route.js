@@ -76,9 +76,9 @@ const usersRouter = express.Router();
 *                            type: string
 *                            example: 'johndoe'
 *                          employeeId:
-*                            type: integer
+*                            type: string
 *                            description: Identifier that links the employee with their username
-*                            example: 50
+*                            example: 'E-0003'
 *                          type:
 *                            type: integer
 *                            description: Type of the user
@@ -276,10 +276,8 @@ usersRouter.get('/', checkForAdminPrivileges, UsersController.fetchAllUsersAsync
 *                            type: string
 *                            example: 'John Doe'
 *                          employeeId:
-*                            type: integer
-*                          identificationNumber:
 *                            type: string
-*                            example: 'ABC-1235'
+*                            example: 'E-003'
 *                          type:
 *                            type: integer
 *                            description: Type of the user
@@ -480,9 +478,9 @@ usersRouter.get('/supervisors', checkForAdminPrivileges, UsersController.fetchAl
 *                            type: string
 *                            example: 'johndoe'
 *                          employeeId:
-*                            type: integer
+*                            type: string
 *                            description: Identifier that links the employee with their username
-*                            example: 50
+*                            example: 'E-0003'
 *                          type:
 *                            type: integer
 *                            description: Type of the user
@@ -656,17 +654,14 @@ usersRouter.get('/by-privilege', checkForAdminPrivileges, UsersController.fetchU
 *                      description: Employee information for the user
 *                      properties:
 *                        employeeId:
-*                          type: integer
-*                          example: 1
+*                          type: string
+*                          example: 'E-0003'
 *                        firstName:
 *                          type: string
 *                          example: 'John'
 *                        lastName:
 *                          type: string
 *                          example: 'Doe'
-*                        identificationNumber:
-*                          type: string
-*                          example: 'ABC-123'
 *                        position:
 *                          type: string
 *                          example: 'Senior Accountant'
@@ -685,8 +680,8 @@ usersRouter.get('/by-privilege', checkForAdminPrivileges, UsersController.fetchU
 *                      description: Employee information for the user
 *                      properties:
 *                        id:
-*                          type: integer
-*                          example: 41
+*                          type: string
+*                          example: 'E-0002'
 *                        firstName:
 *                          type: string
 *                          example: 'Maria'
@@ -864,17 +859,14 @@ usersRouter.get('/my-profile', UsersController.viewMyProfileAsync);
 *                      description: Employee information for the user
 *                      properties:
 *                        employeeId:
-*                          type: integer
-*                          example: 1
+*                          type: string
+*                          example: 'E-0003'
 *                        firstName:
 *                          type: string
 *                          example: 'John'
 *                        lastName:
 *                          type: string
 *                          example: 'Doe'
-*                        identificationNumber:
-*                          type: string
-*                          example: 'ABC-123'
 *                        position:
 *                          type: string
 *                          example: 'Senior Accountant'
@@ -893,8 +885,8 @@ usersRouter.get('/my-profile', UsersController.viewMyProfileAsync);
 *                      description: Employee information for the user
 *                      properties:
 *                        id:
-*                          type: integer
-*                          example: 41
+*                          type: string
+*                          example: 'E-0002'
 *                        firstName:
 *                          type: string
 *                          example: 'Maria'
@@ -1042,9 +1034,6 @@ usersRouter.get('/:username/profile', UsersController.viewProfileAsync);
 *              lastName:
 *                type: string
 *                default: 'Doe'
-*              identificationNumber:
-*                type: string
-*                default: 'ABC-123'
 *              payPerHour:
 *                type: number
 *                default: 189.02
@@ -1052,8 +1041,8 @@ usersRouter.get('/:username/profile', UsersController.viewProfileAsync);
 *                type: integer
 *                default: 1
 *              supervisorId:
-*                type: integer
-*                default: 1
+*                type: string
+*                default: 'E-0002'
 *              positionId:
 *                type: integer
 *                default: 1
@@ -1085,17 +1074,14 @@ usersRouter.get('/:username/profile', UsersController.viewProfileAsync);
 *                      description: Employee information for the user
 *                      properties:
 *                        employeeId:
-*                          type: integer
-*                          example: 1
+*                          type: string
+*                          example: 'E-0003'
 *                        firstName:
 *                          type: string
 *                          example: 'John'
 *                        lastName:
 *                          type: string
 *                          example: 'Doe'
-*                        identificationNumber:
-*                          type: string
-*                          example: 'ABC-123'
 *                        position:
 *                          type: string
 *                          example: 'Senior Accountant'
@@ -1114,8 +1100,8 @@ usersRouter.get('/:username/profile', UsersController.viewProfileAsync);
 *                      description: Employee information for the user
 *                      properties:
 *                        id:
-*                          type: integer
-*                          example: 41
+*                          type: string
+*                          example: 'E-0002'
 *                        firstName:
 *                          type: string
 *                          example: 'Maria'

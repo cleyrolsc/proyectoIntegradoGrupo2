@@ -223,18 +223,21 @@ adminRouter.get('/privileges', checkForAdminPrivileges, AdminController.getPrivi
 *           schema:
 *            type: object
 *            required:
+*              - employeeId
 *              - username
 *              - password
 *              - type
 *              - privilege
 *              - firstName
 *              - lastName
-*              - identificationNumber
 *              - payPerHour
 *              - department
 *              - supervisor
 *              - position
 *            properties:
+*              employeeId:
+*                type: string
+*                default: 'E-0003'
 *              username:
 *                type: string
 *                default: 'johndoe'
@@ -247,15 +250,12 @@ adminRouter.get('/privileges', checkForAdminPrivileges, AdminController.getPrivi
 *              lastName:
 *                type: string
 *                default: 'Doe'
-*              identificationNumber:
-*                type: string
-*                default: 'ABC-1234'
 *              payPerHour:
 *                type: number
 *                default: 102.35
 *              supervisor:
-*                type: integer
-*                default: 98
+*                type: string
+*                default: 'E-0002'
 *              type:
 *                type: integer
 *                default: 1
@@ -291,27 +291,24 @@ adminRouter.get('/privileges', checkForAdminPrivileges, AdminController.getPrivi
 *                  type: object
 *                  description: result of the request
 *                  properties:
+*                    employeeId:
+*                      type: string
+*                      default: 'E-0003'
 *                    username:
 *                      type: string
 *                      default: 'johndoe'
-*                    employeeId:
-*                      type: integer
-*                      default: 1
 *                    firstName:
 *                      type: string
 *                      default: 'John'
 *                    lastName:
 *                      type: string
 *                      default: 'Doe'
-*                    identificationNumber:
-*                      type: string
-*                      default: 'ABC-1234'
 *                    payPerHour:
 *                      type: number
 *                      default: 102.35
 *                    supervisor:
-*                      type: integer
-*                      default: 1
+*                      type: string
+*                      default: 'E-0002'
 *                    type:
 *                      type: integer
 *                      default: 98
@@ -483,18 +480,21 @@ adminRouter.post('/register-admin', checkForAdminPrivileges, AdminController.reg
 *           schema:
 *            type: object
 *            required:
+*              - employeeId
 *              - username
 *              - password
 *              - type
 *              - privilege
 *              - firstName
 *              - lastName
-*              - identificationNumber
 *              - payPerHour
 *              - department
 *              - supervisor
 *              - position
 *            properties:
+*              employeeId:
+*                type: string
+*                default: 'E-0003'
 *              username:
 *                type: string
 *                default: 'johndoe'
@@ -507,15 +507,12 @@ adminRouter.post('/register-admin', checkForAdminPrivileges, AdminController.reg
 *              lastName:
 *                type: string
 *                default: 'Doe'
-*              identificationNumber:
-*                type: string
-*                default: 'ABC-1234'
 *              payPerHour:
 *                type: number
 *                default: 102.35
 *              supervisor:
-*                type: integer
-*                default: 1
+*                type: string
+*                default: 'E-0002'
 *              type:
 *                type: integer
 *                default: 1
@@ -551,27 +548,24 @@ adminRouter.post('/register-admin', checkForAdminPrivileges, AdminController.reg
 *                  type: object
 *                  description: result of the request
 *                  properties:
+*                    employeeId:
+*                      type: string
+*                      default: 'E-0003'
 *                    username:
 *                      type: string
 *                      default: 'johndoe'
-*                    employeeId:
-*                      type: integer
-*                      default: 1
 *                    firstName:
 *                      type: string
 *                      default: 'John'
 *                    lastName:
 *                      type: string
 *                      default: 'Doe'
-*                    identificationNumber:
-*                      type: string
-*                      default: 'ABC-1234'
 *                    payPerHour:
 *                      type: number
 *                      default: 102.35
 *                    supervisor:
-*                      type: integer
-*                      default: 1
+*                      type: string
+*                      default: 'E-0002'
 *                    type:
 *                      type: integer
 *                      default: 1

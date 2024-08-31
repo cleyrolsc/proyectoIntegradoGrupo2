@@ -12,14 +12,14 @@ const registerNewUserAsync = async (createUserRequest) =>{
     var newEmployee = await createEmployeeAsync();
     let newUser = await createUserAsync();
 
-    return new CreateUserResponse(newUser.username, newUser.type, newUser.privilegeLevel, newEmployee.id, newEmployee.firstName, newEmployee.lastName, newEmployee.identificationNumber, newEmployee.payPerHour, newEmployee.departmentId, newEmployee.supervisorId, newEmployee.positionId);
+    return new CreateUserResponse(newUser.username, newUser.type, newUser.privilegeLevel, newEmployee.id, newEmployee.firstName, newEmployee.lastName, newEmployee.payPerHour, newEmployee.departmentId, newEmployee.supervisorId, newEmployee.positionId);
 
     async function createEmployeeAsync() {
-        let { firstName, lastName, identificationNumber } = createUserRequest;
+        let { employeeId, firstName, lastName } = createUserRequest;
 
-        let existingEmployee = await EmployeesRepository.getEmployeeByIdentificationNumberAsync(identificationNumber);
+        let existingEmployee = await EmployeesRepository.getEmployeeByIdAsync(employeeId);
         if (isNotNullNorUndefined(existingEmployee) && `${existingEmployee.firstName} ${existingEmployee.lastName}`.toLocaleLowerCase() !== `${firstName} ${lastName}`.toLocaleLowerCase()) {
-            throw new ConflictError(`Identification number (${identificationNumber}) already belongs to ${existingEmployee.lastName} ${existingEmployee.firstName}`);
+            throw new ConflictError(`Employee id '${employeeId}' already belongs to ${existingEmployee.lastName} ${existingEmployee.firstName}`);
         }
         
         if (isNotNullNorUndefined(existingEmployee) && `${existingEmployee.firstName} ${existingEmployee.lastName}`.toLocaleLowerCase() === `${firstName} ${lastName}`.toLocaleLowerCase()) {
@@ -28,9 +28,9 @@ const registerNewUserAsync = async (createUserRequest) =>{
 
         let { payPerHour, department, supervisor, position } = createUserRequest;
         var newEmployee = await EmployeesRepository.createEmployeeAsync({
+            id: employeeId,
             firstName,
             lastName,
-            identificationNumber,
             payPerHour,
             departmentId: department,
             supervisorId: supervisor,

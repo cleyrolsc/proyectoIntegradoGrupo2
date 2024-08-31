@@ -1705,9 +1705,6 @@ incidentsRouter.patch('/:incidentId/rejected', checkForAdminPrivileges, Incident
 *                    fullName:
 *                      type: string
 *                      default: 'John Doe'
-*                    identificationNumber:
-*                      type: string
-*                      default: 'ABCD-1234'
 *                    payPerHour:
 *                      type: number
 *                      default: 90.52
@@ -1944,9 +1941,6 @@ incidentsRouter.post('/hours/compute-my-hours', IncidentController.generateCompu
 *                          employeeId:
 *                            type: integer
 *                            default: 3
-*                          identificationNumber:
-*                            type: string
-*                            default: 'ABCD-1234'
 *                          payPerHour:
 *                            type: number
 *                            default: 90.52
@@ -2174,9 +2168,6 @@ incidentsRouter.get('/hours/all', checkForAccountingPrivileges, IncidentControll
 *                          fullName:
 *                            type: string
 *                            default: 'John Doe'
-*                          identificationNumber:
-*                            type: string
-*                            default: 'ABCD-1234'
 *                          payPerHour:
 *                            type: number
 *                            default: 90.52
@@ -2363,9 +2354,6 @@ incidentsRouter.get('/hours/my-hours', IncidentController.fetchEmployeeComputedH
 *                    fullName:
 *                      type: string
 *                      default: 'John Doe'
-*                    identificationNumber:
-*                      type: string
-*                      default: 'ABCD-1234'
 *                    payPerHour:
 *                      type: number
 *                      default: 90.52
