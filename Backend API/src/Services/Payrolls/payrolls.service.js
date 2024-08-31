@@ -1,13 +1,13 @@
-
 const { PaginatedResponse } = require("../../Core/Abstractions/Contracts/Responses");
 const { PaymentStatus, EventType } = require("../../Core/Abstractions/Enums");
 const { NotFoundError } = require("../../Core/Abstractions/Exceptions");
 const { isNullOrUndefined, isArrayNullUndefinedOrEmpty } = require("../../Core/Utils/null-checker.util");
 const { formatPaginatedResponse } = require("../../Core/Utils/response-formatter.util");
 
-const { SchedulesRepository, EmployeesRepository, ComputedHoursRepository } = require("../../Repositories");
+const { EmployeesRepository, SchedulesRepository, PayrollsRepository } = require("../../Repositories");
 
-const registerComputedHourForTodayAsync = async (employeeId) => {
+//#region Payrolls
+const registerPayrollAsync = async (employeeId) => {
     let employee = await EmployeesRepository.getEmployeeByIdAsync(employeeId);
     if(isNullOrUndefined(employee)) {
         throw NotFoundError(`Employee with id (${employee}) does not exist`);
@@ -20,23 +20,23 @@ const registerComputedHourForTodayAsync = async (employeeId) => {
         throw new NotFoundError(`No hours have been recorded today for employee with id '${employeeId}'`);
     }
 
-    let { count: computedHoursCount, rows: todaysComputedHours } = await ComputedHoursRepository.getComputedHoursByEmployeeIdAsync(employeeId, todayStart, todayEnd, PaymentStatus.Pending, 0, 1);
-    if(computedHoursCount === 0){
-        return await createNewComputedHourAsync();
+    let { count: payrollsCount, rows: todaysPayrolls } = await PayrollsRepository.getPayrollsByEmployeeIdAsync(employeeId, todayStart, todayEnd, PaymentStatus.Pending, 0, 1);
+    if(payrollsCount === 0){
+        return await createNewPayrollAsync();
     } else {
-        return await updateExistingComputedHourAsync();
+        return await updateExistingPayrollAsync();
     }
 
 //#region Aux methods
-    async function createNewComputedHourAsync() {
+    async function createNewPayrollAsync() {
         let { totalWorkHours, totalWorkPay } = calculateTotalWorkHoursAndPay(employee.payPerHour);
         let totalBreakHours = calculateTotalBreakHours();
         let { totalTrainingHours, totalTrainingPay } = calculateTotalTrainingHoursAndPay(employee.payPerHour);
         let grossPay = totalWorkPay + totalTrainingPay;
 
-        todaysComputedHours = await ComputedHoursRepository.createComputedHourAsync(employeeId, employee.payPerHour,todayStart, todayEnd, totalWorkHours, totalTrainingHours, totalBreakHours);
+        todaysPayrolls = await PayrollsRepository.createPayrollAsync(employeeId, employee.payPerHour, todayStart, todayEnd, totalWorkHours, totalTrainingHours, totalBreakHours);
 
-        return formatResponse(todaysComputedHours.id, +employee.payPerHour, +totalWorkHours.toFixed(7), 
+        return formatResponse(todaysPayrolls.id, +employee.payPerHour, +totalWorkHours.toFixed(7), 
         totalWorkPay, +totalBreakHours.toFixed(7), +totalTrainingHours.toFixed(7), 
         totalTrainingPay, grossPay, PaymentStatus.Pending);
     };
@@ -96,22 +96,55 @@ const registerComputedHourForTodayAsync = async (employeeId) => {
         };
     };
 
-    async function updateExistingComputedHourAsync() {
-        let { totalWorkHours, totalWorkPay } = calculateTotalWorkHoursAndPay(todaysComputedHours[0].payPerHour);
+    async function updateExistingPayrollAsync() {
+        let { totalWorkHours, totalWorkPay } = calculateTotalWorkHoursAndPay(todaysPayrolls[0].payPerHour);
         let totalBreakHours = calculateTotalBreakHours();
-        let { totalTrainingHours, totalTrainingPay } = calculateTotalTrainingHoursAndPay(todaysComputedHours[0].payPerHour);
+        let { totalTrainingHours, totalTrainingPay } = calculateTotalTrainingHoursAndPay(todaysPayrolls[0].payPerHour);
         let grossPay = totalWorkPay + totalTrainingPay;
 
-        await ComputedHoursRepository.updateComputedHourAsync(todaysComputedHours[0].id, totalWorkHours, totalTrainingHours, totalBreakHours);
+        await PayrollsRepository.updatePayrollAsync(todaysPayrolls[0].id, totalWorkHours, totalTrainingHours, totalBreakHours);
 
-        return formatResponse(+todaysComputedHours[0].id, +todaysComputedHours[0].payPerHour, +totalWorkHours.toFixed(7), 
+        return formatResponse(+todaysPayrolls[0].id, +todaysPayrolls[0].payPerHour, +totalWorkHours.toFixed(7), 
         totalWorkPay, +totalBreakHours.toFixed(7), +totalTrainingHours.toFixed(7), 
-        totalTrainingPay, grossPay, +todaysComputedHours[0].paymentStatus);
+        totalTrainingPay, grossPay, +todaysPayrolls[0].paymentStatus);
     };
 //#endregion
 };
 
-const getTodaysComputedHourByEmployeeIdAsync = async (employeeId) => {
+const getPayrollsAsync = async (paymentStatus = undefined, startDate = new Date(Date.now() - 86400000).getTime(), endDate = new Date().getTime(), currentPage = 1, itemsPerPage = 10, order = 'DESC') => {
+    let skip = (currentPage - 1) * itemsPerPage;
+    let { count, rows: payrolls } = await PayrollsRepository.getPayrollsAsync(paymentStatus, startDate, endDate, skip, itemsPerPage, order);
+    if (isArrayNullUndefinedOrEmpty(payrolls)){
+        return new PaginatedResponse();
+    }
+
+    let payrollModels = [];
+    payrolls.forEach(payroll => {
+        let { id, startDate, endDate, employeeId, payPerHour, 
+            totalWorkingHours: totalWorkHours, payForWorkingHours: totalWorkPay, 
+            totalBreakHours: totalBreakHours, totalTrainingHours, 
+            payForTrainingHours: totalTrainingPay, paymentStatus } = payroll;
+        
+        payrollModels.push({
+            id,
+            startDate,
+            endDate,
+            employeeId,
+            payPerHour,
+            totalWorkHours,
+            totalWorkPay,
+            totalBreakHours,
+            totalTrainingHours,
+            totalTrainingPay,
+            grossPay: totalWorkPay + totalTrainingPay,
+            paymentStatus
+        });
+    });
+    
+    return formatPaginatedResponse(currentPage, itemsPerPage, payrollModels, count);
+};
+
+const getTodaysPayrollByEmployeeIdAsync = async (employeeId) => {
     let employee = await EmployeesRepository.getEmployeeByIdAsync(employeeId);
     if(isNullOrUndefined(employee)) {
         throw NotFoundError(`Employee with id (${employee}) does not exist`);
@@ -119,12 +152,12 @@ const getTodaysComputedHourByEmployeeIdAsync = async (employeeId) => {
 
     const todayStart = new Date(new Date().setHours(0, 0, 0, 0)).getTime();
     const todayEnd = new Date(new Date().setHours(23, 59, 59, 999)).getTime();
-    let { rows: todaysComputedHours } = await ComputedHoursRepository.getComputedHoursByEmployeeIdAsync(employeeId, todayStart, todayEnd, undefined, 0, 1);
-    if (isArrayNullUndefinedOrEmpty(todaysComputedHours)){
+    let { rows: todaysPayrolls } = await PayrollsRepository.getPayrollsByEmployeeIdAsync(employeeId, todayStart, todayEnd, undefined, 0, 1);
+    if (isArrayNullUndefinedOrEmpty(todaysPayrolls)){
         throw new NotFoundError(`No hours have been computed today for employee with id '${employeeId}'`);
     }
 
-    let { id, startDate, endDate, payPerHour, totalWorkingHours: totalWorkHours, payForWorkingHours: totalWorkPay, totalBreakHours: totalBreakHours, totalTrainingHours, payForTrainingHours: totalTrainingPay, paymentStatus} = todaysComputedHours[0];
+    let { id, startDate, endDate, payPerHour, totalWorkingHours: totalWorkHours, payForWorkingHours: totalWorkPay, totalBreakHours: totalBreakHours, totalTrainingHours, payForTrainingHours: totalTrainingPay, paymentStatus} = todaysPayrolls[0];
     
     return {
         id,
@@ -143,25 +176,25 @@ const getTodaysComputedHourByEmployeeIdAsync = async (employeeId) => {
     };
 };
 
-const getComputedHoursByEmployeeIdAsync = async (employeeId, paymentStatus = undefined, currentPage = 1, itemsPerPage = 10, order = 'DESC') => {
+const getPayrollsByEmployeeIdAsync = async (employeeId, paymentStatus = undefined, currentPage = 1, itemsPerPage = 10, order = 'DESC') => {
     let employee = await EmployeesRepository.getEmployeeByIdAsync(employeeId);
     if(isNullOrUndefined(employee)) {
         throw NotFoundError(`Employee with id (${employee}) does not exist`);
     }
 
     let skip = (currentPage - 1) * itemsPerPage;
-    let { count, rows: computedHours } = await ComputedHoursRepository.getComputedHoursByEmployeeIdAsync(employeeId, undefined, undefined, paymentStatus, skip, itemsPerPage, order);
-    if (isArrayNullUndefinedOrEmpty(computedHours)){
+    let { count, rows: payrolls } = await PayrollsRepository.getPayrollsByEmployeeIdAsync(employeeId, undefined, undefined, paymentStatus, skip, itemsPerPage, order);
+    if (isArrayNullUndefinedOrEmpty(payrolls)){
         return new PaginatedResponse();
     }
 
-    let computedHourModels = [];
-    computedHours.forEach(computedHour => {
+    let payrollModels = [];
+    payrolls.forEach(payroll => {
         let { id, startDate, endDate, payPerHour, totalWorkingHours: totalWorkHours, 
             payForWorkingHours: totalWorkPay, totalBreakHours: totalBreakHours, totalTrainingHours, 
-            payForTrainingHours: totalTrainingPay, paymentStatus } = computedHour;
+            payForTrainingHours: totalTrainingPay, paymentStatus } = payroll;
         
-        computedHourModels.push({
+        payrollModels.push({
             id,
             startDate,
             endDate,
@@ -178,45 +211,28 @@ const getComputedHoursByEmployeeIdAsync = async (employeeId, paymentStatus = und
         });
     });
     
-    return formatPaginatedResponse(currentPage, itemsPerPage, computedHourModels, count);
+    return formatPaginatedResponse(currentPage, itemsPerPage, payrollModels, count);
 };
 
-const getComputedHoursAsync = async (paymentStatus = undefined, startDate = new Date(Date.now() - 86400000).getTime(), endDate = new Date().getTime(), currentPage = 1, itemsPerPage = 10, order = 'DESC') => {
-    let skip = (currentPage - 1) * itemsPerPage;
-    let { count, rows: computedHours } = await ComputedHoursRepository.getComputedHoursAsync(paymentStatus, startDate, endDate, skip, itemsPerPage, order);
-    if (isArrayNullUndefinedOrEmpty(computedHours)){
-        return new PaginatedResponse();
+//#endregion
+
+
+//#region Payroll Disputes
+const registerIncidentAsync = async (employeeId, comment) => {
+    let employee = await checkIfEmployeeExistAsync(employeeId);
+    
+    if(isNullUndefinedOrEmpty(comment)) {
+        throw new BadRequestError('Comment cannot be empty');
     }
 
-    let computedHourModels = [];
-    computedHours.forEach(computedHour => {
-        let { id, startDate, endDate, employeeId, payPerHour, 
-            totalWorkingHours: totalWorkHours, payForWorkingHours: totalWorkPay, 
-            totalBreakHours: totalBreakHours, totalTrainingHours, 
-            payForTrainingHours: totalTrainingPay, paymentStatus } = computedHour;
-        
-        computedHourModels.push({
-            id,
-            startDate,
-            endDate,
-            employeeId,
-            payPerHour,
-            totalWorkHours,
-            totalWorkPay,
-            totalBreakHours,
-            totalTrainingHours,
-            totalTrainingPay,
-            grossPay: totalWorkPay + totalTrainingPay,
-            paymentStatus
-        });
-    });
-    
-    return formatPaginatedResponse(currentPage, itemsPerPage, computedHourModels, count);
+    return IncidentsRepository.createIncidentAsync(employee.id, employee.supervisorId, comment);
 };
 
+//#endregion
+
 module.exports = {
-    registerComputedHourForTodayAsync,
-    getTodaysComputedHourByEmployeeIdAsync,
-    getComputedHoursByEmployeeIdAsync,
-    getComputedHoursAsync,
+    registerPayrollAsync,
+    getPayrollsAsync,
+    getTodaysPayrollByEmployeeIdAsync,
+    getPayrollsByEmployeeIdAsync,
 };

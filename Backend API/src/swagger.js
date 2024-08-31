@@ -40,7 +40,7 @@ const options = {
     apis: [
       `${__dirname}/Controllers/Admin/*.js`,
       `${__dirname}/Controllers/Auth/*.js`,
-      `${__dirname}/Controllers/Incidents/*.js`,
+      `${__dirname}/Controllers/Payrolls/*.js`,
       `${__dirname}/Controllers/Schedules/*.js`,
       `${__dirname}/Controllers/System/*.js`,
       `${__dirname}/Controllers/Users/*.js`,

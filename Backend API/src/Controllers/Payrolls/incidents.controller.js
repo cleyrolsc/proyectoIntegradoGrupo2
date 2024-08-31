@@ -135,55 +135,7 @@ const markIncidentAsRejectedAsync = async (request, response, next) => {
     }
 };
 
-const generateComputedHoursForDayAsync = async (request, response, next) => {
-    try {
-        let employeeId = await fetchEmployeeIdWithAuthTokenAsync(request);
-        let computedHours = await ComputedHoursService.registerComputedHourForTodayAsync(employeeId);
-        
-        created(response, request.originalUrl, computedHours);
-    } catch (error) {
-        next(error);
-    }
-};
 
-const fetchEmployeeComputedHoursForTodayAsync = async (request, response, next) => {
-    try {
-        let employeeId = await fetchEmployeeIdWithAuthTokenAsync(request);
-        let computedHours = await ComputedHoursService.getTodaysComputedHourByEmployeeIdAsync(employeeId);
-        
-        ok(response, request.originalUrl, computedHours);
-    } catch (error) {
-        next(error);
-    }
-};
-
-const fetchEmployeeComputedHoursAsync = async (request, response, next) => {
-    try {
-        let { page, pageSize } = extractPaginationElements(request);
-        let employeeId = await fetchEmployeeIdWithAuthTokenAsync(request);
-        let paymentStatus = isNotNullNorUndefined(request.query.paymentStatus) ? +request.query.paymentStatus : undefined;
-
-        let computedHours = await ComputedHoursService.getComputedHoursByEmployeeIdAsync(employeeId, paymentStatus, page, pageSize);
-        
-        ok(response, request.originalUrl, computedHours);
-    } catch (error) {
-        next(error);
-    }
-};
-
-const fetchComputedHoursAsync = async (request, response, next) => {
-    try {
-        let { page, pageSize } = extractPaginationElements(request);
-        let { startDate, endDate } = extractDateRange(request);
-        let paymentStatus = isNotNullNorUndefined(request.query.paymentStatus) ? +request.query.paymentStatus : undefined;
-
-        let computedHours = await ComputedHoursService.getComputedHoursAsync(paymentStatus, startDate, endDate, page, pageSize);
-        
-        ok(response, request.originalUrl, computedHours);
-    } catch (error) {
-        next(error);
-    }
-};
 
 module.exports = {
     registerIncidentAsync,
@@ -194,10 +146,4 @@ module.exports = {
     fetchIncidentsAssignedToSupervisorAsync,
     markIncidentAsResolvedAsync,
     markIncidentAsRejectedAsync,
-
-    // Computed Hours Endpoints
-    generateComputedHoursForDayAsync,
-    fetchEmployeeComputedHoursForTodayAsync,
-    fetchEmployeeComputedHoursAsync,
-    fetchComputedHoursAsync
 };

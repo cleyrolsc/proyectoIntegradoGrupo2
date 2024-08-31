@@ -4,9 +4,9 @@ const { PaymentStatus } = require('../../Core/Abstractions/Enums');
 const dbContext = require('../../Database/db-config');
 const Employee = require('./employee.class');
 
-class ComputedHour extends Model{};
+class Payroll extends Model{};
 
-ComputedHour.init({
+Payroll.init({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -62,9 +62,9 @@ ComputedHour.init({
 
 }, {
     sequelize: dbContext,
-    modelName: 'ComputedHour',
-    tableName: 'computedhours',
+    modelName: 'Payroll',
+    tableName: 'payrolls',
     timestamps: true,
 });
 
-module.exports = ComputedHour;
+module.exports = Payroll;

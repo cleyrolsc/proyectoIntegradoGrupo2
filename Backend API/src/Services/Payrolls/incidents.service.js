@@ -7,15 +7,6 @@ const IncidentsRepository = require('../../Repositories/incidents.repository');
 const EmployeesRepository = require('../../Repositories/employees.repository');
 const { IncidentStatus } = require('../../Core/Abstractions/Enums');
 
-const registerIncidentAsync = async (employeeId, comment) => {
-    let employee = await checkIfEmployeeExistAsync(employeeId);
-    
-    if(isNullUndefinedOrEmpty(comment)) {
-        throw new BadRequestError('Comment cannot be empty');
-    }
-
-    return IncidentsRepository.createIncidentAsync(employee.id, employee.supervisorId, comment);
-};
 
 async function checkIfEmployeeExistAsync(employeeId) {
     let employee = await EmployeesRepository.getEmployeeByIdAsync(employeeId);

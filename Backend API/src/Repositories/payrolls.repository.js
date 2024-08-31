@@ -4,14 +4,14 @@ const { BadRequestError } = require('../Core/Abstractions/Exceptions');
 const { isNotNullNorUndefined, isNullOrUndefined, isNullUndefinedOrEmpty } = require('../Core/Utils/null-checker.util');
 const { Op } = require('sequelize');
 
-const ComputedHour = require('./Entities/computed-hour.class');
+const Payroll = require('./Entities/payroll.class');
 
-const createComputedHourAsync = (employeeId, payPerHour, startDate, endDate, totalWorkingHours, totalTrainingHours, totalBreakHours) => {
+const createPayrollAsync = (employeeId, payPerHour, startDate, endDate, totalWorkingHours, totalTrainingHours, totalBreakHours) => {
     if (isNullUndefinedOrEmpty(employeeId)) {
         throw new BadRequestError('Employee id cannot be undefined');
     }
 
-    return ComputedHour.create({
+    return Payroll.create({
         employeeId,
         payPerHour,
         startDate,
@@ -24,16 +24,16 @@ const createComputedHourAsync = (employeeId, payPerHour, startDate, endDate, tot
     });
 };
 
-const getComputedHourByIdAsync = async (id) => {
-    let computedHour = await ComputedHour.findByPk(id);
-    if(isNullOrUndefined(computedHour)){
+const getPayrollByIdAsync = async (id) => {
+    let Payroll = await Payroll.findByPk(id);
+    if(isNullOrUndefined(Payroll)){
         return undefined;
     }
 
-    return computedHour;
+    return Payroll;
 };
 
-const getComputedHoursAsync = (paymentStatus = undefined, startDate = undefined, endDate = undefined, skip = 0, limit = 10, orderBy = 'DESC') => {
+const getPayrollsAsync = (paymentStatus = undefined, startDate = undefined, endDate = undefined, skip = 0, limit = 10, orderBy = 'DESC') => {
     let where = {};
     if(isNotNullNorUndefined(startDate) && isNotNullNorUndefined(endDate)) {
         where = {
@@ -53,7 +53,7 @@ const getComputedHoursAsync = (paymentStatus = undefined, startDate = undefined,
         where.paymentStatus = paymentStatus
     }
 
-    return ComputedHour.findAndCountAll({
+    return Payroll.findAndCountAll({
         where,
         order: [['id', orderBy]],
         skip,
@@ -61,7 +61,7 @@ const getComputedHoursAsync = (paymentStatus = undefined, startDate = undefined,
     });
 };
 
-const getComputedHoursByEmployeeIdAsync = (employeeId, startDate = undefined, endDate = undefined, paymentStatus = undefined, skip = 0, limit = 10, orderBy = 'DESC') => {
+const getPayrollsByEmployeeIdAsync = (employeeId, startDate = undefined, endDate = undefined, paymentStatus = undefined, skip = 0, limit = 10, orderBy = 'DESC') => {
     let where = {
         employeeId
     };
@@ -78,7 +78,7 @@ const getComputedHoursByEmployeeIdAsync = (employeeId, startDate = undefined, en
         where.paymentStatus = paymentStatus
     }
     
-    return ComputedHour.findAndCountAll({
+    return Payroll.findAndCountAll({
         where,
         order: [['id', orderBy]],
         skip,
@@ -86,39 +86,39 @@ const getComputedHoursByEmployeeIdAsync = (employeeId, startDate = undefined, en
     });
 };
 
-const updateComputedHourAsync = async (id, totalWorkingHours = undefined, totalTrainingHours = undefined, totalBreakHours = undefined, paymentStatus = undefined) => {
-    let computedHour = await ComputedHour.findByPk(id);
-    if(isNullOrUndefined(computedHour)){
+const updatePayrollAsync = async (id, totalWorkingHours = undefined, totalTrainingHours = undefined, totalBreakHours = undefined, paymentStatus = undefined) => {
+    let payroll = await Payroll.findByPk(id);
+    if(isNullOrUndefined(payroll)){
         return undefined;
     }
     
     if (isNullOrUndefined(totalWorkingHours) && isNullOrUndefined(totalTrainingHours) && isNullOrUndefined(totalBreakHours) && paymentStatus(totalBreakHours)) {
-        return computedHour
+        return payroll
     }
 
     if(isNotNullNorUndefined(totalWorkingHours)) {
-        computedHour.totalWorkingHours = totalWorkingHours;
-        computedHour.payForWorkingHours = totalWorkingHours * computedHour.payPerHour;
+        payroll.totalWorkingHours = totalWorkingHours;
+        payroll.payForWorkingHours = totalWorkingHours * payroll.payPerHour;
     }
 
     if(isNotNullNorUndefined(totalTrainingHours)) {
-        computedHour.totalTrainingHours = totalTrainingHours;
-        computedHour.payForTrainingHours = totalTrainingHours * computedHour.payPerHour;
+        payroll.totalTrainingHours = totalTrainingHours;
+        payroll.payForTrainingHours = totalTrainingHours * payroll.payPerHour;
     }
 
-    computedHour.totalTrainingHours = totalTrainingHours ?? computedHour.totalTrainingHours;
-    computedHour.paymentStatus = paymentStatus ?? computedHour.paymentStatus;
-    computedHour.updatedAt = new Date();
+    payroll.totalTrainingHours = totalTrainingHours ?? payroll.totalTrainingHours;
+    payroll.paymentStatus = paymentStatus ?? payroll.paymentStatus;
+    payroll.updatedAt = new Date();
 
-    await computedHour.save();
+    await payroll.save();
 
-    return computedHour;
+    return payroll;
 };
 
 module.exports = {
-    createComputedHourAsync,
-    getComputedHourByIdAsync,
-    getComputedHoursAsync,
-    getComputedHoursByEmployeeIdAsync,
-    updateComputedHourAsync
+    createPayrollAsync,
+    getPayrollByIdAsync,
+    getPayrollsAsync,
+    getPayrollsByEmployeeIdAsync,
+    updatePayrollAsync
 };

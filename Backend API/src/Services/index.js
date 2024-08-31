@@ -1,6 +1,7 @@
 const AuthService = require("./Auth/auth.service");
-const ComputedHoursService = require("./Incidents/computed-hours.service");
-const IncidentsService = require("./Incidents/incidents.service");
+const ComputedHoursService = require("./Payrolls/computed-hours.service");
+const IncidentsService = require("./Payrolls/incidents.service");
+const PayrollsService = require("./Payrolls/payrolls.service");
 const PrivilegesService = require("./Privileges/privileges.service");
 const ScheduleService = require("./Schedules/schedules.service");
 const SystemService = require("./System/system.service");
@@ -10,6 +11,7 @@ module.exports = {
     AuthService,
     ComputedHoursService,
     IncidentsService,
+    PayrollsService,
     PrivilegesService,
     ScheduleService,
     SystemService,
