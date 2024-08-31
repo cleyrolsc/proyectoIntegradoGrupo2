@@ -20,10 +20,6 @@ ComputedHour.init({
         type: DataTypes.DATE,
         allowNull: false
     },
-    employeeIdentificationNumber: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
     payPerHour: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -56,7 +52,7 @@ ComputedHour.init({
 
     // Foreign Keys
     employeeId: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
         references: {
             model: Employee,

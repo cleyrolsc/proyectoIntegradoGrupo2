@@ -41,7 +41,7 @@ Incident.init({
 
     // Foreign Keys
     employeeId: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
         references: {
             model: Employee,
@@ -49,7 +49,7 @@ Incident.init({
         }
     },
     supervisorId: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
         references: {
             model: Employee,

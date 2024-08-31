@@ -32,7 +32,7 @@ const getIncidentsAsync = (skip = 0, limit = 10, orderBy = 'DESC') => Incident.f
 });
 
 const getIncidentsByEmployeeIdAsync = (employeeId, skip = 0, limit = 10, orderBy = 'DESC') => {
-    if(isNullOrUndefined(employeeId)){
+    if(isNullUndefinedOrEmpty(employeeId)){
         throw new BadRequestError('Employee id cannot be undefined');
     }
 

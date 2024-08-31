@@ -1,24 +1,18 @@
 
 
 const { BadRequestError } = require('../Core/Abstractions/Exceptions');
-const { isNotNullNorUndefined, isNotNullUndefinedNorEmpty, isNullOrUndefined, isNullUndefinedOrEmpty } = require('../Core/Utils/null-checker.util');
+const { isNotNullNorUndefined, isNullOrUndefined, isNullUndefinedOrEmpty } = require('../Core/Utils/null-checker.util');
 const { Op } = require('sequelize');
 
 const ComputedHour = require('./Entities/computed-hour.class');
 
-const createComputedHourAsync = (employeeId, employeeIdentificationNumber, payPerHour, startDate, endDate,
-    totalWorkingHours, totalTrainingHours, totalBreakHours) => {
-    if (isNullOrUndefined(employeeId)) {
+const createComputedHourAsync = (employeeId, payPerHour, startDate, endDate, totalWorkingHours, totalTrainingHours, totalBreakHours) => {
+    if (isNullUndefinedOrEmpty(employeeId)) {
         throw new BadRequestError('Employee id cannot be undefined');
-    }
-
-    if (isNullUndefinedOrEmpty(employeeIdentificationNumber)) {
-        throw new BadRequestError('Employee identification number cannot be undefined');
     }
 
     return ComputedHour.create({
         employeeId,
-        employeeIdentificationNumber,
         payPerHour,
         startDate,
         endDate,

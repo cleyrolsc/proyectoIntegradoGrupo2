@@ -1,10 +1,9 @@
 class UpdateEmployeeInformationResponse{
     constructor(employeeInfo, supervisorInfo, departmentInfo, positionInfo){
         this.employeeInfo = {
-            employeeId: employeeInfo.employeeId,
+            employeeId: employeeInfo.id,
             firstName: employeeInfo.firstName,
             lastName: employeeInfo.lastName,
-            identificationNumber: employeeInfo.identificationNumber,
             position: positionInfo.description,
             commissionPerHour: employeeInfo.payPerHour,
             department: {
