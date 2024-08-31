@@ -1,6 +1,6 @@
 const { UnauthorizedError } = require('../Abstractions/Exceptions');
 const { isNullUndefinedOrEmpty } = require('../Utils/null-checker.util');
-const { formatErrorResponse } = require('../Utils/response-formatter.util');
+const { unauthorized, internalServerError } = require('../Abstractions/Contracts/HttpResponses/http-responses');
 
 const AuthService = require('../../Services/Auth/auth.service');
 
@@ -20,18 +20,15 @@ const sessionAuthenticationFilter = async (request, response, next) => {
 
         next();
     } catch (error) {
-        let status = 500;
-
         switch (error.constructor.name) {
             case "UnauthorizedError":
             case "TokenExpiredError":
-                status = 401;
-                break;
+                return unauthorized(response, request.originalUrl, error, true);
             default:
                 break;
         };
 
-        response.status(status).json(formatErrorResponse(status, request.originalUrl, error));
+        internalServerError(response, request.originalUrl, error);
     }
 };
 

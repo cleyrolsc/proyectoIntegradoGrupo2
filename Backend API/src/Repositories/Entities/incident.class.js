@@ -1,8 +1,9 @@
 const { DataTypes, Model } = require('sequelize');
 const { IncidentStatus } = require('../../Core/Abstractions/Enums');
-const Employee = require('./employee.class');
 
 const dbContext = require('../../Database/db-config');
+const ComputedHour = require('./computed-hour.class');
+const Employee = require('./employee.class');
 
 class Incident extends Model{};
 
@@ -22,10 +23,25 @@ Incident.init({
         allowNull: false,
         defaultValue: IncidentStatus.Pending
     },
+    employeeApproval: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        defaultValue: null
+    },
+    supervisorApproval: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        defaultValue: null
+    },
+    managerApproval: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        defaultValue: null
+    },
 
     // Foreign Keys
     employeeId: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
         references: {
             model: Employee,
@@ -33,10 +49,18 @@ Incident.init({
         }
     },
     supervisorId: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
         references: {
             model: Employee,
+            key: 'id'
+        }
+    },
+    computedHourId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+            model: ComputedHour,
             key: 'id'
         }
     }

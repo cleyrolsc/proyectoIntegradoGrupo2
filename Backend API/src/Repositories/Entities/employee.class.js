@@ -8,7 +8,7 @@ class Employee extends Model {};
 
 Employee.init({
     id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         primaryKey: true,
         autoIncrement: true
     },
@@ -17,10 +17,6 @@ Employee.init({
         allowNull: false,
     },
     lastName: {
-        type: DataTypes.STRING,
-        allowNull: false,
-    },
-    identificationNumber: {
         type: DataTypes.STRING,
         allowNull: false,
     },
@@ -39,7 +35,7 @@ Employee.init({
         }
     },
     supervisorId: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
         references: {
             model: Employee,

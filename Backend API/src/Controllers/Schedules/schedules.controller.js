@@ -1,17 +1,17 @@
-const { BadRequestError, UnauthorizedError } = require('../../Core/Abstractions/Exceptions');
-const { isNullOrUndefined, isNullUndefinedOrEmpty } = require('../../Core/Utils/null-checker.util');
-const { formatResponse } = require('../../Core/Utils/response-formatter.util');
+const { BadRequestError } = require('../../Core/Abstractions/Exceptions');
+const { isNullOrUndefined, isNullUndefinedOrEmpty, isNotNullNorUndefined } = require('../../Core/Utils/null-checker.util');
 const { extractPaginationElements, extractDateRange, fetchEmployeeIdWithAuthTokenAsync } = require('../../Core/Utils/request-element-extractor.util');
+const { created, ok } = require('../../Core/Abstractions/Contracts/HttpResponses/http-responses');
 
 const SchedulesService = require('../../Services/Schedules/schedules.service');
 
-const registerMyHourAsync = async (request, response, next) => {
+const registerMyHoursAsync = async (request, response, next) => {
   try {
-    let { eventId } = request.body;
+    let { eventIds } = request.body;
     let employeeId = await fetchEmployeeIdWithAuthTokenAsync(request);
-    let schedule = await SchedulesService.reportHoursAsync({ eventId, employeeId });
+    let schedules = await SchedulesService.reportHoursAsync({ eventIds, employeeId });
 
-    response.status(201).json(formatResponse(201, request.originalUrl, schedule));
+    created(response, request.originalUrl, schedules);
   } catch (error) {
     next(error);
   }
@@ -20,9 +20,9 @@ const registerMyHourAsync = async (request, response, next) => {
 const registerEmployeeHourAsync = async (request, response, next) => {
   try {
     let { eventId, employeeId } = request.body;
-    let schedule = await SchedulesService.reportHoursAsync({ eventId, employeeId });
+    let schedule = await SchedulesService.reportHoursAsync({ eventIds: [eventId], employeeId });
 
-    response.status(201).json(formatResponse(201, request.originalUrl, schedule));
+    created(response, request.originalUrl, schedule);
   } catch (error) {
     next(error);
   }
@@ -35,7 +35,7 @@ const fetchRegisteredHoursAsync = async (request, response, next) => {
     
     const schedules = await SchedulesService.getHoursAsync(startDate, endDate, page, pageSize);
 
-    response.status(200).json(formatResponse(200, request.originalUrl, schedules));
+    ok(response, request.originalUrl, schedules);
   } catch (error) {
     next(error);
   } 
@@ -43,8 +43,8 @@ const fetchRegisteredHoursAsync = async (request, response, next) => {
 
 const fetchEmployeeHoursAsync = async (request, response, next) => {
   try {
-    let employeeId = +request.params.employeeId;
-    if (isNullOrUndefined(employeeId)) {
+    let employeeId = request.params.employeeId;
+    if (isNullUndefinedOrEmpty(employeeId)) {
       throw new BadRequestError('Employee id cannot be undefined');
     }
 
@@ -53,7 +53,7 @@ const fetchEmployeeHoursAsync = async (request, response, next) => {
 
     const schedules = await SchedulesService.getEmployeeHoursAsync(employeeId, startDate, endDate, page, pageSize);
 
-    response.status(200).json(formatResponse(200, request.originalUrl, schedules));
+    ok(response, request.originalUrl, schedules);
   } catch (error) {
     next(error);
   } 
@@ -61,7 +61,7 @@ const fetchEmployeeHoursAsync = async (request, response, next) => {
 
 const fetchRegisteredHoursByEventTypeAsync = async (request, response, next) => {
   try {
-    let eventId = +request.params.eventId;
+    let eventId = request.params.eventId !== '{eventId}' && isNotNullNorUndefined(request.params.eventId) ? +request.params.eventId : undefined;
     if (isNullOrUndefined(eventId)) {
       throw new BadRequestError('Event id cannot be undefined');
     }
@@ -71,14 +71,14 @@ const fetchRegisteredHoursByEventTypeAsync = async (request, response, next) => 
 
     const schedules = await SchedulesService.getHoursByEventAsync(eventId, startDate, endDate, page, pageSize);
 
-    response.status(200).json(formatResponse(200, request.originalUrl, schedules));
+    ok(response, request.originalUrl, schedules);
   } catch (error) {
     next(error);
   }   
 }
 
 module.exports = {
-  registerMyHourAsync,
+  registerMyHoursAsync,
   registerEmployeeHourAsync,
   fetchRegisteredHoursAsync,
   fetchEmployeeHoursAsync,

@@ -1,5 +1,6 @@
 const { BadRequestError, NotImplementedError } = require("../Core/Abstractions/Exceptions");
 const { isNullUndefinedOrEmpty, isNullOrUndefined } = require("../Core/Utils/null-checker.util");
+const { Op } = require('sequelize');
 
 const Incident = require('./Entities/incident.class');
 
@@ -31,7 +32,7 @@ const getIncidentsAsync = (skip = 0, limit = 10, orderBy = 'DESC') => Incident.f
 });
 
 const getIncidentsByEmployeeIdAsync = (employeeId, skip = 0, limit = 10, orderBy = 'DESC') => {
-    if(isNullOrUndefined(employeeId)){
+    if(isNullUndefinedOrEmpty(employeeId)){
         throw new BadRequestError('Employee id cannot be undefined');
     }
 

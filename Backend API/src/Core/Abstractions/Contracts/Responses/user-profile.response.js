@@ -11,7 +11,6 @@ class UserProfileResponse {
             employeeId: employeeInfo.id,
             firstName: employeeInfo.firstName,
             lastName: employeeInfo.lastName,
-            identificationNumber: employeeInfo.identificationNumber,
             position: positionInfo.description,
             commissionPerHour: employeeInfo.payPerHour,
             department: {
