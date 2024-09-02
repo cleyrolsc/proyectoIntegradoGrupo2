@@ -1,53 +1,53 @@
-const { DataTypes, Model } = require('sequelize');
-const { PaymentStatus } = require('../../Core/Abstractions/Enums');
+const { DataTypes, Model } = require("sequelize");
+const { PaymentStatus } = require("../../Core/Abstractions/Enums");
 
-const dbContext = require('../../Database/db-config');
-const Employee = require('./employee.class');
+const dbContext = require("../../Database/db-config");
+const Employee = require("./employee.class");
 
-class ComputedHour extends Model{};
+class Payroll extends Model { }
 
-ComputedHour.init({
+Payroll.init({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true,
     },
     startDate: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
     },
     endDate: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
     },
     payPerHour: {
-        type: DataTypes.STRING,
+        type: DataTypes.DECIMAL,
         allowNull: false,
     },
     totalWorkingHours: {
-        type: DataTypes.DOUBLE,
+        type: DataTypes.DECIMAL,
         defaultValue: 0.0,
     },
     payForWorkingHours: {
-        type: DataTypes.DOUBLE,
+        type: DataTypes.DECIMAL,
         defaultValue: 0.0,
     },
     totalTrainingHours: {
-        type: DataTypes.DOUBLE,
+        type: DataTypes.DECIMAL,
         defaultValue: 0.0,
     },
     payForTrainingHours: {
-        type: DataTypes.DOUBLE,
+        type: DataTypes.DECIMAL,
         defaultValue: 0.0,
     },
     totalBreakHours: {
-        type: DataTypes.DOUBLE,
+        type: DataTypes.DECIMAL,
         defaultValue: 0.0,
     },
     paymentStatus: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: PaymentStatus.Pending
+        defaultValue: PaymentStatus.Pending,
     },
 
     // Foreign Keys
@@ -56,15 +56,14 @@ ComputedHour.init({
         allowNull: false,
         references: {
             model: Employee,
-            key: 'id'
-        }
+            key: "id",
+        },
     },
-
 }, {
     sequelize: dbContext,
-    modelName: 'ComputedHour',
-    tableName: 'computedhours',
+    modelName: "Payroll",
+    tableName: "payrolls",
     timestamps: true,
 });
 
-module.exports = ComputedHour;
+module.exports = Payroll;
