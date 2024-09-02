@@ -21,27 +21,27 @@ Payroll.init({
         allowNull: false,
     },
     payPerHour: {
-        type: DataTypes.DOUBLE,
+        type: DataTypes.DECIMAL,
         allowNull: false,
     },
     totalWorkingHours: {
-        type: DataTypes.DOUBLE,
+        type: DataTypes.DECIMAL,
         defaultValue: 0.0,
     },
     payForWorkingHours: {
-        type: DataTypes.DOUBLE,
+        type: DataTypes.DECIMAL,
         defaultValue: 0.0,
     },
     totalTrainingHours: {
-        type: DataTypes.DOUBLE,
+        type: DataTypes.DECIMAL,
         defaultValue: 0.0,
     },
     payForTrainingHours: {
-        type: DataTypes.DOUBLE,
+        type: DataTypes.DECIMAL,
         defaultValue: 0.0,
     },
     totalBreakHours: {
-        type: DataTypes.DOUBLE,
+        type: DataTypes.DECIMAL,
         defaultValue: 0.0,
     },
     paymentStatus: {

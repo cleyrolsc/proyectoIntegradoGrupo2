@@ -1,7 +1,7 @@
 const { PaginatedResponse } = require("../../Core/Abstractions/Contracts/Responses");
 const { PaymentStatus, EventType, PayrollDisputeStatus } = require("../../Core/Abstractions/Enums");
 const { NotFoundError, BadRequestError, UnauthorizedError } = require("../../Core/Abstractions/Exceptions");
-const { isNullOrUndefined, isArrayNullUndefinedOrEmpty, isNullUndefinedOrEmpty } = require("../../Core/Utils/null-checker.util");
+const { isNullOrUndefined, isArrayNullUndefinedOrEmpty, isNullUndefinedOrEmpty, isNotNullNorUndefined } = require("../../Core/Utils/null-checker.util");
 const { formatPaginatedResponse } = require("../../Core/Utils/response-formatter.util");
 
 const { EmployeesRepository, SchedulesRepository, PayrollsRepository, PayrollDisputesRepository } = require("../../Repositories");
@@ -33,8 +33,8 @@ const registerPayrollAsync = async (employeeId) => {
 
         todaysPayrolls = await PayrollsRepository.createPayrollAsync(employeeId, employee.payPerHour, todayStart, todayEnd, totalWorkHours, totalTrainingHours, totalBreakHours);
 
-        return formatResponse(todaysPayrolls.id, +employee.payPerHour, +totalWorkHours.toFixed(7),
-            totalWorkPay, +totalBreakHours.toFixed(7), +totalTrainingHours.toFixed(7),
+        return formatResponse(todaysPayrolls.id, +employee.payPerHour, +totalWorkHours.toFixed(4),
+            totalWorkPay, +totalBreakHours.toFixed(4), +totalTrainingHours.toFixed(4),
             totalTrainingPay, grossPay, PaymentStatus.Pending);
     };
 
@@ -76,6 +76,7 @@ const registerPayrollAsync = async (employeeId) => {
     };
 
     function formatResponse(id, payPerHour, totalWorkHours, totalWorkPay, totalBreakHours, totalTrainingHours, totalTrainingPay, grossPay, paymentStatus) {
+
         return {
             id,
             startDate: new Date(todayStart),
@@ -101,8 +102,8 @@ const registerPayrollAsync = async (employeeId) => {
 
         await PayrollsRepository.updatePayrollAsync(todaysPayrolls[0].id, totalWorkHours, totalTrainingHours, totalBreakHours);
 
-        return formatResponse(+todaysPayrolls[0].id, +todaysPayrolls[0].payPerHour, +totalWorkHours.toFixed(7),
-            totalWorkPay, +totalBreakHours.toFixed(7), +totalTrainingHours.toFixed(7),
+        return formatResponse(+todaysPayrolls[0].id, +todaysPayrolls[0].payPerHour, +totalWorkHours.toFixed(4),
+            totalWorkPay, +totalBreakHours.toFixed(4), +totalTrainingHours.toFixed(4),
             totalTrainingPay, grossPay, +todaysPayrolls[0].paymentStatus);
     };
     //#endregion
@@ -135,18 +136,22 @@ const getPayrollsAsync = async (paymentStatus = undefined, startDate = new Date(
             totalBreakHours: totalBreakHours, totalTrainingHours,
             payForTrainingHours: totalTrainingPay, paymentStatus } = payroll;
 
+        totalWorkPay = +totalWorkPay;
+        totalTrainingPay = +totalTrainingPay;
+        let grossPay = totalWorkPay + totalTrainingPay;
+
         payrollModels.push({
             id,
             startDate,
             endDate,
             employeeId,
-            payPerHour,
-            totalWorkHours,
+            payPerHour: +payPerHour,
+            totalWorkHours: +totalWorkHours,
             totalWorkPay,
-            totalBreakHours,
-            totalTrainingHours,
+            totalBreakHours: +totalBreakHours,
+            totalTrainingHours: +totalTrainingHours,
             totalTrainingPay,
-            grossPay: totalWorkPay + totalTrainingPay,
+            grossPay: +grossPay,
             paymentStatus
         });
     });
@@ -165,6 +170,9 @@ const getTodaysPayrollByEmployeeIdAsync = async (employeeId) => {
     }
 
     let { id, startDate, endDate, payPerHour, totalWorkingHours: totalWorkHours, payForWorkingHours: totalWorkPay, totalBreakHours: totalBreakHours, totalTrainingHours, payForTrainingHours: totalTrainingPay, paymentStatus } = todaysPayrolls[0];
+    totalWorkPay = +totalWorkPay;
+    totalTrainingPay = +totalTrainingPay;
+    let grossPay = totalWorkPay + totalTrainingPay;
 
     return {
         id,
@@ -172,13 +180,13 @@ const getTodaysPayrollByEmployeeIdAsync = async (employeeId) => {
         endDate,
         employeeId,
         fullName: `${employee.firstName} ${employee.lastName}`,
-        payPerHour,
-        totalWorkHours,
+        payPerHour: +payPerHour,
+        totalWorkHours: +totalWorkHours,
         totalWorkPay,
-        totalBreakHours,
-        totalTrainingHours,
+        totalBreakHours: +totalBreakHours,
+        totalTrainingHours: +totalTrainingHours,
         totalTrainingPay,
-        grossPay: totalWorkPay + totalTrainingPay,
+        grossPay,
         paymentStatus
     };
 };
@@ -198,19 +206,23 @@ const getPayrollsByEmployeeIdAsync = async (employeeId, paymentStatus = undefine
             payForWorkingHours: totalWorkPay, totalBreakHours: totalBreakHours, totalTrainingHours,
             payForTrainingHours: totalTrainingPay, paymentStatus } = payroll;
 
+        totalWorkPay = +totalWorkPay;
+        totalTrainingPay = +totalTrainingPay;
+        let grossPay = totalWorkPay + totalTrainingPay;
+
         payrollModels.push({
             id,
             startDate,
             endDate,
             employeeId,
             fullName: `${employee.firstName} ${employee.lastName}`,
-            payPerHour,
-            totalWorkHours,
+            payPerHour: +payPerHour,
+            totalWorkHours: +totalWorkHours,
             totalWorkPay,
-            totalBreakHours,
-            totalTrainingHours,
+            totalBreakHours: +totalBreakHours,
+            totalTrainingHours: +totalTrainingHours,
             totalTrainingPay,
-            grossPay: totalWorkPay + totalTrainingPay,
+            grossPay: +grossPay,
             paymentStatus
         });
     });
@@ -221,11 +233,7 @@ const getPayrollsByEmployeeIdAsync = async (employeeId, paymentStatus = undefine
 const updatePayrollPaymentStatusAsync = async (id, paymentStatus) => {
     isPaymentStatusValid();
     let payroll = await checkIfPayrollHasBeenGeneratedAsync(id);
-    if (paymentStatus === payroll.paymentStatus) {
-        return payroll;
-    }
-
-    if (payroll.paymentStatus !== PayrollDisputeStatus.Pending) {
+    if (!shouldPayrollCurrentPaymentStatusChange()) {
         return payroll;
     }
 
@@ -233,7 +241,11 @@ const updatePayrollPaymentStatusAsync = async (id, paymentStatus) => {
 
     let { employeeId, startDate, endDate, payPerHour, totalWorkingHours: totalWorkHours,
         payForWorkingHours: totalWorkPay, totalBreakHours: totalBreakHours, totalTrainingHours,
-        payForTrainingHours: totalTrainingPay } = await PayrollsRepository.updatePayrollAsync(id, undefined, undefined, undefined, paymentStatus);
+        payForTrainingHours: totalTrainingPay, paymentStatus: newStatus } = await PayrollsRepository.updatePayrollAsync(id, undefined, undefined, undefined, paymentStatus);
+
+    totalWorkPay = +totalWorkPay;
+    totalTrainingPay = +totalTrainingPay;
+    let grossPay = totalWorkPay + totalTrainingPay;
 
     let employee = await checkIfEmployeeExistAsync(employeeId);
 
@@ -243,14 +255,14 @@ const updatePayrollPaymentStatusAsync = async (id, paymentStatus) => {
         endDate,
         employeeId,
         fullName: `${employee.firstName} ${employee.lastName}`,
-        payPerHour,
-        totalWorkHours,
+        payPerHour: +payPerHour,
+        totalWorkHours: +totalWorkHours,
         totalWorkPay,
-        totalBreakHours,
-        totalTrainingHours,
+        totalBreakHours: +totalBreakHours,
+        totalTrainingHours: +totalTrainingHours,
         totalTrainingPay,
-        grossPay: totalWorkPay + totalTrainingPay,
-        paymentStatus
+        grossPay: +grossPay,
+        paymentStatus: newStatus
     };
 
     function isPaymentStatusValid() {
@@ -268,19 +280,55 @@ const updatePayrollPaymentStatusAsync = async (id, paymentStatus) => {
         }
     };
 
+    function shouldPayrollCurrentPaymentStatusChange() {
+        if (paymentStatus === payroll.paymentStatus) {
+            return false;
+        }
+
+        if (payroll.paymentStatus === PaymentStatus.Rejected) {
+            throw new UnauthorizedError(`Payroll with id '${id}' has already been rejected for payment and cannot be marked as paid.`);
+        }
+
+        if (payroll.paymentStatus !== PaymentStatus.Pending) {
+            return false;
+        }
+
+        return true;
+    }
+
     async function hasPayrollDisputeBeenUpdatedAsync() {
         let { count, rows: payrollDisputes } = await PayrollDisputesRepository.getPayrollDisputeByPayrollIdAsync(id);
         if (count === 0) {
             throw new NotFoundError(`No disputes have been created for payroll with id '${id}'`);
         }
 
-        let { status } = payrollDisputes[0];
+        let { supervisorId, supervisorApproval, managerId, managerApproval, status } = payrollDisputes[0];
+
+        wasPayrollDisputeApproved(managerApproval, managerId, supervisorApproval, supervisorId, status);
+
         if (paymentStatus === PaymentStatus.Paid && status === PayrollDisputeStatus.Rejected) {
             throw new UnauthorizedError(`You cannot pay a payroll that has been rejected for payment`);
         }
+    };
 
-        if (paymentStatus === PaymentStatus.Rejected && status === PayrollDisputeStatus.Resolved) {
-            throw new UnauthorizedError(`You cannot reject a payroll that has been approved for payment`);
+    function wasPayrollDisputeApproved(managerApproval, managerId, supervisorApproval, supervisorId, status) {
+        let hasManagerRejectedPayroll = isNotNullNorUndefined(managerApproval) && !managerApproval;
+        if (hasManagerRejectedPayroll) {
+            throw new UnauthorizedError(`Manager with id '${managerId}' has not approved the payroll for payment`);
+        }
+
+        let hasSupervisorAndManagerRejectedPayroll = isNotNullNorUndefined(supervisorApproval) && !supervisorApproval && isNotNullNorUndefined(managerApproval) && !managerApproval;
+        if (hasSupervisorAndManagerRejectedPayroll) {
+            throw new UnauthorizedError(`Supervisor with id '${supervisorId}' and manager with id '${managerId}' hav not approved the payroll for payment`);
+        }
+
+        let hasSupervisorRejectedPayroll = isNotNullNorUndefined(supervisorApproval) && !supervisorApproval && isNullOrUndefined(managerApproval);
+        if (hasSupervisorRejectedPayroll) {
+            throw new UnauthorizedError(`Supervisor with id '${supervisorId}' has not approved the payroll for payment`);
+        }
+
+        if (status === PayrollDisputeStatus.Pending) {
+            throw new UnauthorizedError(`Payroll dispute is still in pending state`);
         }
     };
 };
@@ -381,10 +429,11 @@ const getPayrollDisputesAsync = async (currentPage = 1, itemsPerPage = 10, order
 
     let payrollDisputeModels = [];
     payrollDisputes.forEach(entity => {
-        let { id, employeeId, comment, employeeApproval, supervisorId, supervisorApproval, managerId, managerApproval, status, createdAt: submittedOn, updatedAt: lastModified } = entity;
+        let { id, employeeId, payrollId, comment, employeeApproval, supervisorId, supervisorApproval, managerId, managerApproval, status, createdAt: submittedOn, updatedAt: lastModified } = entity;
         payrollDisputeModels.push({
             id,
             employeeId,
+            payrollId,
             comment,
             employeeApproval,
             supervisorId,
@@ -439,10 +488,11 @@ const getPayrollDisputesBySupervisorIdOrManagerIdAsync = async (employeeId, curr
 
     let payrollDisputeModels = [];
     payrollDisputes.forEach(entity => {
-        let { id, employeeId, comment, employeeApproval, supervisorId, supervisorApproval, managerId, managerApproval, status, createdAt: submittedOn, updatedAt: lastModified } = entity;
+        let { id, employeeId, payrollId, comment, employeeApproval, supervisorId, supervisorApproval, managerId, managerApproval, status, createdAt: submittedOn, updatedAt: lastModified } = entity;
         payrollDisputeModels.push({
             id,
             employeeId,
+            payrollId,
             comment,
             employeeApproval,
             supervisorId,
@@ -455,7 +505,7 @@ const getPayrollDisputesBySupervisorIdOrManagerIdAsync = async (employeeId, curr
         });
     });
 
-    return formatPaginatedResponse(currentPage, itemsPerPage, PayrollDisputeModels, count);
+    return formatPaginatedResponse(currentPage, itemsPerPage, payrollDisputeModels, count);
 };
 
 const updatePayrollDisputeApprovalAsync = async (id, employeeId, approval) => {

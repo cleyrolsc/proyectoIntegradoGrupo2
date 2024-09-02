@@ -92,7 +92,7 @@ const updatePayrollAsync = async (id, totalWorkingHours = undefined, totalTraini
         return undefined;
     }
 
-    if (isNullOrUndefined(totalWorkingHours) && isNullOrUndefined(totalTrainingHours) && isNullOrUndefined(totalBreakHours) && paymentStatus(totalBreakHours)) {
+    if (isNullOrUndefined(totalWorkingHours) && isNullOrUndefined(totalTrainingHours) && isNullOrUndefined(totalBreakHours) && isNullOrUndefined(totalBreakHours) && isNullOrUndefined(paymentStatus)) {
         return payroll
     }
 

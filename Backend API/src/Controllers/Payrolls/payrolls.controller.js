@@ -1,6 +1,6 @@
 const { ok, created } = require("../../Core/Abstractions/Contracts/HttpResponses/http-responses");
 const { PayrollDisputeStatus, PaymentStatus } = require("../../Core/Abstractions/Enums");
-const { ForbiddenError } = require("../../Core/Abstractions/Exceptions");
+const { ForbiddenError, BadRequestError } = require("../../Core/Abstractions/Exceptions");
 const { isNotNullNorUndefined, isNotNullUndefinedNorEmpty, isNullUndefinedOrEmpty, isNullOrUndefined } = require("../../Core/Utils/null-checker.util");
 const { fetchEmployeeIdWithAuthTokenAsync, extractPaginationElements, extractDateRange } = require("../../Core/Utils/request-element-extractor.util");
 
@@ -213,7 +213,7 @@ const rejectPayrollDisputeAsync = async (request, response, next) => {
 
 const markPayrollDisputeAsResolvedAsync = async (request, response, next) => {
     try {
-        let disputeId = request.params.disputeId;
+        let disputeId = +request.params.disputeId;
         if (isNullOrUndefined(disputeId)) {
             throw new BadRequestError('Payroll dispute id cannot be undefined');
         }
@@ -245,10 +245,6 @@ const markPayrollDisputeAsRejectedAsync = async (request, response, next) => {
         let payrollDispute = await PayrollsService.getPayrollDisputeByIdAsync(disputeId);
         if (payrollDispute.status === PayrollDisputeStatus.Rejected) {
             return ok(response, request.originalUrl, payrollDispute);
-        }
-
-        if (payrollDispute.status === PayrollDisputeStatus.Resolved) {
-            throw new ForbiddenError("You cannot reject a payroll dispute that has been resolved");
         }
 
         payrollDispute = await PayrollsService.updatePayrollDisputeStatusAsync(disputeId, PayrollDisputeStatus.Rejected);
