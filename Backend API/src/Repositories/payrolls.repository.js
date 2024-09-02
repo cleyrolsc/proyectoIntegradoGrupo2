@@ -25,31 +25,31 @@ const createPayrollAsync = (employeeId, payPerHour, startDate, endDate, totalWor
 };
 
 const getPayrollByIdAsync = async (id) => {
-    let Payroll = await Payroll.findByPk(id);
-    if(isNullOrUndefined(Payroll)){
+    let payroll = await Payroll.findByPk(id);
+    if (isNullOrUndefined(payroll)) {
         return undefined;
     }
 
-    return Payroll;
+    return payroll;
 };
 
 const getPayrollsAsync = (paymentStatus = undefined, startDate = undefined, endDate = undefined, skip = 0, limit = 10, orderBy = 'DESC') => {
     let where = {};
-    if(isNotNullNorUndefined(startDate) && isNotNullNorUndefined(endDate)) {
+    if (isNotNullNorUndefined(startDate) && isNotNullNorUndefined(endDate)) {
         where = {
             createdAt: {
                 [Op.between]: [startDate, endDate]
             }
         }
     }
-    else if(isNotNullNorUndefined(startDate)) {
+    else if (isNotNullNorUndefined(startDate)) {
         where.createdAt = startDate
     }
-    else if(isNotNullNorUndefined(endDate)) {
+    else if (isNotNullNorUndefined(endDate)) {
         where.createdAt = endDate
     }
-    
-    if(isNotNullNorUndefined(paymentStatus)) {
+
+    if (isNotNullNorUndefined(paymentStatus)) {
         where.paymentStatus = paymentStatus
     }
 
@@ -66,18 +66,18 @@ const getPayrollsByEmployeeIdAsync = (employeeId, startDate = undefined, endDate
         employeeId
     };
 
-    if(isNotNullNorUndefined(startDate)) {
+    if (isNotNullNorUndefined(startDate)) {
         where.startDate = startDate
     }
 
-    if(isNotNullNorUndefined(endDate)) {
+    if (isNotNullNorUndefined(endDate)) {
         where.endDate = endDate
     }
 
-    if(isNotNullNorUndefined(paymentStatus)) {
+    if (isNotNullNorUndefined(paymentStatus)) {
         where.paymentStatus = paymentStatus
     }
-    
+
     return Payroll.findAndCountAll({
         where,
         order: [['id', orderBy]],
@@ -88,20 +88,20 @@ const getPayrollsByEmployeeIdAsync = (employeeId, startDate = undefined, endDate
 
 const updatePayrollAsync = async (id, totalWorkingHours = undefined, totalTrainingHours = undefined, totalBreakHours = undefined, paymentStatus = undefined) => {
     let payroll = await Payroll.findByPk(id);
-    if(isNullOrUndefined(payroll)){
+    if (isNullOrUndefined(payroll)) {
         return undefined;
     }
-    
+
     if (isNullOrUndefined(totalWorkingHours) && isNullOrUndefined(totalTrainingHours) && isNullOrUndefined(totalBreakHours) && paymentStatus(totalBreakHours)) {
         return payroll
     }
 
-    if(isNotNullNorUndefined(totalWorkingHours)) {
+    if (isNotNullNorUndefined(totalWorkingHours)) {
         payroll.totalWorkingHours = totalWorkingHours;
         payroll.payForWorkingHours = totalWorkingHours * payroll.payPerHour;
     }
 
-    if(isNotNullNorUndefined(totalTrainingHours)) {
+    if (isNotNullNorUndefined(totalTrainingHours)) {
         payroll.totalTrainingHours = totalTrainingHours;
         payroll.payForTrainingHours = totalTrainingHours * payroll.payPerHour;
     }

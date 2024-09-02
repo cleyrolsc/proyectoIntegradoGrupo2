@@ -1,27 +1,27 @@
-const { DataTypes, Model } = require('sequelize');
-const { PaymentStatus } = require('../../Core/Abstractions/Enums');
+const { DataTypes, Model } = require("sequelize");
+const { PaymentStatus } = require("../../Core/Abstractions/Enums");
 
-const dbContext = require('../../Database/db-config');
-const Employee = require('./employee.class');
+const dbContext = require("../../Database/db-config");
+const Employee = require("./employee.class");
 
-class Payroll extends Model{};
+class Payroll extends Model { }
 
 Payroll.init({
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true,
     },
     startDate: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
     },
     endDate: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
     },
     payPerHour: {
-        type: DataTypes.STRING,
+        type: DataTypes.DOUBLE,
         allowNull: false,
     },
     totalWorkingHours: {
@@ -47,7 +47,7 @@ Payroll.init({
     paymentStatus: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: PaymentStatus.Pending
+        defaultValue: PaymentStatus.Pending,
     },
 
     // Foreign Keys
@@ -56,14 +56,13 @@ Payroll.init({
         allowNull: false,
         references: {
             model: Employee,
-            key: 'id'
-        }
+            key: "id",
+        },
     },
-
 }, {
     sequelize: dbContext,
-    modelName: 'Payroll',
-    tableName: 'payrolls',
+    modelName: "Payroll",
+    tableName: "payrolls",
     timestamps: true,
 });
 

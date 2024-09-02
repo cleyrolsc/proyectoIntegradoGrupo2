@@ -26,7 +26,7 @@ class Server {
         this.filters();
     }
 
-    middlewares(){
+    middlewares() {
         this.app.use(express.json());
         this.app.use(urlencoded({ extended: true }));
 
@@ -38,7 +38,7 @@ class Server {
         this.app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
     }
 
-    routes(){
+    routes() {
         // Public endpoints
         this.app.use(this.authEndpoint, authRouter);
 
@@ -51,11 +51,11 @@ class Server {
         this.app.use(this.usersEndpoint, usersRouter);
     }
 
-    filters(){
+    filters() {
         this.app.use(globalErrorHandlingFilter);
     }
 
-    listen(){
+    listen() {
         this.app.listen(this.port, () => {
             console.log(`Server Started. Port: ${this.port}`);
         });
