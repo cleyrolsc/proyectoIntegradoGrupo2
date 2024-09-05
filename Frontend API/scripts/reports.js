@@ -69,6 +69,6 @@ fetch('http://localhost:3000/api/users/my-profile', {
 document.addEventListener('DOMContentLoaded', (event) => {
   event.preventDefault();
   if (!localStorage.getItem('isLoggedIn')) {
-    window.location = 'login.html';
+    // window.location = 'login.html';
   }
 });

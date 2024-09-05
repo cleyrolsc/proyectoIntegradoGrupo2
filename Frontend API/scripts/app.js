@@ -1,7 +1,5 @@
 'use strict';
 
-import { users } from '/data/users.js';
-
 const btnApprove = document.querySelector('.approve');
 const btnStartShift = document.querySelector('.start');
 const disputeModal = document.querySelector('.dispute-modal');
@@ -90,18 +88,6 @@ const createTimeStampt = function (element) {
   tableBodyEl.insertAdjacentHTML('afterbegin', html);
 };
 
-btnApprove.addEventListener('click', () => {
-  btnStartShift.classList.remove('hidden');
-  disputeModal.classList.add('hidden');
-});
-
-btnEscalate.addEventListener('click', function (e) {
-  e.preventDefault();
-  disputeModal.classList.add('hidden');
-  btnStartShift.classList.remove('hidden');
-  modalEl.dispose();
-});
-
 btnStartShift.addEventListener('click', () => {
   if (btnStartShift.textContent === 'Start') {
     timerEl.classList.remove('hidden');
@@ -111,11 +97,66 @@ btnStartShift.addEventListener('click', () => {
     btnStartShift.classList.add('btn-warning');
     btnStartShift.classList.remove('btn-success');
     logoutEl.textContent = 'Stop Working';
+
+    const events = {
+
+      "eventIds": [
+        1
+      ]
+
+    };
+
+    fetch('http://localhost:3000/api/schedules/register-my-hours', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(events),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('Success:', data);
+
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+
+
     startWorkTimer();
   } else if (btnStartShift.textContent === 'Pause') {
     btnBreaks.classList.remove('hidden');
     btnStartShift.classList.add('hidden');
     btnStartShift.classList.remove('btn-warning');
+    fetch('http://localhost:3000/api/schedules/register-my-hours', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json',
+      },
+
+      body: JSON.stringify(events),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('Success:', data);
+
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
   } else {
     stopTimer();
     startWorkTimer();
@@ -136,14 +177,15 @@ logoutEl.addEventListener('click', () => {
     timerEl.classList.add('hidden');
   } else if (logoutEl.textContent === 'Logout') {
     localStorage.clear();
-    window.location = 'login.html';
+    loginFormEl.classList.remove('hidden');
   }
 });
 
 logoutConfirmation.addEventListener('click', function (e) {
   localStorage.clear();
-  window.location = 'login.html';
+  // window.location = 'login.html';
 });
+
 btnBreak.addEventListener('click', function () {
   clearInterval(intervalID);
   stopWork();
@@ -222,25 +264,25 @@ fetch('http://localhost:3000/api/users/my-profile', {
     console.error('Error:', error);
   });
 
-departments.addEventListener('click', function (event) {
-  fetch('http://localhost:3000/api/system/departments', {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => {
-      console.log('pin');
-      if (!response.ok) {
-        throw new Error();
-      }
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data);
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-});
+// departments.addEventListener('click', function (event) {
+//   fetch('http://localhost:3000/api/system/departments', {
+//     method: 'GET',
+//     headers: {
+//       Authorization: `Bearer ${localStorage.getItem('token')}`,
+//       'Content-Type': 'application/json',
+//     },
+//   })
+//     .then((response) => {
+//       console.log('pin');
+//       if (!response.ok) {
+//         throw new Error();
+//       }
+//       return response.json();
+//     })
+//     .then((data) => {
+//       console.log(data);
+//     })
+//     .catch((error) => {
+//       console.error('Error:', error);
+//     });
+// });
