@@ -1,9 +1,10 @@
 const { NotImplementedError, BadRequestError } = require("../Core/Abstractions/Exceptions");
 const { isNullOrUndefined, isNullUndefinedOrEmpty } = require("../Core/Utils/null-checker.util");
+const { Op } = require('sequelize');
 
 const Employee = require('./Entities/employee.class');
 
-const createEmployeeAsync = ({firstName, lastName, identificationNumber, payPerHour, departmentId, supervisorId, positionId}) => {
+const createEmployeeAsync = ({id, firstName, lastName, payPerHour, departmentId, supervisorId, positionId}) => {
     if (isNullOrUndefined(departmentId)){
         throw new BadRequestError('Department id cannot be null');
     }
@@ -17,9 +18,9 @@ const createEmployeeAsync = ({firstName, lastName, identificationNumber, payPerH
     }
 
     return Employee.create({
+        id,
         firstName,
         lastName,
-        identificationNumber,
         payPerHour,
         departmentId,
         supervisorId,
@@ -36,53 +37,51 @@ const getEmployeeByIdAsync = async (id) => {
     return employee;
 };
 
-const getEmployeeByIdentificationNumberAsync = async (identificationNumber) => {
-    let employee = await Employee.findOne({
-        where: {
-            identificationNumber
-        }
-    });
-    if(isNullOrUndefined(employee)){
-        return undefined;
-    }
-
-    return employee;
-};
-
 const getEmployeesAsync = (skip = 0, limit = 10, orderBy = 'ASC') => Employee.findAndCountAll({
-        order: [['lastName', orderBy]],
-        offset: skip,
-        limit
-    });
+    order: [['lastName', orderBy]],
+    offset: skip,
+    limit
+});
+
+const getEmployeesByIdArrayAsync = (ids = [], skip = 0, limit = 10, orderBy = 'ASC') =>Employee.findAndCountAll({
+    where: {
+        id: {
+            [Op.in]: ids
+        } 
+    },
+    order: [['id', orderBy]],
+    offset: skip,
+    limit
+});
 
 const getEmployeesByDepartmentIdAsync = (departmentId, skip = 0, limit = 10, orderBy = 'ASC') => Employee.findAll({
-        where: {
-            departmentId
-        },
-        order: [['lastName', orderBy]],
-        offset: skip,
-        limit
-    });
+    where: {
+        departmentId
+    },
+    order: [['lastName', orderBy]],
+    offset: skip,
+    limit
+});
 
 const getEmployeesBySupervisorIdAsync = (supervisorId, skip = 0, limit = 10, orderBy = 'ASC') => Employee.findAll({
-        where: {
-            supervisorId
-        },
-        order: [['lastName', orderBy]],
-        offset: skip,
-        limit
-    });
+    where: {
+        supervisorId
+    },
+    order: [['lastName', orderBy]],
+    offset: skip,
+    limit
+});
 
 const getEmployeesByPositionIdAsync = (positionId, skip = 0, limit = 10, orderBy = 'ASC') => Employee.findAll({
-        where: {
-            positionId
-        },
-        order: [['lastName', orderBy]],
-        offset: skip,
-        limit
-    });
+    where: {
+        positionId
+    },
+    order: [['lastName', orderBy]],
+    offset: skip,
+    limit
+});
 
-const updateEmployeeAsync = async (employeeId, { firstName = undefined, lastName = undefined, identificationNumber = undefined, payPerHour = undefined, departmentId = undefined, supervisorId = undefined, positionId = undefined }) =>{
+const updateEmployeeAsync = async (employeeId, { firstName = undefined, lastName = undefined, payPerHour = undefined, departmentId = undefined, supervisorId = undefined, positionId = undefined }) =>{
     let employee = await getEmployeeByIdAsync(employeeId);
     if (isNullOrUndefined(employee)) {
         return undefined;
@@ -94,7 +93,6 @@ const updateEmployeeAsync = async (employeeId, { firstName = undefined, lastName
 
     employee.firstName = firstName ?? employee.firstName;
     employee.lastName = lastName ??  employee.lastName;
-    employee.identificationNumber = identificationNumber ??  employee.identificationNumber;
     employee.payPerHour = payPerHour ??  employee.payPerHour;
     employee.departmentId = departmentId ??  employee.departmentId;
     employee.supervisorId = supervisorId ??  employee.supervisorId;
@@ -106,11 +104,10 @@ const updateEmployeeAsync = async (employeeId, { firstName = undefined, lastName
 
     function areAllParametersEmpty(){
         return isNullUndefinedOrEmpty(firstName) && isNullUndefinedOrEmpty(lastName) &&
-        isNullUndefinedOrEmpty(identificationNumber) && isNullOrUndefined(payPerHour) &&
-        isNullOrUndefined(departmentId) && isNullOrUndefined(supervisorId) &&
-        isNullOrUndefined(positionId);
+        isNullOrUndefined(payPerHour) && isNullOrUndefined(departmentId) &&
+        isNullOrUndefined(supervisorId) && isNullOrUndefined(positionId);
     }
-}
+};
 
 const deleteEmployeeAsync = (id) => {
     throw new NotImplementedError();
@@ -119,8 +116,8 @@ const deleteEmployeeAsync = (id) => {
 module.exports = {
     createEmployeeAsync,
     getEmployeeByIdAsync,
-    getEmployeeByIdentificationNumberAsync,
     getEmployeesAsync,
+    getEmployeesByIdArrayAsync,
     getEmployeesByDepartmentIdAsync,
     getEmployeesBySupervisorIdAsync,
     getEmployeesByPositionIdAsync,

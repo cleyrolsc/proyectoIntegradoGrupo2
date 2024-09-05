@@ -1,7 +1,7 @@
 const { DataTypes, Model } = require('sequelize');
+const { UserType, UserStatus } = require("../../Core/Abstractions/Enums");
 
 const dbContext = require('../../Database/db-config');
-const { UserType, UserStatus } = require("../../Core/Abstractions/Enums");
 const Employee = require('./employee.class');
 const Privilege = require('./privilege.class');
 
@@ -33,7 +33,7 @@ User.init({
 
     // Foreign Keys
     employeeId: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
         references: {
             model: Employee,

@@ -1,4 +1,5 @@
-const { formatResponse } = require('../../Core/Utils/response-formatter.util');
+const { ok } = require('../../Core/Abstractions/Contracts/HttpResponses/http-responses');
+
 const AuthService = require('../../Services/Auth/auth.service');
 
 const loginAsync = async (request, response, next) => {
@@ -8,7 +9,7 @@ const loginAsync = async (request, response, next) => {
 
         let token = AuthService.generateToken(payload);
 
-        response.status(200).json(formatResponse(200, request.originalUrl, {token}));
+        ok(response, request.originalUrl, {token});
     } catch (error) {
         next(error);
     }

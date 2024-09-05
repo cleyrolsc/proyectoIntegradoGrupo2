@@ -1,34 +1,34 @@
-const { formatErrorResponse } = require("../Utils/response-formatter.util");
+const {
+    badRequest,
+    conflict,
+    serviceUnavailable,
+    unauthorized,
+    forbidden,
+    notFound,
+    internalServerError
+} = require("../Abstractions/Contracts/HttpResponses/http-responses");
 
 const globalErrorHandlingFilter = (error, request, response, next) => {
     console.log(`${error.constructor.name} -- ${error.message}`);
 
-    let status = 500;
-
     switch (error.constructor.name) {
         case "BadRequestError":
-            status = 400;
-            break;
-        case "ConflictError":
-            status = 409;
-            break;
-        case "FatalError":
-            status = 503;
-            break;
+            return badRequest(response, request.originalUrl, error, true);
         case "UnauthorizedError":
-            status = 401;
-            break;
-            case "ForbiddenError":
-                status = 403;
-                break;
+            return unauthorized(response, request.originalUrl, error, true);
+        case "ForbiddenError":
+            return forbidden(response, request.originalUrl, error, true);
         case "NotFoundError":
-            status = 404;
-            break;
+            return notFound(response, request.originalUrl, error, true);
+        case "ConflictError":
+            return conflict(response, request.originalUrl, error, true);
+        case "FatalError":
+            return serviceUnavailable(response, request.originalUrl, error, true);
         default:
             break;
     };
 
-    response.status(status).json(formatErrorResponse(status, request.originalUrl, error));
+    internalServerError(response, request.originalUrl, error, true);
 };
 
 module.exports = globalErrorHandlingFilter;

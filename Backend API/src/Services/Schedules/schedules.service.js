@@ -1,41 +1,49 @@
 const { PaginatedResponse } = require("../../Core/Abstractions/Contracts/Responses");
 const { formatPaginatedResponse } = require("../../Core/Utils/response-formatter.util");
-const { BadRequestError, NotFoundError, FatalError } = require("../../Core/Abstractions/Exceptions");
+const { BadRequestError, NotFoundError } = require("../../Core/Abstractions/Exceptions");
 const { isNullOrUndefined, isListEmpty } = require("../../Core/Utils/null-checker.util");
 
 const { SchedulesRepository, EventsRepository, EmployeesRepository } = require('../../Repositories/index');
 
 const reportHoursAsync = async (eventDetails) => {
-    const { eventId, employeeId } = eventDetails;
+    const { eventIds, employeeId } = eventDetails;
+    areEventIdsValid();
 
     const employee = await EmployeesRepository.getEmployeeByIdAsync(employeeId);
     if (isNullOrUndefined(employee)) {
         throw new NotFoundError(`Employee with id ${employeeId} does not exist.`);
     }
 
-    const event = await EventsRepository.getEventByIdAsync(eventId);
-    if (isNullOrUndefined(event)) {
-        throw new BadRequestError(`Event with id ${eventId} is invalid.`);
+    let schedules = [];
+    for (var i = 0; i < eventIds.length; i++) {
+        const event = await EventsRepository.getEventByIdAsync(eventIds[i]);
+    
+        const currentDate = Date.now();
+        const newSchedule = await SchedulesRepository.createScheduleAsync({eventId: eventIds[i], employeeId, eventDate: currentDate});
+        
+        schedules.push({
+            id: newSchedule.id,
+            eventDate: new Date(newSchedule.eventDate),
+            eventId: event.id,
+            event: event.description,
+            employeeId: employee.id,
+            employee: `${employee.lastName} ${employee.firstName}`
+        });
     }
 
-    const currentDate = new Date();
-    const newEvent = await SchedulesRepository.createScheduleAsync({eventId, employeeId, eventDate: currentDate})
+    return  schedules;
 
-    if (isNullOrUndefined(newEvent)) {
-        throw new FatalError("New event was not created");
-    }
-
-    return {
-        id: newEvent.id,
-        eventDate: newEvent.eventDate,
-        eventId: event.id,
-        event: event.description,
-        employeeId: employee.id,
-        employee: `${employee.lastName} ${employee.firstName}`
+    function areEventIdsValid() {
+        eventIds.forEach(async (eventId) => {
+            const event = await EventsRepository.getEventByIdAsync(eventId);
+            if (isNullOrUndefined(event)) {
+                throw new BadRequestError(`Event with id ${eventId} is invalid.`);
+            }
+        });
     };
 }
 
-const getHoursAsync = async (startDate = new Date(Date.now() - 86400000), endDate = new Date(), currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
+const getHoursAsync = async (startDate = new Date(Date.now() - 86400000).getTime(), endDate = new Date().getTime(), currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
     if (startDate > endDate){
         throw new BadRequestError('Start date cannot be at a later date than end date');
     }
@@ -44,7 +52,7 @@ const getHoursAsync = async (startDate = new Date(Date.now() - 86400000), endDat
     const {count, rows: schedules} = await SchedulesRepository.getSchedulesAsync(startDate, endDate, skip, itemsPerPage, orderBy);
 
     if (isListEmpty(schedules)) {
-        throw new PaginatedResponse()
+        return new PaginatedResponse();
     }
 
     let eventDescriptions = await getEventDescriptionsAsync();
@@ -54,7 +62,7 @@ const getHoursAsync = async (startDate = new Date(Date.now() - 86400000), endDat
         let { id, employeeId, eventDate, eventId} = entity;
         scheduleModels.push({
             id,
-            eventDate,
+            eventDate: new Date(eventDate),
             eventId,
             event: eventDescriptions[eventId],
             employeeId
@@ -70,7 +78,7 @@ async function getEventDescriptionsAsync() {
     return eventDescriptions;
 }
 
-const getEmployeeHoursAsync = async (employeeId, startDate = new Date(Date.now() - 86400000), endDate = new Date(), currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
+const getEmployeeHoursAsync = async (employeeId, startDate = new Date(Date.now() - 86400000).getTime(), endDate = new Date().getTime(), currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
     const employee = await EmployeesRepository.getEmployeeByIdAsync(employeeId);
     if (isNullOrUndefined(employee)) {
         throw new NotFoundError(`Employee with id ${employeeId} does not exist.`);
@@ -94,7 +102,7 @@ const getEmployeeHoursAsync = async (employeeId, startDate = new Date(Date.now()
         let { id, employeeId, eventDate, eventId} = entity;
         scheduleModels.push({
             id,
-            eventDate,
+            eventDate: new Date(eventDate),
             eventId,
             event: eventDescriptions[eventId],
             employeeId,
@@ -105,7 +113,7 @@ const getEmployeeHoursAsync = async (employeeId, startDate = new Date(Date.now()
     return formatPaginatedResponse(currentPage, itemsPerPage, scheduleModels, count);
 }
 
-const getHoursByEventAsync = async (eventId, startDate = new Date(Date.now() - 86400000), endDate = new Date(), currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
+const getHoursByEventAsync = async (eventId, startDate = new Date(Date.now() - 86400000).getTime(), endDate = new Date().getTime(), currentPage = 1, itemsPerPage = 100, orderBy = "ASC") => {
     const event = await EventsRepository.getEventByIdAsync(eventId);
     if (isNullOrUndefined(event)) {
         throw new BadRequestError(`Event with id ${eventId} is invalid.`);
@@ -127,7 +135,7 @@ const getHoursByEventAsync = async (eventId, startDate = new Date(Date.now() - 8
         let { id, employeeId, eventDate, eventId} = entity;
         scheduleModels.push({
             id,
-            eventDate,
+            eventDate: new Date(eventDate),
             eventId,
             event: event.description,
             employeeId

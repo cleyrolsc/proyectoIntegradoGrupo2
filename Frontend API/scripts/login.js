@@ -1,8 +1,11 @@
 'use strict';
-import { users } from '/data/users.js';
-
+// import { btnStartShift } from "./app.js";
+const btnStartShift = document.querySelector('.start');
 const btnSubmitLogin = document.getElementById('submit-btn');
-
+const message = document.querySelector('.message');
+const loginContainer = document.querySelector('.login-container');
+const navEl = document.querySelector("nav");
+const footerEl = document.querySelector("footer");
 let currentUser;
 
 btnSubmitLogin.addEventListener('click', function (event) {
@@ -26,8 +29,9 @@ btnSubmitLogin.addEventListener('click', function (event) {
     body: JSON.stringify(loginData),
   })
     .then((response) => {
-      console.log('pin');
       if (!response.ok) {
+        message.textContent = "Invalid credentials. Please try again!";
+        message.classList.remove('hidden');
         throw new Error('Login failed');
       }
       // console.log(response);
@@ -37,7 +41,6 @@ btnSubmitLogin.addEventListener('click', function (event) {
       // Manejar la respuesta del servidor
       localStorage.setItem('isLoggedIn', 'true');
       localStorage.setItem('token', data.content.token);
-      // document.getElementById('loginMessage').textContent = 'Login successful!';
       // Redirigir al usuario a la página de inicio
       return fetch('http://localhost:3000/api/users/my-profile', {
         method: 'GET',
@@ -54,11 +57,8 @@ btnSubmitLogin.addEventListener('click', function (event) {
       return response.json();
     })
     .then((data) => {
-      console.log(data);
       if (data.content.employeeInfo.position === 'Manager') {
         window.location = 'admin.html';
-      } else {
-        window.location = 'index.html';
       }
     })
     .catch((error) => {

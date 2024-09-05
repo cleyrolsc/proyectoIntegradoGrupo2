@@ -14,7 +14,7 @@ Schedule.init({
         autoIncrement: true
     },
     eventDate: {
-        type: DataTypes.DATE,
+        type: DataTypes.BIGINT,
         allowNull: false
     },
 
@@ -28,7 +28,7 @@ Schedule.init({
         }
     },
     employeeId: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
         references: {
             model: Employee,

@@ -1,5 +1,6 @@
 const { isNullUndefinedOrEmpty } = require("../Utils/null-checker.util");
-const { formatResponse, formatErrorResponse } = require('../Utils/response-formatter.util');
+const { UnauthorizedError } = require("../Abstractions/Exceptions");
+const { unauthorized, forbidden, internalServerError } = require("../Abstractions/Contracts/HttpResponses/http-responses");
 
 const AuthService = require('../../Services/Auth/auth.service');
 
@@ -7,6 +8,9 @@ const ADMIN = 'admin-super';
 const ACCOUNTANT = 'user-accountant';
 const AGENT = 'user-agent';
 const MANAGER = 'admin-manager';
+
+const checkForAdminPrivileges = (res, req, next) => privilegeCheck(res, req, next, [ADMIN, MANAGER]);
+const checkForAccountingPrivileges = (res, req, next) => privilegeCheck(res, req, next, [ADMIN, MANAGER, ACCOUNTANT]);
 
 const privilegeCheck = async (request, response, next, privileges = []) => {
     try {
@@ -17,24 +21,21 @@ const privilegeCheck = async (request, response, next, privileges = []) => {
 
         let token = bearerHeader.split(' ')[1];
         if (isNullUndefinedOrEmpty(token)) {
-            return response.status(401)
-                .json(formatResponse(401, request.originalUrl, 'No token was found'));
+            return unauthorized(response, request.originalUrl, 'No token was found');
         }
 
         let { privilege } = await AuthService.validateTokenAsync(token);
         if (!privileges.includes(privilege)){
-            return response.status(403)
-                .json(formatResponse(403, request.originalUrl, 'User does not have the proper privilege level to access this path'));
+            return forbidden(response, request.originalUrl, 'User does not have the proper privilege level to access this path');
         }
 
         next();
     } catch (error) {
-        response.status(500).json(formatErrorResponse(500, request.originalUrl, error));
+        internalServerError(response, request.originalUrl, error)
     }
 };
 
-const checkForAdminPrivileges = (res, req, next) => privilegeCheck(res, req, next, [ADMIN, MANAGER])
-
 module.exports = {
-    checkForAdminPrivileges
+    checkForAdminPrivileges,
+    checkForAccountingPrivileges
 };
