@@ -1,9 +1,10 @@
 'use strict';
-
-import { users } from '/data/users.js';
-
-const btnApprove = document.querySelector('.approve');
 const btnStartShift = document.querySelector('.start');
+
+
+// -------------------------------
+const btnApprove = document.querySelector('.approve');
+
 const disputeModal = document.querySelector('.dispute-modal');
 const btnBreaks = document.querySelector('.non-working-buttons');
 const logoutEl = document.querySelector('.logout');
@@ -25,8 +26,87 @@ const logoutConfirmation = document.querySelector('.logout-confirmation');
 //Initial States
 let intervalID;
 let time = 0;
+let workStatus;
 
-const startWorkTimer = function () {
+// 
+
+btnStartShift.addEventListener('click', () => {
+  if (btnStartShift.textContent === 'Start') {
+    timerEl.classList.remove('hidden');
+    tableSection.classList.remove('hidden');
+    createTimeStampt('Started');
+    btnStartShift.textContent = 'Pause';
+    btnStartShift.classList.add('btn-warning');
+    btnStartShift.classList.remove('btn-success');
+    logoutEl.textContent = 'Stop Working';
+    startWorkTimer();
+
+    localStorage.setItem('timerState', {
+      isRunning: true,
+      time: time,
+      buttonState: 'running',
+      timerVisibility: timerEl.classList.contains('hidden'),
+      tableVisibility: tableSection.classList.contains('hidden')
+    });
+
+
+    // const events = {
+
+    //   "eventIds": [
+    //     1
+    //   ]
+
+    // };
+
+    // fetch('http://localhost:3000/api/schedules/register-my-hours', {
+    //   method: 'POST',
+    //   headers: {
+    //     Authorization: `Bearer ${localStorage.getItem('token')}`,
+    //     'Content-Type': 'application/json',
+    //   },
+
+    //   body: JSON.stringify(events),
+    // })
+    //   .then((response) => {
+    //     if (!response.ok) {
+    //       throw new Error('Network response was not ok');
+    //     }
+    //     return response.json();
+    //   })
+    //   .then((data) => {
+    //     console.log('Success:', data);
+
+    //   })
+    //   .catch((error) => {
+    //     console.error('Error:', error);
+    //   });
+
+
+
+  } else if (btnStartShift.textContent === 'Pause') {
+    btnBreaks.classList.remove('hidden');
+    btnStartShift.classList.add('hidden');
+    btnStartShift.classList.remove('btn-warning');
+    localStorage.setItem('timerState', {
+      isRunning: false,
+      time: time,
+      buttonState: 'paused',
+      timerVisibility: timerEl.classList.contains('hidden'),
+      tableVisibility: tableSection.classList.contains('hidden')
+    });
+
+  } else {
+    stopTimer();
+    startWorkTimer();
+    createTimeStampt('Continue Working');
+    btnBreaks.classList.remove('hidden');
+    btnStartShift.classList.add('hidden');
+    btnStartShift.classList.remove('btn-warning');
+    timerEl.classList.remove('hidden');
+  }
+});
+
+function startWorkTimer() {
   intervalID = setInterval(function () {
     const hours = String(Math.trunc(time / 3600)).padStart(2, '0');
     const minutes = String(Math.trunc((time % 3600) / 60)).padStart(2, '0');
@@ -42,7 +122,7 @@ const startWorkTimer = function () {
   }, 1000);
 };
 
-const stopWorkTimer = function (time) {
+function stopWorkTimer(time) {
   intervalID = setInterval(function () {
     let displayTime = time;
     if (time < 0) {
@@ -59,7 +139,7 @@ const stopWorkTimer = function (time) {
   }, 1000);
 };
 
-const stopTimer = function () {
+function stopTimer() {
   clearInterval(intervalID);
   timerEl.classList.add('hidden');
 };
@@ -72,7 +152,7 @@ function stopWork() {
   btnStartShift.textContent = 'Continue working';
 }
 
-const createTimeStampt = function (element) {
+function createTimeStampt(element) {
   let date = new Date();
   let formattedDate = date.toLocaleString('en-US', {
     month: 'short',
@@ -90,42 +170,7 @@ const createTimeStampt = function (element) {
   tableBodyEl.insertAdjacentHTML('afterbegin', html);
 };
 
-btnApprove.addEventListener('click', () => {
-  btnStartShift.classList.remove('hidden');
-  disputeModal.classList.add('hidden');
-});
 
-btnEscalate.addEventListener('click', function (e) {
-  e.preventDefault();
-  disputeModal.classList.add('hidden');
-  btnStartShift.classList.remove('hidden');
-  modalEl.dispose();
-});
-
-btnStartShift.addEventListener('click', () => {
-  if (btnStartShift.textContent === 'Start') {
-    timerEl.classList.remove('hidden');
-    tableSection.classList.remove('hidden');
-    createTimeStampt('Started');
-    btnStartShift.textContent = 'Pause';
-    btnStartShift.classList.add('btn-warning');
-    btnStartShift.classList.remove('btn-success');
-    logoutEl.textContent = 'Stop Working';
-    startWorkTimer();
-  } else if (btnStartShift.textContent === 'Pause') {
-    btnBreaks.classList.remove('hidden');
-    btnStartShift.classList.add('hidden');
-    btnStartShift.classList.remove('btn-warning');
-  } else {
-    stopTimer();
-    startWorkTimer();
-    createTimeStampt('Continue Working');
-    btnBreaks.classList.remove('hidden');
-    btnStartShift.classList.add('hidden');
-    btnStartShift.classList.remove('btn-warning');
-    timerEl.classList.remove('hidden');
-  }
-});
 
 logoutEl.addEventListener('click', () => {
   if (logoutEl.textContent === 'Stop Working') {
@@ -136,19 +181,52 @@ logoutEl.addEventListener('click', () => {
     timerEl.classList.add('hidden');
   } else if (logoutEl.textContent === 'Logout') {
     localStorage.clear();
-    window.location = 'login.html';
+    loginFormEl.classList.remove('hidden');
   }
 });
 
 logoutConfirmation.addEventListener('click', function (e) {
   localStorage.clear();
-  window.location = 'login.html';
+  // window.location = 'login.html';
 });
+
 btnBreak.addEventListener('click', function () {
   clearInterval(intervalID);
   stopWork();
   createTimeStampt('Break');
   stopWorkTimer(900);
+
+  const events = {
+
+    "eventIds": [
+      2, 3
+    ]
+
+  };
+
+
+  fetch('http://localhost:3000/api/schedules/register-my-hours', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json',
+    },
+
+    body: JSON.stringify(events),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log('Success:', data);
+
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
 });
 
 btnLunch.addEventListener('click', function () {
@@ -156,6 +234,38 @@ btnLunch.addEventListener('click', function () {
   stopWork();
   createTimeStampt('Lunch');
   stopWorkTimer(1800);
+
+  const events = {
+
+    "eventIds": [
+      2, 3
+    ]
+
+  };
+
+
+  fetch('http://localhost:3000/api/schedules/register-my-hours', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json',
+    },
+
+    body: JSON.stringify(events),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log('Success:', data);
+
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
 });
 
 btnCoachingTraining.addEventListener('click', function () {
@@ -163,6 +273,38 @@ btnCoachingTraining.addEventListener('click', function () {
   stopWork();
   createTimeStampt('Coaching/Training');
   stopWorkTimer(1200);
+
+  const events = {
+
+    "eventIds": [
+      2, 3
+    ]
+
+  };
+
+
+  fetch('http://localhost:3000/api/schedules/register-my-hours', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json',
+    },
+
+    body: JSON.stringify(events),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log('Success:', data);
+
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
 });
 
 btnStopWorking.addEventListener('click', () => {
@@ -222,25 +364,25 @@ fetch('http://localhost:3000/api/users/my-profile', {
     console.error('Error:', error);
   });
 
-departments.addEventListener('click', function (event) {
-  fetch('http://localhost:3000/api/system/departments', {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem('token')}`,
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => {
-      console.log('pin');
-      if (!response.ok) {
-        throw new Error();
-      }
-      return response.json();
-    })
-    .then((data) => {
-      console.log(data);
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-});
+// departments.addEventListener('click', function (event) {
+//   fetch('http://localhost:3000/api/system/departments', {
+//     method: 'GET',
+//     headers: {
+//       Authorization: `Bearer ${localStorage.getItem('token')}`,
+//       'Content-Type': 'application/json',
+//     },
+//   })
+//     .then((response) => {
+//       console.log('pin');
+//       if (!response.ok) {
+//         throw new Error();
+//       }
+//       return response.json();
+//     })
+//     .then((data) => {
+//       console.log(data);
+//     })
+//     .catch((error) => {
+//       console.error('Error:', error);
+//     });
+// });
