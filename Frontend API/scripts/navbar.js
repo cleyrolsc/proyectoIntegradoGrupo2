@@ -76,6 +76,27 @@ stopWorking.addEventListener('click', () => {
     logout.textContent = 'Logout';
     tableStamp.innerHTML = '';
     localStorage.removeItem("timerState");
+
+    const eventIds = [];
+    eventIds[0] = 2;
+    eventIds[1] = 1;
+    fetch('http://localhost:3000/api/schedules/register-my-hours', {
+        method: 'POST',
+        headers: {
+            "authorization": `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            eventIds: eventIds
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
 });
 
 logoutConfirm.addEventListener('click', () => {

@@ -75,9 +75,12 @@ function saveState(mode, time) {
     }));
 }
 
+const eventIds = [];
+
 // Event listeners
 startBtn.addEventListener('click', () => {
     if (startBtn.textContent === 'Start') {
+        eventIds[0] = 1;
         timerEl.classList.remove('hidden');
         startCountupTimer();
         timeStampTable.classList.remove('hidden');
@@ -86,6 +89,26 @@ startBtn.addEventListener('click', () => {
         startBtn.textContent = "Pause";
         logout.textContent = "Stop Working";
         createTimeStamp("Started");
+
+
+        fetch('http://localhost:3000/api/schedules/register-my-hours', {
+            method: 'POST',
+            headers: {
+                "authorization": `Bearer ${localStorage.getItem('token')}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                eventIds: eventIds
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
     } else if (startBtn.textContent === "Pause") {
         startBtn.classList.add('hidden');
         breakCoachingSection.classList.remove('hidden');
