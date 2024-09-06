@@ -54,7 +54,7 @@ function registerUser() {
 fetch('http://localhost:3000/api/users', {
     method: 'GET',
     headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        "authorization": `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json',
     },
     // body: JSON.stringify(data)

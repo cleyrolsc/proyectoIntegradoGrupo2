@@ -2,325 +2,276 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TMS</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
-  <link rel="stylesheet" href="/styles/app.css" />
-  <link rel="stylesheet" href="/styles/general.css" />
-  <link rel="stylesheet" href="/styles/users.css">
-  <link rel="stylesheet" href="/styles/reports.css">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"
-    defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="/styles/app.css" />
 
+    <link rel="stylesheet" href="/styles/users.css">
+    <link rel="stylesheet" href="/styles/reports.css">
+    <link rel="stylesheet" href="/styles/general.css" />
+    <script type="module" src="/scripts/navbar.js" defer></script>
+    <script type="module" src="/scripts/createUser.js" defer></script>
 
-  <script type="module" src="/scripts/reports.js" defer></script>
-  <script type="module" src="/scripts/createUser.js" defer></script>
-  <script type="module" src="/scripts/navbar.js" defer></script>
-  <script type="module" src="/scripts/app.js" defer></script>
-
-
+    <script type="module" src="/scripts/admin.js" defer></script>
 </head>
 
-<body class="d-flex justify-content-center align-items-center">
-  <!-- Button trigger modal -->
+<body>
 
-  <!-- Modal -->
-
-  <!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered hidden">
-      <div class="modal-content">
-        <form class="dispute-form" action="index.html">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">
-              Dispute Time Reason
-            </h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="d-flex flex-column mb-4">
-              <label for="dispute-reasons">Select a reason:</label>
-              <select name="dispute-reasons" id="dispute-reasons" aria-placeholder="Please select a reason">
-                <option value=""></option>
-                <option value="">Over Break</option>
-                <option value="">Over Lunch</option>
-                <option value="">Forgot to Log in</option>
-              </select>
-            </div>
-            <div class="d-flex flex-column">
-              <label for="dispute-reason-description">Content:</label>
-
-              <textarea name="dispute-reason-description" rows="5" cols="35" id="dispute-reason-description"></textarea>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-              Close
+    <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">TMS</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
             </button>
-            <button type="submit" class="escalate btn btn-primary" data-bs-dismiss="modal">
-              Escalate to Supervisor
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div> -->
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active home" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link report" href="#">Reports</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link create-user user" href="#">User</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link logout" href="#">Logout</a>
+                    </li>
 
-  <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">TMS</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link active home" aria-current="page" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link reports" href="#">Reports</a>
-          </li>
-          <!-- <li>
-            <a href="#" class="nav-link disputes">Disputes</a>
-          </li> -->
-          <li class="nav-item">
-            <a class="nav-link create-user user" href="#">User</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link logout" href="#">Logout</a>
-          </li>
-        </ul>
-        <div class="d-flex justify-content-center align-items-center">
-          <p id="employee-info"></p>
+                </ul>
+                <div class="d-flex justify-content-center align-items-center">
+                    <p class="employee-info"></p>
+                </div>
+                <div class="d-flex justify-content-center align-items-center">
+                    <p id="employee-info"></p>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </nav>
+    </nav>
 
-  <main class="d-flex justify-content-center align-items-center flex-column main-content home-container">
+    <!-- Home Section -->
 
-    <span class="timer hidden mb-2"></span>
-    <button class="start btn btn-success btn-lg">Start</button>
+    <section class="d-flex justify-content-center align-items-center flex-column main-content home-container">
 
-    <div class="non-working-buttons hidden">
-      <div class="mb-3 break-container d-flex justify-content-between">
-        <button class="break btn btn-warning">Break</button>
-        <button class="lunch btn btn-info">Lunch</button>
-      </div>
-      <div>
-        <button class="coaching-training btn btn-danger">
-          Coaching/Training
-        </button>
-      </div>
-    </div>
-    <div class="confirmation-form hidden">
-      <p class="logout-text">Please confirm:</p>
-      <div class="confirmation-buttons">
-        <button class="stop-working btn mr-2 btn-warning">
-          Stop working
-        </button>
-        <a href="#">
-          <button class="logout-confirmation btn btn-danger">
-            Logout
-          </button></a>
-      </div>
-    </div>
-    <div>
-      <section class="mt-4 table-responsive-md table-section hidden">
-        <div class="table-container tableFixHead">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th class="text-center" scope="col">TimeStamp</th>
-                <th class="text-center" scope="col">Reason</th>
-              </tr>
-            </thead>
-            <tbody class="table-body"></tbody>
-          </table>
+        <span class="timer hidden mb-2"></span>
+        <button class="start btn btn-success btn-lg">Start</button>
+
+        <div class="break-coaching-buttons hidden">
+            <div class="mb-3 break-container d-flex justify-content-between">
+                <button class="break btn btn-warning">Break</button>
+                <button class="lunch btn btn-info">Lunch</button>
+            </div>
+            <div>
+                <button class="coaching-training btn btn-danger">
+                    Coaching/Training
+                </button>
+            </div>
         </div>
-      </section>
-    </div>
-
-    <!-- <div class="dispute-modal hidden">
-      <p>Last shift [Date]</p>
-      <p>Total worked hours: 80</p>
-      <div class="dispute-buttons-container">
-        <button class="approve btn btn-success">Approve</button>
-        <button type="button" class="btn btn-warning dispute" data-bs-toggle="modal" data-bs-target="#exampleModal">
-          Dispute
-        </button>
-      </div>
-    </div> -->
-
-    <!-- Start Button Form -->
-  </main>
-
-  <section class="mt-4 table-responsive-md table-section hidden reports-container">
-    <div class="table-container tableFixHead">
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th class="text-center" scope="col">Employee Name</th>
-            <th class="text-center" scope="col">Employee ID</th>
-            <th class="text-center" scope="col">Date</th>
-            <th class="text-center" scope="col">Start Time</th>
-            <th class="text-center" scope="col">End Time</th>
-            <th class="text-center" scope="col">Worked Time</th>
-            <th class="text-center" scope="col">Break Time</th>
-            <th class="text-center" scope="col">Lunch Time</th>
-            <th class="text-center" scope="col">Coaching/Training Time</th>
-            <th class="text-center" scope="col">Total Connected Time</th>
-            <th class="text-center" scope="col">Count of Logouts</th>
-          </tr>
-        </thead>
-        <tbody class="table-body">
-          <tr>
-            <td class="text-center">Erick Sencion</td>
-            <td class="text-center">0071</td>
-            <td class="text-center">7/23/2024</td>
-            <td class="text-center">9:00:00 AM</td>
-            <td class="text-center">7:00:00 PM</td>
-            <td class="text-center worked-time">8.5</td>
-            <td class="text-center break-time">0.5</td>
-            <td class="text-center lunch-time">0.5</td>
-            <td class="text-center coaching-time">0.5</td>
-            <td class="text-center total-connected-time">10.0</td>
-            <td class="text-center logouts">1</td>
-          </tr>
-        </tbody>
-        <tfoot>
-          <tr>
-            <td colspan="5" class="text-end"><strong>Total</strong></td>
-            <td class="text-center total-worked-time">0</td>
-            <td class="text-center total-break-time">0</td>
-            <td class="text-center total-lunch-time">0</td>
-            <td class="text-center total-coaching-time">0</td>
-            <td class="text-center total-total-connected-time">0</td>
-            <td class="text-center total-logouts">0</td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-  </section>
-
-  <!-- Users -->
-
-  <section class=" justify-content-center align-items-center flex-column main-content user-container hidden">
-    <section class="mt-4 table-responsive-md table-section">
-      <div class="table-container tableFixHead">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th class="text-center" scope="col">Username</th>
-              <th class="text-center" scope="col">Employee ID</th>
-              <th class="text-center" scope="col">Edit User</th>
-            </tr>
-          </thead>
-          <tbody class="table-users">
-          </tbody>
-        </table>
-      </div>
+        <div class="confirmation-form hidden">
+            <p class="logout-text">Please confirm:</p>
+            <div class="confirmation-buttons">
+                <button class="stop-working btn mr-2 btn-warning">
+                    Stop working
+                </button>
+                <a href="#">
+                    <button class="logout-confirmation btn btn-danger">
+                        Logout
+                    </button></a>
+            </div>
+        </div>
+        <div class="time-stamp-container hidden">
+            <section class="mt-4 table-responsive-md table-section">
+                <div class="table-container tableFixHead">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-center" scope="col">TimeStamp</th>
+                                <th class="text-center" scope="col">Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-body-stamp"></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
     </section>
-  </section>
+
+    <!-- Reports Section -->
 
 
-  <!-- Modal -->
-  <div class="user-modal hidden">
-    <button type="button" class="d-flex btn btn-primary " data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-      Launch static backdrop modal
-    </button>
-
-
-    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-      aria-labelledby="staticBackdropLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <label>Username</label>
-            <input type="text" id="username">
-            <label>Password</label>
-            <input type="password" id="password">
-            <label>First Name</label>
-            <input type="text" id="firstName">
-            <label>Last Name</label>
-            <input type="text" id="lastName">
-            <label>Employee ID</label>
-            <input type="text" id="identificationNumber">
-            <label>Pay per hour</label>
-            <input type="number" id="payPerHour">
-            <label>Supervisor</label>
-            <input type="text" id="supervisor">
-            <label>Type</label>
-            <input type="number" id="type">
-            <label>Privilege</label>
-            <select id="privilege">
-              <option value="" disabled selected hidden>Select an option</option>
-              <option value="user-agent">Agent</option>
-              <option value="2">Option #2</option>
-              <option value="3">Option #3</option>
-            </select>
-            <label>Deparment</label>
-            <select id="department">
-              <option value="" disabled selected hidden>Select an option</option>
-              <option value="1">Call Center</option>
-              <option value="2">Management</option>
-              <option value="3">Accounting</option>
-            </select>
-            <label>Position</label>
-            <select id="position">
-              <option value="" disabled selected hidden>Select an option</option>
-              <option value="1">Option #1</option>
-              <option value="2">Agent</option>
-              <option value="3">Option #3</option>
-            </select>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="register btn btn-primary">Register</button>
-          </div>
+    <section class="hidden mt-4 table-responsive-md table-section reports-container">
+        <div class="table-container tableFixHead">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th class="text-center" scope="col">Employee Name</th>
+                        <th class="text-center" scope="col">Employee ID</th>
+                        <th class="text-center" scope="col">Date</th>
+                        <th class="text-center" scope="col">Start Time</th>
+                        <th class="text-center" scope="col">End Time</th>
+                        <th class="text-center" scope="col">Worked Time</th>
+                        <th class="text-center" scope="col">Break Time</th>
+                        <th class="text-center" scope="col">Lunch Time</th>
+                        <th class="text-center" scope="col">Coaching/Training Time</th>
+                        <th class="text-center" scope="col">Total Connected Time</th>
+                        <th class="text-center" scope="col">Count of Logouts</th>
+                    </tr>
+                </thead>
+                <tbody class="table-body">
+                    <tr>
+                        <td class="text-center">Erick Sencion</td>
+                        <td class="text-center">0071</td>
+                        <td class="text-center">7/23/2024</td>
+                        <td class="text-center">9:00:00 AM</td>
+                        <td class="text-center">7:00:00 PM</td>
+                        <td class="text-center worked-time">8.5</td>
+                        <td class="text-center break-time">0.5</td>
+                        <td class="text-center lunch-time">0.5</td>
+                        <td class="text-center coaching-time">0.5</td>
+                        <td class="text-center total-connected-time">10.0</td>
+                        <td class="text-center logouts">1</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="5" class="text-end"><strong>Total</strong></td>
+                        <td class="text-center total-worked-time">0</td>
+                        <td class="text-center total-break-time">0</td>
+                        <td class="text-center total-lunch-time">0</td>
+                        <td class="text-center total-coaching-time">0</td>
+                        <td class="text-center total-total-connected-time">0</td>
+                        <td class="text-center total-logouts">0</td>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
-      </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- Add flex to footer -->
-  <footer class="d-flex fixed-bottom  flex-wrap justify-content-between align-items-center py-3 border-top bg-light ">
-    <p class="col-md-4 mb-0 text-body-secondary">
-      &copy; 2024 Proyecto Integrado 2, Inc
-    </p>
 
-    <a href="/"
-      class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-      <svg class="bi me-2" width="40" height="32">
-        <use xlink:href="#bootstrap" />
-      </svg>
-    </a>
+    <!-- Users Section -->
 
-    <ul class="nav col-md-4 justify-content-end">
-      <li class="nav-item">
-        <a href="#" class="nav-link px-2 text-body-secondary">Home</a>
-      </li>
-      <li class="nav-item">
-        <a href="#" class="nav-link px-2 text-body-secondary">Features</a>
-      </li>
-      <li class="nav-item">
-        <a href="#" class="nav-link px-2 text-body-secondary">Pricing</a>
-      </li>
-      <li class="nav-item">
-        <a href="#" class="nav-link px-2 text-body-secondary">FAQs</a>
-      </li>
-      <li class="nav-item">
-        <a href="#" class="nav-link px-2 text-body-secondary">About</a>
-      </li>
-    </ul>
-  </footer>
+    <section class=" justify-content-center align-items-center flex-column main-content user-container hidden">
+        <section class="mt-4 table-responsive-md table-section">
+            <div class="table-container tableFixHead">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-center" scope="col">Username</th>
+                            <th class="text-center" scope="col">Employee ID</th>
+                            <th class="text-center" scope="col">Edit User</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-users">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        <!-- Modal -->
+        <div class="user-modal hidden">
+            <button type="button" class="d-flex btn btn-primary " data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop">
+                Launch static backdrop modal
+            </button>
+
+
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label>Username</label>
+                            <input type="text" id="username">
+                            <label>Password</label>
+                            <input type="password" id="password">
+                            <label>First Name</label>
+                            <input type="text" id="firstName">
+                            <label>Last Name</label>
+                            <input type="text" id="lastName">
+                            <label>Employee ID</label>
+                            <input type="text" id="identificationNumber">
+                            <label>Pay per hour</label>
+                            <input type="number" id="payPerHour">
+                            <label>Supervisor</label>
+                            <input type="text" id="supervisor">
+                            <label>Type</label>
+                            <input type="number" id="type">
+                            <label>Privilege</label>
+                            <select id="privilege">
+                                <option value="" disabled selected hidden>Select an option</option>
+                                <option value="user-agent">Agent</option>
+                                <option value="2">Option #2</option>
+                                <option value="3">Option #3</option>
+                            </select>
+                            <label>Deparment</label>
+                            <select id="department">
+                                <option value="" disabled selected hidden>Select an option</option>
+                                <option value="1">Call Center</option>
+                                <option value="2">Management</option>
+                                <option value="3">Accounting</option>
+                            </select>
+                            <label>Position</label>
+                            <select id="position">
+                                <option value="" disabled selected hidden>Select an option</option>
+                                <option value="1">Option #1</option>
+                                <option value="2">Agent</option>
+                                <option value="3">Option #3</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="register btn btn-primary">Register</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Add flex to footer -->
+    <footer class="d-flex fixed-bottom  flex-wrap justify-content-between align-items-center py-3 border-top bg-light ">
+        <p class="col-md-4 mb-0 text-body-secondary">
+            &copy; 2024 Proyecto Integrado 2, Inc
+        </p>
+
+        <a href="/"
+            class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+            <svg class="bi me-2" width="40" height="32">
+                <use xlink:href="#bootstrap" />
+            </svg>
+        </a>
+
+        <ul class="nav col-md-4 justify-content-end">
+            <li class="nav-item">
+                <a href="#" class="nav-link px-2 text-body-secondary">Home</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link px-2 text-body-secondary">Features</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link px-2 text-body-secondary">Pricing</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link px-2 text-body-secondary">FAQs</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link px-2 text-body-secondary">About</a>
+            </li>
+        </ul>
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>
