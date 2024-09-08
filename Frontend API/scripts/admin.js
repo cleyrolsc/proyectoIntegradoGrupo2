@@ -12,6 +12,8 @@ const timeStampTable = document.querySelector('.time-stamp-container');
 const tableStamp = document.querySelector('.table-body-stamp');
 const logout = document.querySelector('.logout');
 const employeeInfo = document.querySelector('.employee-info');
+const stopWorking = document.querySelector('.stop-working');
+const confirmationFormEl = document.querySelector('.confirmation-form');
 
 let timerInterval;
 let elapsedTime = 0; // For countup timer
@@ -75,12 +77,60 @@ function saveState(mode, time) {
     }));
 }
 
-const eventIds = [];
+// Handle eventsIDs to be sent to database
+
+let previousEventId = null;
+
+// Event handling logic with event IDs
+function handleEvent(currentEventId, label) {
+    const eventIds = [];
+
+    // Check if the user is continuing work
+    if (startBtn.textContent === "Continue Working") {
+        // Continue working after a break, lunch, or coaching
+        if (previousEventId === 3) {
+            eventIds.push(1, 4); // Continue work, stop break/lunch
+        } else if (previousEventId === 5) {
+            eventIds.push(1, 6); // Continue work, stop coaching
+        }
+    } else {
+        // Handle new event normally
+        if (currentEventId === 1) {
+            eventIds.push(1); // Start working
+        } else {
+            eventIds.push(currentEventId, 2); // Stop working for break/lunch/coaching
+        }
+    }
+
+    // Send data to the server
+    fetch('http://localhost:3000/api/schedules/register-my-hours', {
+        method: 'POST',
+        headers: {
+            "authorization": `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            eventIds: eventIds
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+    previousEventId = currentEventId; // Store the current event as the previous one
+    // createTimeStamp(label);
+    // saveState('countup', elapsedTime); // Save state after each action
+}
+
 
 // Event listeners
 startBtn.addEventListener('click', () => {
     if (startBtn.textContent === 'Start') {
-        eventIds[0] = 1;
+        handleEvent(1, "Started Working");
         timerEl.classList.remove('hidden');
         startCountupTimer();
         timeStampTable.classList.remove('hidden');
@@ -91,28 +141,29 @@ startBtn.addEventListener('click', () => {
         createTimeStamp("Started");
 
 
-        fetch('http://localhost:3000/api/schedules/register-my-hours', {
-            method: 'POST',
-            headers: {
-                "authorization": `Bearer ${localStorage.getItem('token')}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                eventIds: eventIds
-            })
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+        // fetch('http://localhost:3000/api/schedules/register-my-hours', {
+        //     method: 'POST',
+        //     headers: {
+        //         "authorization": `Bearer ${localStorage.getItem('token')}`,
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({
+        //         eventIds: eventIds
+        //     })
+        // })
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         console.log('Success:', data);
+        //     })
+        //     .catch(error => {
+        //         console.error('Error:', error);
+        //     });
 
     } else if (startBtn.textContent === "Pause") {
         startBtn.classList.add('hidden');
         breakCoachingSection.classList.remove('hidden');
     } else {
+        handleEvent(1, "Continue Working");
         startCountupTimer();
         startBtn.textContent = "Pause";
         startBtn.classList.remove('btn-success');
@@ -123,6 +174,7 @@ startBtn.addEventListener('click', () => {
 });
 
 breakTime.addEventListener('click', () => {
+    handleEvent(3, "Break Started");
     startCountdownTimer(15);
     startBtn.classList.remove('hidden');
     startBtn.classList.add('btn-success');
@@ -134,6 +186,7 @@ breakTime.addEventListener('click', () => {
 });
 
 lunchTime.addEventListener('click', () => {
+    handleEvent(3, "Lunch Started");
     startCountdownTimer(30);
     startBtn.classList.remove('hidden');
     startBtn.classList.add('btn-success');
@@ -145,6 +198,7 @@ lunchTime.addEventListener('click', () => {
 });
 
 coachingTraining.addEventListener('click', () => {
+    handleEvent(5, "Coaching / Training Started");
     startCountdownTimer(20);
     startBtn.classList.remove('hidden');
     startBtn.classList.add('btn-success');
@@ -153,6 +207,40 @@ coachingTraining.addEventListener('click', () => {
     breakCoachingSection.classList.add('hidden');
     createTimeStamp("Coaching / Training");
     saveState('countdown', remainingTime); // Save countdown state
+});
+
+stopWorking.addEventListener('click', () => {
+    handleEvent(2, "Stopped Working");
+    timeStampTable.classList.add('hidden');
+    confirmationFormEl.classList.add('hidden');
+    startBtn.textContent = 'Start';
+    startBtn.classList.add('btn-success');
+    startBtn.classList.remove('btn-warning');
+    startBtn.classList.remove('hidden');
+    logout.textContent = 'Logout';
+    tableStamp.innerHTML = '';
+    localStorage.removeItem("timerState");
+
+    // const eventIds = [];
+    // eventIds[0] = 2;
+    // eventIds[1] = 1;
+    // fetch('http://localhost:3000/api/schedules/register-my-hours', {
+    //     method: 'POST',
+    //     headers: {
+    //         "authorization": `Bearer ${localStorage.getItem('token')}`,
+    //         'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify({
+    //         eventIds: eventIds
+    //     })
+    // })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         console.log('Success:', data);
+    //     })
+    //     .catch(error => {
+    //         console.error('Error:', error);
+    //     });
 });
 
 // Timer function
@@ -270,6 +358,6 @@ fetch('http://localhost:3000/api/users/my-profile', {
 document.addEventListener('DOMContentLoaded', (event) => {
     event.preventDefault();
     if (!localStorage.getItem('isLoggedIn')) {
-        // window.location = 'login.html';
+        window.location = 'login.html';
     }
 });

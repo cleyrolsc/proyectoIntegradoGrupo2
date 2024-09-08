@@ -82,5 +82,5 @@ fetch('http://localhost:3000/api/users', {
     })
     .catch((error) => {
         console.error('Error:', error);
-        alert('Error registering user.');
+        console.log('Error registering user.');
     });
