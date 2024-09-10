@@ -1,234 +1,262 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TMS</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-      crossorigin="anonymous"
-    />
-    <!-- <link rel="stylesheet" href="/styles/header.css" /> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="/styles/app.css" />
-    <link rel="stylesheet" href="/styles/dispute.css" />
+
+    <link rel="stylesheet" href="/styles/users.css">
+    <link rel="stylesheet" href="/styles/reports.css">
     <link rel="stylesheet" href="/styles/general.css" />
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"
-      defer
-    ></script>
-    <script type="module" src="/scripts/app.js" defer></script>
+    <script type="module" src="/scripts/navbar.js" defer></script>
+    <script type="module" src="/scripts/createUser.js" defer></script>
     <script type="module" src="/scripts/reports.js" defer></script>
-  </head>
-  <body class="d-flex justify-content-center">
-    <!-- Button trigger modal -->
+    <script type="module" src="/scripts/admin.js" defer></script>
+</head>
 
-    <!-- Modal -->
-    <div
-      class="modal fade"
-      id="exampleModal"
-      tabindex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <form class="dispute-form" action="index.html">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">
-                Dispute Time Reason
-              </h1>
-              <button
-                type="button"
-                class="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div class="modal-body">
-              <div class="d-flex flex-column mb-4">
-                <label for="dispute-reasons">Select a reason:</label>
-                <select
-                  name="dispute-reasons"
-                  id="dispute-reasons"
-                  aria-placeholder="Please select a reason"
-                >
-                  <option value=""></option>
-                  <option value="">Over Break</option>
-                  <option value="">Over Lunch</option>
-                  <option value="">Forgot to Log in</option>
-                </select>
-              </div>
-              <div class="d-flex flex-column">
-                <label for="dispute-reason-description">Content:</label>
-
-                <textarea
-                  name="dispute-reason-description"
-                  rows="5"
-                  cols="35"
-                  id="dispute-reason-description"
-                ></textarea>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button
-                type="button"
-                class="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <button
-                type="submit"
-                class="escalate btn btn-primary"
-                data-bs-dismiss="modal"
-              >
-                Escalate to Supervisor
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+<body>
 
     <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">TMS</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" href="#">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="reports.html">Reports</a>
-            </li>
-            <li>
-              <a href="#" class="nav-link disputes">Disputes</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link create-user" href="users.html">User</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link logout" href="#">Logout</a>
-            </li>
-          </ul>
-          <div class="d-flex justify-content-center align-items-center">
-            <p id="employee-info"></p>
-          </div>
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">TMS</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active home" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link report" href="#">Reports</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link create-user user" href="#">User</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link logout" href="#">Logout</a>
+                    </li>
+
+                </ul>
+                <div class="d-flex justify-content-center align-items-center">
+                    <p class="employee-info"></p>
+                </div>
+                <div class="d-flex justify-content-center align-items-center">
+                    <p id="employee-info"></p>
+                </div>
+            </div>
         </div>
-      </div>
     </nav>
-    <main
-      class="d-flex justify-content-center align-items-center flex-column main-content"
-    >
-      <span class="timer hidden mb-2"></span>
-      <button class="start btn btn-success btn-lg hidden">Start</button>
-      <div class="dispute-modal">
-        <p>Last shift [Date]</p>
-        <p>Total worked hours: 80</p>
-        <div class="dispute-buttons-container">
-          <button class="approve btn btn-success">Approve</button>
-          <button
-            type="button"
-            class="btn btn-warning dispute"
-            data-bs-toggle="modal"
-            data-bs-target="#exampleModal"
-          >
-            Dispute
-          </button>
-        </div>
-      </div>
 
-      <!-- Start Button Form -->
+    <!-- Home Section -->
 
-      <div class="non-working-buttons hidden">
-        <div class="mb-3 break-container d-flex justify-content-between">
-          <button class="break btn btn-warning">Break</button>
-          <button class="lunch btn btn-info">Lunch</button>
+    <section class="d-flex justify-content-center align-items-center flex-column main-content home-container">
+
+        <span class="timer hidden mb-2"></span>
+        <button class="start btn btn-success btn-lg">Start</button>
+
+        <div class="break-coaching-buttons hidden">
+            <div class="mb-3 break-container d-flex justify-content-between">
+                <button class="break btn btn-warning">Break</button>
+                <button class="lunch btn btn-info">Lunch</button>
+            </div>
+            <div>
+                <button class="coaching-training btn btn-danger">
+                    Coaching/Training
+                </button>
+            </div>
         </div>
-        <div>
-          <button class="coaching-training btn btn-danger">
-            Coaching/Training
-          </button>
+        <div class="confirmation-form hidden">
+            <p class="logout-text">Please confirm:</p>
+            <div class="confirmation-buttons">
+                <button class="stop-working btn mr-2 btn-warning">
+                    Stop working
+                </button>
+                <a href="#">
+                    <button class="logout-confirmation btn btn-danger">
+                        Logout
+                    </button></a>
+            </div>
         </div>
-      </div>
-      <div class="confirmation-form hidden">
-        <p class="logout-text">Please confirm:</p>
-        <div class="confirmation-buttons">
-          <button class="stop-working btn mr-2 btn-warning">
-            Stop working
-          </button>
-          <a href="/templates/login.html">
-            <button class="logout-confirmation btn btn-danger">
-              Logout
-            </button></a
-          >
+        <div class="time-stamp-container hidden">
+            <section class="mt-4 table-responsive-md table-section">
+                <div class="table-container tableFixHead">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-center" scope="col">TimeStamp</th>
+                                <th class="text-center" scope="col">Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody class="table-body-stamp"></tbody>
+                    </table>
+                </div>
+            </section>
         </div>
-      </div>
-      <div>
-        <section class="mt-4 table-responsive-md table-section hidden">
-          <div class="table-container tableFixHead">
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th class="text-center" scope="col">TimeStamp</th>
-                  <th class="text-center" scope="col">Reason</th>
-                </tr>
-              </thead>
-              <tbody class="table-body"></tbody>
-            </table>
-          </div>
+    </section>
+
+    <!-- Reports Section -->
+
+
+    <section class="hidden mt-4 table-responsive-md table-section reports-container">
+    <div class="table-container tableFixHead">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Employee ID</th>
+        <th>Full Name</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Pay Per Hour</th>
+        <th>Total Work Hours</th>
+        <th>Total Work Pay</th>
+        <th>Total Break Hours</th>
+        <th>Total Training Hours</th>
+        <th>Total Training Pay</th>
+        <th>Gross Pay</th>
+        <th>Payment Status</th>
+      </tr>
+    </thead>
+    <tbody class="table-body">
+      <!-- Data will be injected here by JS -->
+    </tbody>
+  </table>
+</div>
+    </section>
+
+
+    <!-- Users Section -->
+
+    <section class=" justify-content-center align-items-center flex-column main-content user-container hidden">
+        <section class="mt-4 table-responsive-md table-section">
+            <div class="table-container tableFixHead">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-center" scope="col">First Name</th>
+                            <th class="text-center" scope="col">Last Name</th>
+                            <th class="text-center" scope="col">Employee ID</th>    
+                        </tr>
+                    </thead>
+                    <tbody class="table-users">
+                    </tbody>
+                </table>
+                <div class="pagination">
+                    <button id="prevPage" disabled>Previous</button>
+                    <span id="pageIndicator">Page 1</span>
+                    <button id="nextPage">Next</button>
+                </div>
+            </div>
         </section>
-      </div>
-    </main>
 
-    <footer
-      class="fixed-bottom d-flex flex-wrap justify-content-between align-items-center py-3 border-top bg-light"
-    >
-      <p class="col-md-4 mb-0 text-body-secondary">
-        &copy; 2024 Proyecto Integrado 2, Inc
-      </p>
+        <!-- Modal -->
+        <div class="user-modal hidden">
+            <button type="button" class="d-flex btn btn-primary mt-4" data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop">
+                Create user
+            </button>
 
-      <a
-        href="/"
-        class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none"
-      >
-        <svg class="bi me-2" width="40" height="32">
-          <use xlink:href="#bootstrap" />
-        </svg>
-      </a>
 
-      <ul class="nav col-md-4 justify-content-end">
-        <li class="nav-item">
-          <a href="#" class="nav-link px-2 text-body-secondary">Home</a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link px-2 text-body-secondary">Features</a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link px-2 text-body-secondary">Pricing</a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link px-2 text-body-secondary">FAQs</a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link px-2 text-body-secondary">About</a>
-        </li>
-      </ul>
+            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label>Username</label>
+                            <input type="text" id="username">
+                            <label>Password</label>
+                            <input type="password" id="password">
+                            <label>First Name</label>
+                            <input type="text" id="firstName">
+                            <label>Last Name</label>
+                            <input type="text" id="lastName">
+                            <label>Employee ID</label>
+                            <input type="text" id="identificationNumber">
+                            <label>Pay per hour</label>
+                            <input type="number" id="payPerHour">
+                            <label>Supervisor</label>
+                            <input type="text" id="supervisor">
+                            <label>Type</label>
+                            <input type="number" id="type">
+                            <label>Privilege</label>
+                            <select id="privilege">
+                                <option value="" disabled selected hidden>Select an option</option>
+                                <option value="user-agent">Agent</option>
+                                <option value="2">Option #2</option>
+                                <option value="3">Option #3</option>
+                            </select>
+                            <label>Deparment</label>
+                            <select id="department">
+                                <option value="" disabled selected hidden>Select an option</option>
+                                <option value="1">Call Center</option>
+                                <option value="2">Management</option>
+                                <option value="3">Accounting</option>
+                            </select>
+                            <label>Position</label>
+                            <select id="position">
+                                <option value="" disabled selected hidden>Select an option</option>
+                                <option value="1">Option #1</option>
+                                <option value="2">Agent</option>
+                                <option value="3">Option #3</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="register btn btn-primary">Register</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Add flex to footer -->
+    <footer class="d-flex fixed-bottom  flex-wrap justify-content-between align-items-center py-3 border-top bg-light ">
+        <p class="col-md-4 mb-0 text-body-secondary">
+            &copy; 2024 Proyecto Integrado 2, Inc
+        </p>
+
+        <a href="/"
+            class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+            <svg class="bi me-2" width="40" height="32">
+                <use xlink:href="#bootstrap" />
+            </svg>
+        </a>
+
+        <ul class="nav col-md-4 justify-content-end">
+            <li class="nav-item">
+                <a href="#" class="nav-link px-2 text-body-secondary">Home</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link px-2 text-body-secondary">Features</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link px-2 text-body-secondary">Pricing</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link px-2 text-body-secondary">FAQs</a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link px-2 text-body-secondary">About</a>
+            </li>
+        </ul>
     </footer>
-  </body>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
+
 </html>
