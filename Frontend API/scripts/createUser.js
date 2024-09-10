@@ -1,6 +1,10 @@
 const register = document.querySelector(".register");
-const tableBodyEl = document.querySelector('.table-users');
 register.addEventListener("click", registerUser);
+const tableBodyEl = document.querySelector('.table-users');
+const prevPageBtn = document.getElementById('prevPage');
+const nextPageBtn = document.getElementById('nextPage');
+const pageIndicator = document.getElementById('pageIndicator');
+
 
 function registerUser() {
     // Collect form data
@@ -50,37 +54,132 @@ function registerUser() {
 
 
 
+// fetch('http://localhost:3000/api/system/employees?page=1&pageSize=12', {
+//     method: 'GET',
+//     headers: {
+//         "authorization": `Bearer ${localStorage.getItem('token')}`,
+//         'Content-Type': 'application/json',
+//     },
+//     // body: JSON.stringify(data)
+// })
+//     .then(response => {
+//         if (response.ok) {
+//             return response.json(); // Or handle a success message
+//         }
+//         throw new Error('Something went wrong');
+//     })
+//     .then(data => {console.log(data)
+//         // let html = '';
+//         // for (let i = 0; i < data.content.items.length; i++) {
+//         //     html += ` <tr>
+//         // <td class="text-center">${data.content.items[i].username}</td>
+//         // <td class="text-center">${data.content.items[i].employeeId.toString().padStart(4, '0')}</td>
+//         // <td class="text-center"><button>Edit</button></td>
+//         // </tr>`;
+//         // }
+//         // // console.log(data.content.items)
 
-fetch('http://localhost:3000/api/users', {
-    method: 'GET',
-    headers: {
-        "authorization": `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json',
-    },
-    // body: JSON.stringify(data)
-})
+//         // tableBodyEl.insertAdjacentHTML("beforebegin", html);
+//     })
+//     .catch((error) => {
+//         console.error('Error:', error);
+//         console.log('Error registering user.');
+//     });
+
+// fetch('http://localhost:3000/api/system/employees?page=1&pageSize=5', {
+//     method: 'GET',
+//     headers: {
+//         "authorization": `Bearer ${localStorage.getItem('token')}`,
+//         'Content-Type': 'application/json',
+//     },
+//     // body: JSON.stringify(data)
+// })
+//     .then(response => {
+//         if (response.ok) {
+//             return response.json(); // Or handle a success message
+//         }
+//         throw new Error('Something went wrong');
+//     })
+//     .then(data => {
+//         let html = '';
+//         for (let i = 0; i < data.content.items.length; i++) {
+//             html += ` <tr>
+//         <td class="text-center">${data.content.items[i].firstName}</td>
+//         <td class="text-center">${data.content.items[i].id.toString().padStart(4, '0')}</td>
+//         </tr>`;
+//         }
+        
+//         // console.log(data.content.items)
+
+
+
+//         tableBodyEl.insertAdjacentHTML("beforebegin", html);
+//     })
+//     .catch((error) => {
+//         console.error('Error:', error);
+//         console.log('Error registering user.');
+//     });
+let currentPage = 1;
+const pageSize = 5; // Number of results per page
+
+// Fetch users and populate the table
+function fetchUsers(page) {
+    fetch(`http://localhost:3000/api/system/employees?page=${page}&pageSize=${pageSize}`, {
+        method: 'GET',
+        headers: {
+            "authorization": `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json',
+        },
+    })
     .then(response => {
         if (response.ok) {
-            return response.json(); // Or handle a success message
+            return response.json();
         }
         throw new Error('Something went wrong');
     })
     .then(data => {
+        tableBodyEl.innerHTML = ''; // Clear the table before inserting new data
         let html = '';
         for (let i = 0; i < data.content.items.length; i++) {
-            html += ` <tr>
-        <td class="text-center">${data.content.items[i].username}</td>
-        <td class="text-center">${data.content.items[i].employeeId.toString().padStart(4, '0')}</td>
-        <td class="text-center"><button>Edit</button></td>
-        </tr>`;
+            html += ` 
+            <tr>
+                <td class="text-center">${data.content.items[i].firstName}</td>
+                <td class="text-center">${data.content.items[i].lastName}</td>
+                <td class="text-center">${data.content.items[i].id.toString().padStart(4, '0')}</td>
+            </tr>`;
         }
-        // console.log(data.content.items)
+        tableBodyEl.insertAdjacentHTML("beforeend", html);
 
-
-
-        tableBodyEl.insertAdjacentHTML("beforebegin", html);
+        // Update pagination state
+        updatePagination(data.content.totalPages, page);
     })
-    .catch((error) => {
+    .catch(error => {
         console.error('Error:', error);
-        console.log('Error registering user.');
+        alert('Error fetching users.');
     });
+}
+
+// Update pagination buttons and page indicator
+function updatePagination(totalPages, currentPage) {
+    pageIndicator.textContent = `Page ${currentPage}`;
+
+    // Disable or enable pagination buttons based on current page
+    prevPageBtn.disabled = currentPage === 1;
+    nextPageBtn.disabled = currentPage === totalPages;
+}
+
+// Event listeners for the buttons
+prevPageBtn.addEventListener('click', () => {
+    if (currentPage > 1) {
+        currentPage--;
+        fetchUsers(currentPage);
+    }
+});
+
+nextPageBtn.addEventListener('click', () => {
+    currentPage++;
+    fetchUsers(currentPage);
+});
+
+// Initial fetch
+fetchUsers(currentPage);

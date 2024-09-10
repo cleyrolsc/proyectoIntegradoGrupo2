@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="/styles/general.css" />
     <script type="module" src="/scripts/navbar.js" defer></script>
     <script type="module" src="/scripts/createUser.js" defer></script>
-
+    <script type="module" src="/scripts/reports.js" defer></script>
     <script type="module" src="/scripts/admin.js" defer></script>
 </head>
 
@@ -105,51 +105,30 @@
 
 
     <section class="hidden mt-4 table-responsive-md table-section reports-container">
-        <div class="table-container tableFixHead">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th class="text-center" scope="col">Employee Name</th>
-                        <th class="text-center" scope="col">Employee ID</th>
-                        <th class="text-center" scope="col">Date</th>
-                        <th class="text-center" scope="col">Start Time</th>
-                        <th class="text-center" scope="col">End Time</th>
-                        <th class="text-center" scope="col">Worked Time</th>
-                        <th class="text-center" scope="col">Break Time</th>
-                        <th class="text-center" scope="col">Lunch Time</th>
-                        <th class="text-center" scope="col">Coaching/Training Time</th>
-                        <th class="text-center" scope="col">Total Connected Time</th>
-                        <th class="text-center" scope="col">Count of Logouts</th>
-                    </tr>
-                </thead>
-                <tbody class="table-body">
-                    <tr>
-                        <td class="text-center">Erick Sencion</td>
-                        <td class="text-center">0071</td>
-                        <td class="text-center">7/23/2024</td>
-                        <td class="text-center">9:00:00 AM</td>
-                        <td class="text-center">7:00:00 PM</td>
-                        <td class="text-center worked-time">8.5</td>
-                        <td class="text-center break-time">0.5</td>
-                        <td class="text-center lunch-time">0.5</td>
-                        <td class="text-center coaching-time">0.5</td>
-                        <td class="text-center total-connected-time">10.0</td>
-                        <td class="text-center logouts">1</td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="5" class="text-end"><strong>Total</strong></td>
-                        <td class="text-center total-worked-time">0</td>
-                        <td class="text-center total-break-time">0</td>
-                        <td class="text-center total-lunch-time">0</td>
-                        <td class="text-center total-coaching-time">0</td>
-                        <td class="text-center total-total-connected-time">0</td>
-                        <td class="text-center total-logouts">0</td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
+    <div class="table-container tableFixHead">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Employee ID</th>
+        <th>Full Name</th>
+        <th>Start Date</th>
+        <th>End Date</th>
+        <th>Pay Per Hour</th>
+        <th>Total Work Hours</th>
+        <th>Total Work Pay</th>
+        <th>Total Break Hours</th>
+        <th>Total Training Hours</th>
+        <th>Total Training Pay</th>
+        <th>Gross Pay</th>
+        <th>Payment Status</th>
+      </tr>
+    </thead>
+    <tbody class="table-body">
+      <!-- Data will be injected here by JS -->
+    </tbody>
+  </table>
+</div>
     </section>
 
 
@@ -161,16 +140,22 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th class="text-center" scope="col">Username</th>
-                            <th class="text-center" scope="col">Employee ID</th>
-                            <th class="text-center" scope="col">Edit User</th>
+                            <th class="text-center" scope="col">First Name</th>
+                            <th class="text-center" scope="col">Last Name</th>
+                            <th class="text-center" scope="col">Employee ID</th>    
                         </tr>
                     </thead>
                     <tbody class="table-users">
                     </tbody>
                 </table>
+                <div class="pagination">
+                    <button id="prevPage" disabled>Previous</button>
+                    <span id="pageIndicator">Page 1</span>
+                    <button id="nextPage">Next</button>
+                </div>
             </div>
         </section>
+
         <!-- Modal -->
         <div class="user-modal hidden">
             <button type="button" class="d-flex btn btn-primary mt-4" data-bs-toggle="modal"
